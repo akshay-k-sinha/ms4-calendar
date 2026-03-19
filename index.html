@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MS4 Calendar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  :root {
+    --bg:#FAFAFA;--surface:#FFFFFF;--surface-hover:#F5F5F7;
+    --border:#E5E5EA;--border-light:#F0F0F2;
+    --text:#1D1D1F;--text-2:#86868B;--text-3:#AEAEB2;
+    --accent:#007AFF;--accent-light:#EBF5FF;--accent-dark:#0056CC;
+    --green:#34C759;--green-bg:#DCFCE7;--green-fg:#166534;
+    --yellow-bg:#FEF3C7;--yellow-fg:#92400E;
+    --red-bg:#FFE4E6;--red-fg:#9F1239;
+    --orange-bg:#FFEDD5;--orange-fg:#9A3412;
+    --blue-bg:#DBEAFE;--blue-fg:#1E40AF;
+    --shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.06);
+    --shadow-hover:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.06);
+    --radius:12px;--radius-sm:8px;--nav-w:220px;
+    --ease:0.2s cubic-bezier(.25,.1,.25,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+  /* ── Nav ── */
+  nav{width:var(--nav-w);background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
+  .nav-brand{padding:0 20px 24px;font-size:15px;font-weight:700;letter-spacing:-.3px}
+  .nav-brand span{color:var(--text-3);font-weight:400;display:block;font-size:11px;margin-top:2px}
+  .nav-section{padding:16px 12px 4px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+  .nav-item{padding:8px 20px;font-size:13px;color:var(--text-2);cursor:pointer;transition:all var(--ease);border-left:3px solid transparent;font-weight:500;user-select:none}
+  .nav-item:hover{background:var(--surface-hover);color:var(--text)}
+  .nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-light);font-weight:600}
+  .nav-spacer{flex:1}
+  .nav-footer{padding:16px 20px;font-size:10px;color:var(--text-3);line-height:1.6;border-top:1px solid var(--border-light)}
+  .nav-footer a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-footer a:hover{text-decoration:underline}
+
+  /* ── Main ── */
+  main{margin-left:var(--nav-w);flex:1;padding:32px 40px 64px;max-width:1100px}
+  .view{display:none;animation:fadeIn .3s ease}.view.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .page-title{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+  .page-subtitle{font-size:13px;color:var(--text-3);margin-bottom:28px}
+
+  /* ── Cards ── */
+  .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+  .card-grid-4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:all var(--ease)}
+  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+  .card-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .card-value{font-size:22px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
+  .card-detail{font-size:12px;color:var(--text-2);margin-top:4px}
+  .card-accent{border-left:3px solid var(--accent)}
+
+  /* ── Progress ── */
+  .progress-container{margin-bottom:28px}
+  .progress-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .progress-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+  .progress-pct{font-size:13px;font-weight:600;color:var(--accent)}
+  .progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:3px;transition:width 1s cubic-bezier(.25,.1,.25,1)}
+
+  /* ── Countdowns ── */
+  .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+  .countdown{text-align:center;padding:16px 8px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-sm);transition:all var(--ease)}
+  .countdown:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+  .countdown-num{font-size:28px;font-weight:700;letter-spacing:-1px}
+  .countdown-unit{font-size:10px;color:var(--text-3);margin-top:0;font-weight:500}
+  .countdown-label{font-size:10px;color:var(--text-2);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+  /* ── Feed ── */
+  .feed{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:24px}
+  .feed-header{padding:14px 20px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border-light)}
+  .feed-item{padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border-light);transition:background var(--ease)}
+  .feed-item:last-child{border-bottom:none}
+  .feed-item:hover{background:var(--surface-hover)}
+  .feed-date{font-size:11px;font-weight:600;color:var(--accent);min-width:60px}
+  .feed-name{font-size:13px;flex:1}
+  .feed-tag{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:600}
+  .feed-empty{padding:32px 20px;text-align:center;color:var(--text-3);font-size:13px}
+
+  /* ── Calendar ── */
+  .cal-month{margin-bottom:36px}
+  .cal-month-name{font-size:16px;font-weight:700;letter-spacing:-.3px;padding-bottom:8px;border-bottom:2px solid var(--border);margin-bottom:0;display:flex;justify-content:space-between;align-items:baseline}
+  .cal-month-year{font-size:12px;font-weight:500;color:var(--text-3)}
+  .cal-header{display:grid;grid-template-columns:repeat(7,1fr) 200px}
+  .cal-header span{font-size:10px;color:var(--text-3);text-align:center;padding:8px 0;font-weight:500}
+  .cal-header span:last-child{text-align:left;padding-left:12px}
+  .cal-week{display:grid;grid-template-columns:repeat(7,1fr) 200px;border-bottom:1px solid var(--border-light)}
+  .cal-day{padding:8px 4px 6px;min-height:56px;text-align:center;transition:all var(--ease);position:relative;cursor:default}
+  .cal-day:hover:not(.empty){filter:brightness(.97)}
+  .cal-day.today{background:var(--accent-light) !important}
+  .cal-day.today::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
+  .cal-day.empty{background:transparent}
+  .cal-day.weekend:not([class*="block-"]){color:var(--text-3)}
+  .cal-date{font-size:14px;font-weight:600;line-height:1}
+  .cal-info{font-size:9px;color:var(--text-2);margin-top:4px;line-height:1.3;font-style:italic;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .cal-events{padding:6px 12px;font-size:10px;color:var(--text-2);display:flex;align-items:flex-start;line-height:1.5;min-height:56px;border-left:1px solid var(--border-light);white-space:pre-line}
+  .cal-events .ev-highlight{color:var(--accent);font-weight:500}
+
+  /* ── Block colors ── */
+  .block-blue{background:#DBEAFE}.block-rose{background:#FFE4E6}
+  .block-mint{background:#DCFCE7}.block-amber{background:#FEF3C7}
+  .block-lavender{background:#EDE9FE}.block-peach{background:#FFEDD5}
+  .block-teal{background:#CFFAFE}.block-lemon{background:#FEF9C3}
+  .block-pink{background:#FCE7F3}.block-sage{background:#D1FAE5}
+  .block-coral{background:#FEE2E2}.block-sky{background:#E0F2FE}
+  .block-plum{background:#F3E8FF}
+
+  /* ── Tables ── */
+  .tbl{width:100%;border-collapse:separate;border-spacing:0}
+  .tbl th{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:1}
+  .tbl td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border-light);transition:background var(--ease)}
+  .tbl tr:nth-child(even) td{background:var(--surface-hover)}
+  .tbl tr:hover td{background:rgba(0,122,255,.04)!important}
+  .tbl input,.tbl select{border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text);outline:none;width:100%;padding:2px 0;transition:border var(--ease)}
+  .tbl input:focus{border-bottom:2px solid var(--accent)}
+  .tbl input::placeholder{color:var(--text-3)}
+  .tbl input[type="date"]{min-width:110px}
+
+  /* ── Status select ── */
+  .status-select{border:none;background:transparent;font-family:inherit;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none}
+  .ss-green{background:var(--green-bg);color:var(--green-fg)}
+  .ss-yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+  .ss-blue{background:var(--blue-bg);color:var(--blue-fg)}
+  .ss-red{background:var(--red-bg);color:var(--red-fg)}
+  .ss-orange{background:var(--orange-bg);color:var(--orange-fg)}
+
+  /* ── Color swatch ── */
+  .color-swatch{display:inline-flex;gap:4px;flex-wrap:wrap}
+  .color-dot{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all var(--ease);flex-shrink:0}
+  .color-dot:hover{transform:scale(1.15)}
+  .color-dot.active{border-color:var(--text);box-shadow:0 0 0 2px var(--surface)}
+
+  /* ── Buttons ── */
+  .btn{padding:8px 16px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--ease);display:inline-flex;align-items:center;gap:6px}
+  .btn-primary{background:var(--accent);color:white}.btn-primary:hover{background:var(--accent-dark)}
+  .btn-ghost{background:transparent;color:var(--text-3);padding:4px 8px;font-size:12px}.btn-ghost:hover{color:var(--red-fg);background:var(--red-bg)}
+  .btn-add{margin-top:16px}
+
+  /* ── Empty state ── */
+  .empty-state{padding:48px 20px;text-align:center}
+  .empty-state-icon{font-size:32px;margin-bottom:12px}
+  .empty-state-text{font-size:14px;color:var(--text-3);margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">MS4 Calendar<span>June 2026 – May 2027</span></div>
+  <div class="nav-section">Overview</div>
+  <div class="nav-item active" data-view="dashboard">Dashboard</div>
+  <div class="nav-item" data-view="year">Year</div>
+  <div class="nav-section">Plan</div>
+  <div class="nav-item" data-view="rotations">Rotations</div>
+  <div class="nav-item" data-view="interviews">Interviews</div>
+  <div class="nav-item" data-view="keydates">Key Dates</div>
+  <div class="nav-item" data-view="letters">Letters</div>
+  <div class="nav-spacer"></div>
+  <div class="nav-footer">
+    Data saves to your browser automatically.
+    <br><br>
+    <a href="#" onclick="exportData();return false">Export Backup</a> ·
+    <label><a href="#">Import</a><input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+  </div>
+</nav>
+
+<main id="main-content">
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle" id="dash-subtitle"></p>
+    <div class="card-grid">
+      <div class="card card-accent"><div class="card-label">Current Rotation</div><div class="card-value" id="dash-rot">—</div><div class="card-detail" id="dash-rot-d"></div></div>
+      <div class="card card-accent"><div class="card-label">Next Event</div><div class="card-value" id="dash-next">—</div><div class="card-detail" id="dash-next-d"></div></div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-header"><span class="progress-label">Year Progress</span><span class="progress-pct" id="dash-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="dash-fill" style="width:0%"></div></div>
+    </div>
+    <div class="countdown-grid" id="dash-cd"></div>
+    <div class="card-grid card-grid-4" id="dash-stats"></div>
+    <div class="feed" id="dash-feed"></div>
+  </div>
+
+  <!-- YEAR -->
+  <div class="view" id="view-year">
+    <h1 class="page-title">Year</h1>
+    <p class="page-subtitle">★ interview · ▶ key date · today is highlighted</p>
+    <div id="year-cal"></div>
+  </div>
+
+  <!-- ROTATIONS -->
+  <div class="view" id="view-rotations">
+    <h1 class="page-title">Rotations</h1>
+    <p class="page-subtitle">Blocks can be any length. Click a color to assign it.</p>
+    <table class="tbl" id="rot-tbl"><thead><tr><th></th><th>Color</th><th>Start</th><th>End</th><th>Rotation</th><th>Location</th><th>Type</th><th></th></tr></thead><tbody id="rot-body"></tbody></table>
+    <button class="btn btn-primary btn-add" onclick="addBlock()">+ Add Block</button>
+  </div>
+
+  <!-- INTERVIEWS -->
+  <div class="view" id="view-interviews">
+    <h1 class="page-title">Interviews</h1>
+    <p class="page-subtitle">Dates appear on calendars as ★</p>
+    <div id="intv-container"></div>
+    <button class="btn btn-primary btn-add" onclick="addInterview()">+ Add Interview</button>
+  </div>
+
+  <!-- KEY DATES -->
+  <div class="view" id="view-keydates">
+    <h1 class="page-title">Key Dates</h1>
+    <p class="page-subtitle">Dates appear on calendars as ▶</p>
+    <div id="kd-container"></div>
+    <button class="btn btn-primary btn-add" onclick="addKeyDate()">+ Add Date</button>
+  </div>
+
+  <!-- LETTERS -->
+  <div class="view" id="view-letters">
+    <h1 class="page-title">Letters</h1>
+    <p class="page-subtitle">Track recommendations and deadlines</p>
+    <div id="lor-container"></div>
+    <button class="btn btn-primary btn-add" onclick="addLetter()">+ Add Letter</button>
+  </div>
+</main>
+
+<script>
+const COLORS={Blue:"#DBEAFE",Rose:"#FFE4E6",Mint:"#DCFCE7",Amber:"#FEF3C7",Lavender:"#EDE9FE",Peach:"#FFEDD5",Teal:"#CFFAFE",Lemon:"#FEF9C3",Pink:"#FCE7F3",Sage:"#D1FAE5",Coral:"#FEE2E2",Sky:"#E0F2FE",Plum:"#F3E8FF"};
+const CN=Object.keys(COLORS);
+const MIY=[];for(let m=5;m<12;m++)MIY.push({y:2026,m});for(let m=0;m<6;m++)MIY.push({y:2027,m});
+const MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const TODAY=new Date();TODAY.setHours(0,0,0,0);
+
+const STATUS_COLORS={Completed:'ss-green',Complete:'ss-green','In Progress':'ss-yellow',Scheduled:'ss-blue',Invited:'ss-yellow','Not Started':'ss-red','Not Asked':'ss-red',Asked:'ss-yellow',Accepted:'ss-blue',Submitted:'ss-green',Waitlisted:'ss-orange',Declined:'ss-red'};
+
+// ── Default data ──
+const DEF_ROT=[
+  {block:"Block 1",color:"Blue",start:"2026-06-01",end:"2026-06-28",name:"Emergency Medicine",location:"University Hospital",type:"Core"},
+  {block:"Block 2",color:"Rose",start:"2026-06-29",end:"2026-07-26",name:"Internal Medicine",location:"VA Medical Center",type:"Core"},
+  ...Array.from({length:11},(_,i)=>({block:`Block ${i+3}`,color:CN[(i+2)%CN.length],start:["2026-07-27","2026-08-24","2026-09-21","2026-10-19","2026-11-16","2026-12-14","2027-01-11","2027-02-08","2027-03-08","2027-04-05","2027-05-03"][i],end:["2026-08-23","2026-09-20","2026-10-18","2026-11-15","2026-12-13","2027-01-10","2027-02-07","2027-03-07","2027-04-04","2027-05-02","2027-05-31"][i],name:"",location:"",type:""}))
+];
+const DEF_INTV=[{program:"Johns Hopkins EM",specialty:"Emergency Medicine",date:"2026-10-15",location:"Baltimore, MD",status:"Scheduled"}];
+const DEF_KD=[{date:"2026-09-01",event:"ERAS Opens",category:"Application",status:"Not Started"},{date:"2026-09-29",event:"ERAS Deadline",category:"Application",status:"Not Started"},{date:"2027-02-20",event:"Rank List Due",category:"Application",status:"Not Started"},{date:"2027-03-20",event:"Match Day",category:"Application",status:"Not Started"},{date:"",event:"USMLE Step 2 CK",category:"Exam",status:"Not Started"},{date:"2027-05-15",event:"Graduation",category:"Milestone",status:"Not Started"}];
+
+let S=loadState();
+function loadState(){const s=localStorage.getItem('ms4cal');return s?JSON.parse(s):{rotations:[...DEF_ROT],interviews:[...DEF_INTV],keydates:[...DEF_KD],letters:[]}}
+function save(){localStorage.setItem('ms4cal',JSON.stringify(S))}
+function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ms4_calendar_backup.json';a.click()}
+function importData(e){const f=e.target.files[0];if(!f)return;if(!confirm('This will replace all your data. Continue?'))return;const r=new FileReader();r.onload=()=>{S=JSON.parse(r.result);save();renderAll()};r.readAsText(f)}
+
+// ── Helpers ──
+function pd(s){if(!s)return null;const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function sd(d){return d?`${MN[d.getMonth()].slice(0,3)} ${d.getDate()}`:''}
+function db(a,b){return Math.round((b-a)/864e5)}
+function same(a,b){return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+function rotFor(d){return S.rotations.find(r=>{const s=pd(r.start),e=pd(r.end);return s&&e&&d>=s&&d<=e})}
+function intvFor(d){return S.interviews.find(i=>same(pd(i.date),d))}
+function kdFor(d){return S.keydates.find(k=>same(pd(k.date),d))}
+function ssClass(status){return STATUS_COLORS[status]||''}
+
+// ── Nav (fixed: uses data attributes) ──
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',function(){
+    const view=this.dataset.view;
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById('view-'+view).classList.add('active');
+    this.classList.add('active');
+    document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(view==='year')renderYear();
+    if(view==='dashboard')renderDashboard();
+  });
+});
+
+// ── Dashboard ──
+function renderDashboard(){
+  const ys=new Date(2026,5,1),ye=new Date(2027,4,31);
+  const prog=Math.max(0,Math.min(1,(TODAY-ys)/(ye-ys)));
+  document.getElementById('dash-subtitle').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const cur=rotFor(TODAY);
+  document.getElementById('dash-rot').textContent=cur?.name||'No active rotation';
+  document.getElementById('dash-rot-d').textContent=cur?`${cur.location||''} · ${cur.block}`:(TODAY<ys?'Starts June 1, 2026':'');
+  const fe=S.keydates.filter(k=>pd(k.date)&&pd(k.date)>TODAY).sort((a,b)=>pd(a.date)-pd(b.date));
+  const nx=fe[0];
+  document.getElementById('dash-next').textContent=nx?.event||'None upcoming';
+  document.getElementById('dash-next-d').textContent=nx?`${sd(pd(nx.date))} · in ${db(TODAY,pd(nx.date))} days`:'';
+  document.getElementById('dash-pct').textContent=Math.round(prog*100)+'%';
+  setTimeout(()=>document.getElementById('dash-fill').style.width=Math.round(prog*100)+'%',100);
+
+  const cds=[{l:'ERAS',d:new Date(2026,8,1)},{l:'Match Day',d:new Date(2027,2,20)},{l:'Graduation',d:new Date(2027,4,15)},{l:'Residency',d:new Date(2027,5,15)}];
+  document.getElementById('dash-cd').innerHTML=cds.map(c=>{const days=db(TODAY,c.d);return`<div class="countdown"><div class="countdown-num">${days>0?days:'✓'}</div><div class="countdown-unit">${days>0?'days':''}</div><div class="countdown-label">${c.l}</div></div>`}).join('');
+
+  document.getElementById('dash-stats').innerHTML=[
+    {l:'Interviews',v:S.interviews.length,d:`${S.interviews.filter(i=>i.status==='Completed').length} completed`},
+    {l:'Key Dates',v:`${S.keydates.filter(k=>k.status==='Complete').length}/${S.keydates.length}`,d:'done'},
+    {l:'Letters',v:`${S.letters.filter(l=>l.status==='Submitted').length}/${S.letters.length}`,d:'submitted'},
+    {l:'Rotations',v:`${S.rotations.filter(r=>r.name).length}/${S.rotations.length}`,d:'planned'},
+  ].map(s=>`<div class="card"><div class="card-label">${s.l}</div><div class="card-value">${s.v}</div><div class="card-detail">${s.d}</div></div>`).join('');
+
+  const all=[...S.keydates.map(k=>({date:k.date,name:k.event,icon:'▶'})),...S.interviews.map(i=>({date:i.date,name:i.program,icon:'★'}))].filter(e=>pd(e.date)&&pd(e.date)>=TODAY&&db(TODAY,pd(e.date))<=14).sort((a,b)=>pd(a.date)-pd(b.date));
+  document.getElementById('dash-feed').innerHTML=`<div class="feed-header">Upcoming · Next 14 Days</div>`+(all.length?all.map(e=>`<div class="feed-item"><span class="feed-date">${sd(pd(e.date))}</span><span class="feed-name">${e.icon} ${e.name}</span></div>`).join(''):'<div class="feed-empty">No events in the next 14 days</div>');
+}
+
+// ── Year ──
+function renderYear(){
+  const c=document.getElementById('year-cal');c.innerHTML='';
+  let prevYear=null;
+  MIY.forEach(({y,m})=>{
+    const div=document.createElement('div');div.className='cal-month';
+    const showYear=(y!==prevYear);prevYear=y;
+    let h=`<div class="cal-month-name">${MN[m]}${showYear?` <span class="cal-month-year">${y}</span>`:''}</div>`;
+    h+=`<div class="cal-header">${['S','M','T','W','T','F','S'].map(d=>`<span>${d}</span>`).join('')}<span>Events</span></div>`;
+    const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
+    let day=1-fd;
+    while(day<=dim){
+      let wEvents=[],wRot=null;
+      h+='<div class="cal-week">';
+      for(let i=0;i<7;i++,day++){
+        if(day<1||day>dim){h+='<div class="cal-day empty"></div>';continue}
+        const d=new Date(y,m,day),rot=rotFor(d),intv=intvFor(d),kd=kdFor(d),isT=same(d,TODAY),isW=(i===0||i===6);
+        const cc=rot?'block-'+rot.color.toLowerCase():'';
+        let info='',title='';
+        if(intv){info=`★ ${intv.program}`;wEvents.push(`<span class="ev-highlight">★ ${intv.program}</span>`);title=`Interview: ${intv.program}\n${intv.location||''}`}
+        else if(kd){info=`▶ ${kd.event}`;wEvents.push(`<span class="ev-highlight">▶ ${kd.event}</span>`);title=`Key Date: ${kd.event}`}
+        else if(rot?.name){info=`${rot.name}`;if(rot.location)info+=` · ${rot.location}`;title=`${rot.name}\n${rot.location||''}\n${rot.block}`}
+        if(!wRot&&rot?.name)wRot=rot;
+        h+=`<div class="cal-day ${cc} ${isT?'today':''} ${isW?'weekend':''}" title="${title.replace(/"/g,'&quot;')}"><div class="cal-date">${day}</div><div class="cal-info">${info}</div></div>`;
+      }
+      const evHtml=wEvents.length?wEvents.join('<br>'):(wRot?`<span style="color:var(--text-3)">${wRot.name}</span>`:'');
+      h+=`<div class="cal-events">${evHtml}</div></div>`;
+    }
+    div.innerHTML=h;c.appendChild(div);
+  });
+}
+
+// ── Rotations ──
+function renderRotations(){
+  document.getElementById('rot-body').innerHTML=S.rotations.map((r,i)=>`<tr>
+    <td style="font-weight:600;font-size:12px;color:var(--text-2);white-space:nowrap">${r.block}</td>
+    <td><div class="color-swatch">${CN.map(c=>`<div class="color-dot ${c===r.color?'active':''}" style="background:${COLORS[c]}" onclick="updRot(${i},'color','${c}')" title="${c}"></div>`).join('')}</div></td>
+    <td><input type="date" value="${r.start}" onchange="updRot(${i},'start',this.value)"></td>
+    <td><input type="date" value="${r.end}" onchange="updRot(${i},'end',this.value)"></td>
+    <td><input value="${r.name}" placeholder="Rotation name" onchange="updRot(${i},'name',this.value)"></td>
+    <td><input value="${r.location}" placeholder="Hospital / clinic" onchange="updRot(${i},'location',this.value)"></td>
+    <td><select onchange="updRot(${i},'type',this.value)"><option value="">—</option>${['Core','Elective','Sub-I','Away'].map(t=>`<option ${t===r.type?'selected':''}>${t}</option>`).join('')}</select></td>
+    <td>${S.rotations.length>1?`<button class="btn btn-ghost" onclick="delRot(${i})" title="Remove">✕</button>`:''}</td>
+  </tr>`).join('');
+}
+function updRot(i,f,v){S.rotations[i][f]=v;save();renderRotations()}
+function delRot(i){if(confirm(`Remove ${S.rotations[i].block}?`)){S.rotations.splice(i,1);S.rotations.forEach((r,j)=>r.block=`Block ${j+1}`);save();renderRotations()}}
+function addBlock(){S.rotations.push({block:`Block ${S.rotations.length+1}`,color:CN[S.rotations.length%CN.length],start:'',end:'',name:'',location:'',type:''});save();renderRotations()}
+
+// ── Interviews ──
+function renderInterviews(){
+  const ct=document.getElementById('intv-container');
+  if(!S.interviews.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">★</div><div class="empty-state-text">No interviews yet. Add one to see it on your calendar.</div></div>';return}
+  ct.innerHTML=`<table class="tbl"><thead><tr><th>Program</th><th>Specialty</th><th>Date</th><th>Location</th><th>Status</th><th></th></tr></thead><tbody>${S.interviews.map((v,i)=>`<tr>
+    <td><input value="${v.program||''}" placeholder="Program name" onchange="updI(${i},'program',this.value)"></td>
+    <td><input value="${v.specialty||''}" placeholder="Specialty" onchange="updI(${i},'specialty',this.value)"></td>
+    <td><input type="date" value="${v.date||''}" onchange="updI(${i},'date',this.value)"></td>
+    <td><input value="${v.location||''}" placeholder="City, State" onchange="updI(${i},'location',this.value)"></td>
+    <td><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select></td>
+    <td><button class="btn btn-ghost" onclick="delI(${i})" title="Remove">✕</button></td>
+  </tr>`).join('')}</tbody></table>`;
+}
+function updI(i,f,v){S.interviews[i][f]=v;save()}
+function delI(i){S.interviews.splice(i,1);save();renderInterviews()}
+function addInterview(){S.interviews.push({program:'',specialty:'',date:'',location:'',status:'Invited'});save();renderInterviews()}
+
+// ── Key Dates ──
+function renderKeyDates(){
+  const ct=document.getElementById('kd-container');
+  if(!S.keydates.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">▶</div><div class="empty-state-text">No key dates yet. Add ERAS deadlines, exam dates, and milestones.</div></div>';return}
+  ct.innerHTML=`<table class="tbl"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr>
+    <td><input type="date" value="${k.date||''}" onchange="updK(${i},'date',this.value)"></td>
+    <td><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></td>
+    <td><select onchange="updK(${i},'category',this.value)">${['Application','Exam','Milestone','Personal'].map(c=>`<option ${c===k.category?'selected':''}>${c}</option>`).join('')}</select></td>
+    <td><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select></td>
+    <td><button class="btn btn-ghost" onclick="delK(${i})" title="Remove">✕</button></td>
+  </tr>`).join('')}</tbody></table>`;
+}
+function updK(i,f,v){S.keydates[i][f]=v;save()}
+function delK(i){S.keydates.splice(i,1);save();renderKeyDates()}
+function addKeyDate(){S.keydates.push({date:'',event:'',category:'Personal',status:'Not Started'});save();renderKeyDates()}
+
+// ── Letters ──
+function renderLetters(){
+  const ct=document.getElementById('lor-container');
+  if(!S.letters.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">✉</div><div class="empty-state-text">No letters yet. Track your recommendation requests here.</div></div>';return}
+  ct.innerHTML=`<table class="tbl"><thead><tr><th>Writer</th><th>Specialty</th><th>Institution</th><th>Date Asked</th><th>Status</th><th></th></tr></thead><tbody>${S.letters.map((l,i)=>`<tr>
+    <td><input value="${l.writer||''}" placeholder="Dr. Name" onchange="updL(${i},'writer',this.value)"></td>
+    <td><input value="${l.specialty||''}" placeholder="Specialty" onchange="updL(${i},'specialty',this.value)"></td>
+    <td><input value="${l.institution||''}" placeholder="Institution" onchange="updL(${i},'institution',this.value)"></td>
+    <td><input type="date" value="${l.asked||''}" onchange="updL(${i},'asked',this.value)"></td>
+    <td><select class="status-select ${ssClass(l.status)}" onchange="updL(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Asked','Asked','Accepted','In Progress','Submitted'].map(s=>`<option ${s===l.status?'selected':''}>${s}</option>`).join('')}</select></td>
+    <td><button class="btn btn-ghost" onclick="delL(${i})" title="Remove">✕</button></td>
+  </tr>`).join('')}</tbody></table>`;
+}
+function updL(i,f,v){S.letters[i][f]=v;save()}
+function delL(i){S.letters.splice(i,1);save();renderLetters()}
+function addLetter(){S.letters.push({writer:'',specialty:'',institution:'',asked:'',status:'Not Asked'});save();renderLetters()}
+
+// ── Init ──
+function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters()}
+renderAll();
+</script>
+</body>
+</html>
