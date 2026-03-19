@@ -585,9 +585,6 @@ firebase.initializeApp({
   <div class="more-sheet-item" onclick="moreNav('keydates')"><span>📌</span>Key Dates</div>
   <div class="more-sheet-item" onclick="moreNav('letters')"><span>✉️</span>Letters</div>
   <div class="more-sheet-divider"></div>
-  <div class="more-sheet-item" onclick="exportData();toggleMore()"><span>💾</span>Export Backup</div>
-  <div class="more-sheet-item"><span>📂</span><label style="cursor:pointer;flex:1">Import Backup<input type="file" accept=".json" onchange="importData(event);toggleMore()" style="display:none"></label></div>
-  <div class="more-sheet-divider"></div>
   <div class="more-sheet-item" id="more-signout" style="display:none;justify-content:space-between" onclick="signOutUser();toggleMore()">
     <div style="display:flex;align-items:center;gap:12px">
       <img id="more-user-pic" src="" style="width:28px;height:28px;border-radius:50%">
