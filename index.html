@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MS4 Calendar</title>
-<meta name="description" content="A free, interactive planner for 4th-year medical students. Track rotations, interviews, key dates, and letters of recommendation.">
-<meta property="og:title" content="MS4 Calendar">
-<meta property="og:description" content="Plan your fourth year. Track rotations, interviews, ERAS deadlines, and LORs — all in one place.">
+<title>MatchReady — Plan Your Fourth Year</title>
+<meta name="description" content="The all-in-one planner for 4th-year medical students. Track rotations, interviews, ERAS deadlines, and letters of recommendation.">
+<meta property="og:title" content="MatchReady">
+<meta property="og:description" content="Plan your fourth year. Rotations, interviews, ERAS deadlines, and LORs — all in one place.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MS4 Calendar">
-<meta name="twitter:description" content="Plan your fourth year. Track rotations, interviews, ERAS deadlines, and LORs — all in one place.">
+<meta name="twitter:title" content="MatchReady">
+<meta name="twitter:description" content="Plan your fourth year. Rotations, interviews, ERAS deadlines, and LORs — all in one place.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="MS4 Calendar">
+<meta name="apple-mobile-web-app-title" content="MatchReady">
 <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -82,8 +82,8 @@ firebase.initializeApp({
 
   /* ── Nav ── */
   nav{width:var(--nav-w);background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
-  .nav-brand{padding:0 20px 24px;font-size:15px;font-weight:700;letter-spacing:-.3px}
-  .nav-brand span{color:var(--text-3);font-weight:400;display:block;font-size:11px;margin-top:2px}
+  .nav-brand{padding:0 20px 24px;font-size:15px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .nav-brand span{color:var(--text-3);font-weight:400;display:block;font-size:11px;margin-top:2px;background:none;-webkit-text-fill-color:var(--text-3)}
   .nav-section{padding:16px 12px 4px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
   .nav-item{padding:8px 20px;font-size:13px;color:var(--text-2);cursor:pointer;transition:all var(--ease);border-left:3px solid transparent;font-weight:500;user-select:none}
   .nav-item:hover{background:var(--surface-hover);color:var(--text)}
@@ -97,10 +97,26 @@ firebase.initializeApp({
 
   /* ── Main ── */
   main{margin-left:var(--nav-w);flex:1;padding:32px 40px 64px;max-width:1100px}
-  .view{display:none;animation:fadeIn .3s ease}.view.active{display:block}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .view{display:none;animation:fadeIn .4s ease}.view.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes stagger1{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes stagger2{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
   .page-title{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+  .page-title span{background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
   .page-subtitle{font-size:13px;color:var(--text-3);margin-bottom:28px}
+  /* Staggered card animations */
+  .card-grid>.card:nth-child(1){animation:stagger1 .4s ease both .05s}
+  .card-grid>.card:nth-child(2){animation:stagger1 .4s ease both .1s}
+  .card-grid>.card:nth-child(3){animation:stagger1 .4s ease both .15s}
+  .card-grid>.card:nth-child(4){animation:stagger1 .4s ease both .2s}
+  .countdown-grid>.countdown:nth-child(1){animation:stagger1 .4s ease both .1s}
+  .countdown-grid>.countdown:nth-child(2){animation:stagger1 .4s ease both .15s}
+  .countdown-grid>.countdown:nth-child(3){animation:stagger1 .4s ease both .2s}
+  .countdown-grid>.countdown:nth-child(4){animation:stagger1 .4s ease both .25s}
+  .feed{animation:stagger1 .4s ease both .25s}
+  .progress-container{animation:stagger1 .4s ease both .1s}
+  .cal-month{animation:stagger1 .5s ease both}
+  .tbl-wrap,.tbl{animation:stagger1 .4s ease both .1s}
 
   /* ── Cards ── */
   .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
@@ -110,7 +126,7 @@ firebase.initializeApp({
   .card-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
   .card-value{font-size:22px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
   .card-detail{font-size:12px;color:var(--text-2);margin-top:4px}
-  .card-accent{border-left:3px solid var(--accent)}
+  .card-accent{border-left:3px solid var(--accent);border-image:linear-gradient(to bottom,var(--accent),#5856D6) 1}
 
   /* ── Progress ── */
   .progress-container{margin-bottom:28px}
@@ -118,7 +134,7 @@ firebase.initializeApp({
   .progress-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
   .progress-pct{font-size:13px;font-weight:600;color:var(--accent)}
   .progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:3px;transition:width 1s cubic-bezier(.25,.1,.25,1)}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#5856D6);border-radius:3px;transition:width 1s cubic-bezier(.25,.1,.25,1)}
 
   /* ── Countdowns ── */
   .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
@@ -196,7 +212,7 @@ firebase.initializeApp({
 
   /* ── Buttons ── */
   .btn{padding:8px 16px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--ease);display:inline-flex;align-items:center;gap:6px}
-  .btn-primary{background:var(--accent);color:white}.btn-primary:hover{background:var(--accent-dark)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),#5856D6);color:white;border:none}.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
   .btn-ghost{background:transparent;color:var(--text-3);padding:4px 8px;font-size:12px}.btn-ghost:hover{color:var(--red-fg);background:var(--red-bg)}
   .btn-add{margin-top:16px}
 
@@ -205,21 +221,43 @@ firebase.initializeApp({
   .empty-state-icon{font-size:32px;margin-bottom:12px}
   .empty-state-text{font-size:14px;color:var(--text-3);margin-bottom:16px}
 
-  /* ── Auth screen ── */
-  .auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .3s ease}
+  /* ── Auth / Landing page ── */
+  .auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;transition:opacity .3s ease}
   .auth-screen.hidden{opacity:0;pointer-events:none}
-  .auth-content{text-align:center;max-width:360px;padding:40px}
-  .auth-title{font-size:36px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
-  .auth-sub{font-size:14px;color:var(--text-3);margin-bottom:40px}
-  .auth-btn{display:inline-flex;align-items:center;gap:12px;padding:14px 28px;background:var(--surface);
-    border:1px solid var(--border);border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;
-    color:var(--text);cursor:pointer;transition:all var(--ease);box-shadow:var(--shadow)}
-  .auth-btn:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+
+  .landing{max-width:680px;margin:0 auto;padding:60px 24px 40px;text-align:center}
+  .landing-logo{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:24px}
+  .landing-title{font-size:48px;font-weight:700;letter-spacing:-1px;line-height:1.1;margin-bottom:12px}
+  .landing-title span{background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .landing-sub{font-size:18px;color:var(--text-2);line-height:1.5;margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+
+  .auth-btn{display:inline-flex;align-items:center;gap:12px;padding:16px 32px;background:var(--text);
+    border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:600;
+    color:var(--bg);cursor:pointer;transition:all var(--ease);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+  .auth-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
   .auth-btn img{width:20px;height:20px}
-  .auth-loading{font-size:13px;color:var(--text-3);margin-top:20px}
+  .auth-loading{font-size:12px;color:var(--text-3);margin-top:16px}
+  .auth-note{font-size:11px;color:var(--text-3);margin-top:12px}
+
+  .landing-features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px;text-align:left}
+  .landing-feature{padding:20px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);transition:all var(--ease)}
+  .landing-feature:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+  .landing-feature-icon{font-size:24px;margin-bottom:8px}
+  .landing-feature-title{font-size:14px;font-weight:600;margin-bottom:4px}
+  .landing-feature-desc{font-size:12px;color:var(--text-2);line-height:1.4}
+
+  .landing-footer{margin-top:48px;font-size:11px;color:var(--text-3);line-height:1.6}
+
   .auth-user{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);padding:8px 16px;cursor:pointer;border-top:1px solid var(--border-light);margin-top:8px}
   .auth-user img{width:20px;height:20px;border-radius:50%}
   .auth-user:hover{color:var(--red-fg)}
+
+  @media(max-width:768px){
+    .landing{padding:40px 20px 32px}
+    .landing-title{font-size:36px}
+    .landing-sub{font-size:15px}
+    .landing-features{grid-template-columns:1fr}
+  }
 
   /* ── Mobile More menu ── */
   .more-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);z-index:90;
@@ -351,7 +389,7 @@ firebase.initializeApp({
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   /* ── Today button (Year view) ── */
-  .today-btn{position:fixed;bottom:24px;right:24px;background:var(--accent);color:white;
+  .today-btn{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--accent),#5856D6);color:white;
     border:none;border-radius:20px;padding:10px 20px;font-family:inherit;font-size:13px;font-weight:600;
     cursor:pointer;box-shadow:0 4px 12px rgba(0,122,255,.3);z-index:50;
     transition:all var(--ease);display:none}
@@ -363,10 +401,10 @@ firebase.initializeApp({
   .month-pill{padding:5px 12px;border-radius:14px;font-size:11px;font-weight:500;cursor:pointer;
     border:1px solid var(--border);color:var(--text-2);background:var(--surface);transition:all var(--ease)}
   .month-pill:hover{border-color:var(--accent);color:var(--accent)}
-  .month-pill.current{background:var(--accent);color:white;border-color:var(--accent)}
+  .month-pill.current{background:linear-gradient(135deg,var(--accent),#5856D6);color:white;border-color:transparent}
 
   /* ── First-run banner ── */
-  .welcome-banner{background:linear-gradient(135deg,var(--accent-light),#F0EAFF);border:1px solid var(--border-light);
+  .welcome-banner{background:linear-gradient(135deg,var(--accent-light),#EDE9FE);border:1px solid var(--border-light);
     border-radius:var(--radius);padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
   .welcome-banner-icon{font-size:32px;flex-shrink:0}
   .welcome-banner-text h3{font-size:15px;font-weight:600;margin-bottom:4px}
@@ -466,7 +504,7 @@ firebase.initializeApp({
 <body>
 
 <nav>
-  <div class="nav-brand" style="cursor:pointer" onclick="document.querySelector('[data-view=dashboard]').click()">MS4 Calendar<span>June 2026 – May 2027</span></div>
+  <div class="nav-brand" style="cursor:pointer" onclick="document.querySelector('[data-view=dashboard]').click()">MatchReady<span>Fourth Year Planner</span></div>
   <div class="nav-section">Overview</div>
   <div class="nav-item active" data-view="dashboard">Dashboard</div>
   <div class="nav-item" data-view="year">Year</div>
@@ -495,11 +533,40 @@ firebase.initializeApp({
 </nav>
 
 <div class="auth-screen" id="auth-screen">
-  <div class="auth-content">
-    <div class="auth-title">MS4 Calendar</div>
-    <div class="auth-sub">June 2026 – May 2027</div>
-    <button class="auth-btn" onclick="signIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Sign in with Google</button>
+  <div class="landing">
+    <div class="landing-logo">MatchReady</div>
+    <h1 class="landing-title">Plan your<br><span>fourth year.</span></h1>
+    <p class="landing-sub">The all-in-one planner for MS4s. Track rotations, interviews, ERAS deadlines, and letters of rec — synced to your Google account.</p>
+    <button class="auth-btn" onclick="signIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Get Started — Free</button>
     <div class="auth-loading" id="auth-loading">Checking sign-in...</div>
+    <div class="auth-note">No credit card required. Your data is private.</div>
+
+    <div class="landing-features">
+      <div class="landing-feature">
+        <div class="landing-feature-icon">📊</div>
+        <div class="landing-feature-title">Live Dashboard</div>
+        <div class="landing-feature-desc">Current rotation, countdowns to ERAS and Match Day, and upcoming events — updated every time you open it.</div>
+      </div>
+      <div class="landing-feature">
+        <div class="landing-feature-icon">📅</div>
+        <div class="landing-feature-title">Year & Month Views</div>
+        <div class="landing-feature-desc">Color-coded calendar with rotation blocks, daily notes, and click-to-expand day details.</div>
+      </div>
+      <div class="landing-feature">
+        <div class="landing-feature-icon">⭐</div>
+        <div class="landing-feature-title">Interview Tracking</div>
+        <div class="landing-feature-desc">Log interviews and they automatically appear on your calendar with weekly summaries.</div>
+      </div>
+      <div class="landing-feature">
+        <div class="landing-feature-icon">☁️</div>
+        <div class="landing-feature-title">Cloud Sync</div>
+        <div class="landing-feature-desc">Sign in with Google. Your data follows you across every device — phone, laptop, library computer.</div>
+      </div>
+    </div>
+
+    <div class="landing-footer">
+      Built for medical students, by tech nerds.
+    </div>
   </div>
 </div>
 <div class="more-sheet-backdrop" id="more-backdrop" onclick="toggleMore()"></div>
@@ -545,11 +612,11 @@ firebase.initializeApp({
 <main id="main-content">
   <!-- DASHBOARD -->
   <div class="view active" id="view-dashboard">
-    <h1 class="page-title">Dashboard</h1>
+    <h1 class="page-title"><span>Dashboard</span></h1>
     <p class="page-subtitle" id="dash-subtitle"></p>
     <div class="welcome-banner" id="welcome-banner" style="display:none">
       <div class="welcome-banner-icon">👋</div>
-      <div class="welcome-banner-text"><h3>Welcome to your MS4 Calendar</h3><p>Start by adding your rotations — everything else builds from there.</p>
+      <div class="welcome-banner-text"><h3>Welcome to MatchReady</h3><p>Start by adding your rotations — everything else builds from there.</p>
         <button class="btn btn-primary" onclick="document.querySelector('[data-view=rotations]').click();document.getElementById('welcome-banner').style.display='none';localStorage.setItem('ms4cal_welcomed','1')">Go to Rotations</button></div>
       <button class="welcome-dismiss" onclick="this.parentElement.style.display='none';localStorage.setItem('ms4cal_welcomed','1')">✕</button>
     </div>
@@ -576,7 +643,7 @@ firebase.initializeApp({
 
   <!-- YEAR -->
   <div class="view" id="view-year">
-    <h1 class="page-title">Year</h1>
+    <h1 class="page-title"><span>Year</span></h1>
     <p class="page-subtitle">★ interview · ▶ key date · today is highlighted</p>
     <div class="month-pills" id="month-pills"></div>
     <div id="year-cal"></div>
@@ -596,32 +663,32 @@ firebase.initializeApp({
 
   <!-- ROTATIONS -->
   <div class="view" id="view-rotations">
-    <h1 class="page-title">Rotations</h1>
-    <p class="page-subtitle">Blocks can be any length. Click a color to assign it.</p>
+    <h1 class="page-title"><span>Rotations</span></h1>
+    <p class="page-subtitle">Your rotation schedule. Blocks can be any length.</p>
     <div class="tbl-wrap"><table class="tbl" id="rot-tbl"><thead><tr><th></th><th>Color</th><th>Start</th><th>End</th><th>Rotation</th><th>Location</th><th class="hide-mobile">Type</th><th></th></tr></thead><tbody id="rot-body"></tbody></table></div>
     <button class="btn btn-primary btn-add" onclick="addBlock()">+ Add Block</button>
   </div>
 
   <!-- INTERVIEWS -->
   <div class="view" id="view-interviews">
-    <h1 class="page-title">Interviews</h1>
-    <p class="page-subtitle">Dates appear on calendars as ★</p>
+    <h1 class="page-title"><span>Interviews</span></h1>
+    <p class="page-subtitle">Tracked on your calendar automatically.</p>
     <div id="intv-container"></div>
     <button class="btn btn-primary btn-add" onclick="addInterview()">+ Add Interview</button>
   </div>
 
   <!-- KEY DATES -->
   <div class="view" id="view-keydates">
-    <h1 class="page-title">Key Dates</h1>
-    <p class="page-subtitle">Dates appear on calendars as ▶</p>
+    <h1 class="page-title"><span>Key Dates</span></h1>
+    <p class="page-subtitle">Deadlines and milestones, tracked automatically.</p>
     <div id="kd-container"></div>
     <button class="btn btn-primary btn-add" onclick="addKeyDate()">+ Add Date</button>
   </div>
 
   <!-- LETTERS -->
   <div class="view" id="view-letters">
-    <h1 class="page-title">Letters</h1>
-    <p class="page-subtitle">Track recommendations and deadlines</p>
+    <h1 class="page-title"><span>Letters</span></h1>
+    <p class="page-subtitle">Your recommendation letters, all in one place.</p>
     <div id="lor-container"></div>
     <button class="btn btn-primary btn-add" onclick="addLetter()">+ Add Letter</button>
   </div>
@@ -683,7 +750,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     window.scrollTo({top:0,behavior:'smooth'});
     document.getElementById('today-btn').style.display='none';
     const titles={dashboard:'Dashboard',year:'Year',month:'Month',rotations:'Rotations',interviews:'Interviews',keydates:'Key Dates',letters:'Letters'};
-    document.title=`${titles[view]||'MS4'} · MS4 Calendar`;
+    document.title=`${titles[view]||'MS4'} · MatchReady`;
     if(view==='year')renderYear();
     if(view==='month')renderMonth();
     if(view==='dashboard')renderDashboard();
@@ -919,7 +986,7 @@ document.addEventListener('keydown',e=>{
 });
 function renderMonth(animClass){
   const{y,m}=MIY[currentMonthIdx];
-  document.getElementById('month-title').textContent=`${MN[m]} ${y}`;
+  document.getElementById('month-title').innerHTML=`<span>${MN[m]}</span> ${y}`;
   // Month pills
   document.getElementById('month-pills-detail').innerHTML=MIY.map(({y:yy,m:mm},idx)=>
     `<span class="month-pill${idx===currentMonthIdx?' current':''}" onclick="jumpToMonth(${idx})">${MN[mm].slice(0,3)}${mm===0?' \''+String(yy).slice(2):''}</span>`
