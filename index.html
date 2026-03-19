@@ -1367,17 +1367,34 @@ function addBlock(){S.rotations.push({block:`Block ${S.rotations.length+1}`,colo
 
 // ── Calendar Export ──
 function icsDate(dateStr){return dateStr.replace(/-/g,'')}
-function icsDateEnd(dateStr){const d=pd(dateStr);d.setDate(d.getDate()+1);return`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`}
+function icsNextDay(dateStr){
+  const d=pd(dateStr);if(!d)return icsDate(dateStr);
+  d.setDate(d.getDate()+1);
+  return`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
 function generateICS(title,startDate,endDate,location,description){
-  const uid=btoa(title+startDate).replace(/[^a-zA-Z0-9]/g,'').slice(0,32)+'@matchready';
-  return`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//MatchReady//EN\r\nBEGIN:VEVENT\r\nUID:${uid}\r\nDTSTART;VALUE=DATE:${icsDate(startDate)}\r\nDTEND;VALUE=DATE:${endDate?icsDateEnd(endDate):icsDateEnd(startDate)}\r\nSUMMARY:${title}\r\n${location?'LOCATION:'+location+'\r\n':''}${description?'DESCRIPTION:'+description+'\r\n':''}END:VEVENT\r\nEND:VCALENDAR`;
+  const uid=btoa(encodeURIComponent(title+startDate)).replace(/[^a-zA-Z0-9]/g,'').slice(0,32)+'@matchready';
+  const dtEnd=endDate?icsNextDay(endDate):icsNextDay(startDate);
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MatchReady//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',
+    'BEGIN:VEVENT','UID:'+uid,'DTSTART;VALUE=DATE:'+icsDate(startDate),'DTEND;VALUE=DATE:'+dtEnd,'SUMMARY:'+title];
+  if(location)lines.push('LOCATION:'+location);
+  if(description)lines.push('DESCRIPTION:'+description);
+  lines.push('END:VEVENT','END:VCALENDAR');
+  return lines.join('\r\n');
 }
 function downloadICS(title,startDate,endDate,location,description){
   const ics=generateICS(title,startDate,endDate,location,description);
-  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=title.replace(/[^a-zA-Z0-9 ]/g,'').replace(/ /g,'_')+'.ics';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  // Use data URI for better iOS Safari compatibility
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  if(isIOS){
+    const w=window.open('data:text/calendar;charset=utf-8,'+encodeURIComponent(ics),'_blank');
+    if(!w)showToast('Please allow popups to download');
+  } else {
+    const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=title.replace(/[^a-zA-Z0-9 ]/g,'').replace(/ /g,'_')+'.ics';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  }
   showToast('Downloaded .ics file');
 }
 function openGoogleCal(title,startDate,endDate,location,description){
