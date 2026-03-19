@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MS4 Calendar</title>
+<meta name="description" content="A free, interactive planner for 4th-year medical students. Track rotations, interviews, key dates, and letters of recommendation.">
+<meta property="og:title" content="MS4 Calendar">
+<meta property="og:description" content="Plan your fourth year. Track rotations, interviews, ERAS deadlines, and LORs — all in one place.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MS4 Calendar">
+<meta name="twitter:description" content="Plan your fourth year. Track rotations, interviews, ERAS deadlines, and LORs — all in one place.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MS4 Calendar">
+<meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
@@ -21,6 +34,36 @@
     --radius:12px;--radius-sm:8px;--nav-w:220px;
     --ease:0.2s cubic-bezier(.25,.1,.25,1);
   }
+  /* ── Dark mode ── */
+  [data-theme="dark"]{
+    --bg:#1C1C1E;--surface:#2C2C2E;--surface-hover:#3A3A3C;
+    --border:#3A3A3C;--border-light:#333336;
+    --text:#F5F5F7;--text-2:#AEAEB2;--text-3:#636366;
+    --accent:#0A84FF;--accent-light:rgba(10,132,255,.15);--accent-dark:#409CFF;
+    --green-bg:rgba(52,199,89,.15);--green-fg:#30D158;
+    --yellow-bg:rgba(255,159,10,.15);--yellow-fg:#FFD60A;
+    --red-bg:rgba(255,69,58,.15);--red-fg:#FF6961;
+    --orange-bg:rgba(255,159,10,.15);--orange-fg:#FF9F0A;
+    --blue-bg:rgba(10,132,255,.15);--blue-fg:#64D2FF;
+    --shadow:0 1px 3px rgba(0,0,0,.2);--shadow-hover:0 4px 12px rgba(0,0,0,.3);
+  }
+  [data-theme="dark"] .block-blue{background:rgba(59,130,246,.2)}
+  [data-theme="dark"] .block-rose{background:rgba(244,63,94,.15)}
+  [data-theme="dark"] .block-mint{background:rgba(34,197,94,.15)}
+  [data-theme="dark"] .block-amber{background:rgba(245,158,11,.15)}
+  [data-theme="dark"] .block-lavender{background:rgba(139,92,246,.15)}
+  [data-theme="dark"] .block-peach{background:rgba(249,115,22,.15)}
+  [data-theme="dark"] .block-teal{background:rgba(6,182,212,.15)}
+  [data-theme="dark"] .block-lemon{background:rgba(234,179,8,.12)}
+  [data-theme="dark"] .block-pink{background:rgba(236,72,153,.15)}
+  [data-theme="dark"] .block-sage{background:rgba(16,185,129,.15)}
+  [data-theme="dark"] .block-coral{background:rgba(239,68,68,.15)}
+  [data-theme="dark"] .block-sky{background:rgba(14,165,233,.15)}
+  [data-theme="dark"] .block-plum{background:rgba(168,85,247,.15)}
+  [data-theme="dark"] .drawer{background:var(--surface)}
+  [data-theme="dark"] .drawer-backdrop.open{background:rgba(0,0,0,.5)}
+  [data-theme="dark"] select{background:var(--surface);color:var(--text);border-color:var(--border)}
+
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
 
@@ -85,10 +128,10 @@
   .cal-month{margin-bottom:36px}
   .cal-month-name{font-size:16px;font-weight:700;letter-spacing:-.3px;padding-bottom:8px;border-bottom:2px solid var(--border);margin-bottom:0;display:flex;justify-content:space-between;align-items:baseline}
   .cal-month-year{font-size:12px;font-weight:500;color:var(--text-3)}
-  .cal-header{display:grid;grid-template-columns:repeat(7,1fr) 200px}
+  .cal-header{display:grid;grid-template-columns:repeat(7,1fr) 240px}
   .cal-header span{font-size:10px;color:var(--text-3);text-align:center;padding:8px 0;font-weight:500}
   .cal-header span:last-child{text-align:left;padding-left:12px}
-  .cal-week{display:grid;grid-template-columns:repeat(7,1fr) 200px;border-bottom:1px solid var(--border-light)}
+  .cal-week{display:grid;grid-template-columns:repeat(7,1fr) 240px;border-bottom:1px solid var(--border-light)}
   .cal-day{padding:8px 4px 6px;min-height:56px;text-align:center;transition:all var(--ease);position:relative;cursor:default}
   .cal-day:hover:not(.empty){filter:brightness(.97)}
   .cal-day.today{background:var(--accent-light) !important}
@@ -99,6 +142,8 @@
   .cal-info{font-size:9px;color:var(--text-2);margin-top:4px;line-height:1.3;font-style:italic;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
   .cal-events{padding:6px 12px;font-size:10px;color:var(--text-2);display:flex;align-items:flex-start;line-height:1.5;min-height:56px;border-left:1px solid var(--border-light);white-space:pre-line}
   .cal-events .ev-highlight{color:var(--accent);font-weight:500}
+  .cal-month-name:hover{color:var(--accent)}
+  .cal-day .note-dot{position:absolute;bottom:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.5}
 
   /* ── Block colors ── */
   .block-blue{background:#DBEAFE}.block-rose{background:#FFE4E6}
@@ -144,21 +189,236 @@
   .empty-state{padding:48px 20px;text-align:center}
   .empty-state-icon{font-size:32px;margin-bottom:12px}
   .empty-state-text{font-size:14px;color:var(--text-3);margin-bottom:16px}
+
+  /* ── Theme toggle switch ── */
+  .toggle{position:relative;display:inline-block;cursor:pointer}
+  .toggle input{display:none}
+  .toggle-track{display:block;width:40px;height:22px;background:var(--border);border-radius:11px;transition:background .3s ease;position:relative}
+  .toggle input:checked+.toggle-track{background:var(--accent)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;background:white;border-radius:50%;
+    transition:transform .3s cubic-bezier(.68,-.55,.27,1.55);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .toggle input:checked+.toggle-track .toggle-thumb{transform:translateX(18px)}
+
+  /* ── Day detail drawer ── */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.15);z-index:49;opacity:0;pointer-events:none;transition:opacity .3s ease}
+  .drawer-backdrop.open{opacity:1;pointer-events:all}
+  .drawer{position:fixed;top:0;right:0;width:380px;height:100vh;background:var(--surface);
+    box-shadow:-8px 0 32px rgba(0,0,0,.08);z-index:50;transform:translateX(100%);
+    transition:transform .3s cubic-bezier(.25,.1,.25,1);overflow-y:auto;display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .drawer-handle{display:none}
+  .drawer-header{padding:24px 24px 0;display:flex;align-items:flex-start;justify-content:space-between}
+  .drawer-date{font-size:22px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
+  .drawer-date-sub{font-size:13px;color:var(--text-2);margin-top:2px}
+  .drawer-close{background:var(--surface-hover);border:none;width:32px;height:32px;border-radius:50%;
+    font-size:16px;cursor:pointer;color:var(--text-2);transition:all var(--ease);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .drawer-close:hover{background:var(--border);color:var(--text)}
+  .drawer-body{padding:20px 24px;flex:1}
+  .drawer-section{margin-bottom:20px}
+  .drawer-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .drawer-rot{display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface-hover);border-radius:var(--radius-sm)}
+  .drawer-rot-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+  .drawer-rot-name{font-size:14px;font-weight:600}
+  .drawer-rot-detail{font-size:12px;color:var(--text-2);margin-top:2px}
+  .drawer-event{padding:10px 12px;background:var(--accent-light);border-radius:var(--radius-sm);margin-bottom:6px;font-size:13px;display:flex;align-items:center;gap:8px}
+  .drawer-event-icon{font-size:14px}
+  .drawer-event-kd{background:var(--orange-bg)}
+  .drawer-empty{font-size:13px;color:var(--text-3);font-style:italic}
+  .drawer-notes{width:100%;min-height:120px;border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:12px;font-family:inherit;font-size:13px;color:var(--text);resize:vertical;outline:none;
+    transition:border var(--ease);line-height:1.5;background:var(--surface)}
+  .drawer-notes:focus{border-color:var(--accent)}
+  .drawer-notes::placeholder{color:var(--text-3)}
+  .drawer-actions{padding:16px 24px 24px;display:flex;gap:8px;border-top:1px solid var(--border-light)}
+  .drawer-actions .btn{flex:1;justify-content:center;font-size:12px;padding:10px 12px}
+  .btn-secondary{background:var(--surface-hover);color:var(--text)}.btn-secondary:hover{background:var(--border)}
+
+  @media(max-width:768px){
+    .drawer{top:auto;bottom:0;right:0;left:0;width:100%;height:75vh;
+      border-radius:16px 16px 0 0;transform:translateY(100%)}
+    .drawer.open{transform:translateY(0)}
+    .drawer-handle{display:block;width:36px;height:4px;background:var(--border);border-radius:2px;
+      margin:8px auto 0;flex-shrink:0}
+  }
+
+  /* ── Clickable day cells ── */
+  .cal-day:not(.empty){cursor:pointer}
+  .md-day:not(.md-empty){cursor:pointer}
+  .cal-day.selected,.md-day.selected{outline:2px solid var(--accent);outline-offset:-2px;border-radius:4px}
+
+  /* ── Month detail: slide animations ── */
+  .month-nav{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .month-nav-arrow{background:none;border:none;font-size:24px;color:var(--text-2);cursor:pointer;
+    padding:4px 12px;border-radius:8px;transition:all var(--ease);font-weight:300;line-height:1}
+  .month-nav-arrow:hover{background:var(--surface-hover);color:var(--text)}
+  .month-nav-arrow:active{transform:scale(.95)}
+  .month-pills-detail{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;position:sticky;top:0;
+    background:var(--bg);padding:8px 0 12px;z-index:5}
+  .md-container{position:relative;overflow:hidden}
+  .md-inner{transition:opacity .2s ease,transform .2s ease}
+  .md-inner.slide-left{animation:slideLeft .25s ease}
+  .md-inner.slide-right{animation:slideRight .25s ease}
+  @keyframes slideLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes slideRight{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+
+  /* ── Month detail view ── */
+  .md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
+  .md-header{font-size:10px;color:var(--text-3);text-align:center;padding:10px 0;font-weight:500;border-bottom:1px solid var(--border)}
+  .md-day{min-height:110px;padding:8px;border-bottom:1px solid var(--border-light);border-right:1px solid var(--border-light);
+    transition:all var(--ease);position:relative;display:flex;flex-direction:column}
+  .md-day:nth-child(7n){border-right:none}
+  .md-day:hover:not(.md-empty){background:var(--surface-hover)}
+  .md-day.md-today{background:var(--accent-light)!important}
+  .md-day.md-today::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
+  .md-day.md-empty{background:transparent;min-height:40px}
+  .md-day .md-date{font-size:14px;font-weight:600;margin-bottom:2px}
+  .md-day .md-rot{font-size:9px;color:var(--text-2);line-height:1.3}
+  .md-day .md-loc{font-size:8px;color:var(--text-3);font-style:italic;margin-bottom:4px}
+  .md-day .md-event{font-size:9px;color:var(--accent);font-weight:500;margin-bottom:2px}
+  .md-day .md-note{flex:1;width:100%;border:none;background:transparent;font-family:inherit;
+    font-size:10px;color:var(--text);resize:none;outline:none;line-height:1.4;padding:2px 0}
+  .md-day .md-note::placeholder{color:var(--text-3);font-style:italic}
+  .md-day.md-weekend:not([class*="block-"]){background:var(--surface-hover)}
+  .md-day.md-weekend .md-date{color:var(--text-3)}
+  .md-week-row{display:contents}
+  .md-week-sep{grid-column:1/-1;height:0;border-bottom:2px solid var(--border-light)}
+  .md-day .md-note:focus{background:rgba(0,122,255,.04);border-radius:4px;padding:2px 4px;margin:-2px -4px}
+
+  @media(max-width:768px){
+    .md-day{min-height:80px;padding:4px}
+    .md-day .md-date{font-size:12px}
+    .md-day .md-rot{font-size:8px}
+    .md-day .md-note{font-size:9px}
+    .nav-item[data-view="month"]::before{content:"☐"}
+    .month-pills-detail{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:6px}
+    .month-pills-detail .month-pill{flex-shrink:0}
+    .month-nav-arrow{padding:4px 8px;font-size:20px}
+    .md-day{min-height:70px}
+  }
+
+  /* ── Toast notification ── */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:var(--text);color:white;padding:10px 24px;border-radius:20px;font-size:13px;font-weight:500;
+    z-index:200;opacity:0;transition:all .3s cubic-bezier(.25,.1,.25,1);pointer-events:none;
+    box-shadow:0 4px 12px rgba(0,0,0,.15)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ── Today button (Year view) ── */
+  .today-btn{position:fixed;bottom:24px;right:24px;background:var(--accent);color:white;
+    border:none;border-radius:20px;padding:10px 20px;font-family:inherit;font-size:13px;font-weight:600;
+    cursor:pointer;box-shadow:0 4px 12px rgba(0,122,255,.3);z-index:50;
+    transition:all var(--ease);display:none}
+  .today-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,122,255,.4)}
+
+  /* ── Month jump pills ── */
+  .month-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;position:sticky;top:0;
+    background:var(--bg);padding:8px 0 12px;z-index:5}
+  .month-pill{padding:5px 12px;border-radius:14px;font-size:11px;font-weight:500;cursor:pointer;
+    border:1px solid var(--border);color:var(--text-2);background:var(--surface);transition:all var(--ease)}
+  .month-pill:hover{border-color:var(--accent);color:var(--accent)}
+  .month-pill.current{background:var(--accent);color:white;border-color:var(--accent)}
+
+  /* ── First-run banner ── */
+  .welcome-banner{background:linear-gradient(135deg,var(--accent-light),#F0EAFF);border:1px solid var(--border-light);
+    border-radius:var(--radius);padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+  .welcome-banner-icon{font-size:32px;flex-shrink:0}
+  .welcome-banner-text h3{font-size:15px;font-weight:600;margin-bottom:4px}
+  .welcome-banner-text p{font-size:13px;color:var(--text-2)}
+  .welcome-banner .btn{margin-top:8px;font-size:12px;padding:6px 14px}
+  .welcome-dismiss{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:4px;margin-left:auto;align-self:flex-start}
+
+  /* ── Undo bar ── */
+  .undo-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--text);color:white;padding:10px 16px 10px 20px;border-radius:12px;font-size:13px;
+    z-index:200;display:none;align-items:center;gap:12px;box-shadow:0 4px 12px rgba(0,0,0,.15);animation:fadeIn .2s ease}
+  .undo-bar button{background:var(--accent);color:white;border:none;border-radius:8px;padding:6px 14px;
+    font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+
+  /* ── Print ── */
+  @media print{
+    nav,.today-btn,.toast,.undo-bar,.btn-add,.btn-ghost,.welcome-banner,.month-pills,.nav-footer{display:none!important}
+    main{margin-left:0!important;padding:0!important;max-width:100%!important}
+    .card{box-shadow:none;border:1px solid #ddd}
+    .cal-day{min-height:40px}
+    .tbl-wrap{overflow:visible}
+    body{background:white}
+  }
+
+  /* ── Mobile: sidebar → bottom tab bar ── */
+  @media(max-width:768px){
+    nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;
+      flex-direction:row;padding:0;border-right:none;border-top:1px solid var(--border);
+      background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      overflow:visible;z-index:100}
+    .nav-brand,.nav-section,.nav-spacer,.nav-footer{display:none}
+    .nav-item{flex:1;text-align:center;padding:10px 4px 8px;font-size:10px;border-left:none;
+      border-top:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px}
+    .nav-item.active{border-left:none;border-top-color:var(--accent);background:transparent}
+    .nav-item::before{font-size:18px;display:block}
+    .nav-item[data-view="dashboard"]::before{content:"◉"}
+    .nav-item[data-view="year"]::before{content:"▦"}
+    .nav-item[data-view="rotations"]::before{content:"↻"}
+    .nav-item[data-view="interviews"]::before{content:"★"}
+    .nav-item[data-view="keydates"]::before{content:"▶"}
+    .nav-item[data-view="letters"]::before{content:"✉"}
+    main{margin-left:0;padding:20px 16px 100px;max-width:100%}
+    .page-title{font-size:24px}
+    .card-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .card-grid-4{grid-template-columns:1fr 1fr}
+    .card{padding:14px}
+    .card-value{font-size:18px}
+    .countdown-grid{grid-template-columns:1fr 1fr;gap:8px}
+    .countdown{padding:12px 6px}
+    .countdown-num{font-size:22px}
+    .cal-header,.cal-week{grid-template-columns:repeat(7,1fr)}
+    .cal-header span:last-child,.cal-events{display:none}
+    .cal-day{min-height:44px;padding:4px 2px}
+    .cal-date{font-size:12px}
+    .cal-info{font-size:7px;-webkit-line-clamp:1}
+    .tbl{font-size:12px}
+    .tbl td,.tbl th{padding:8px 6px}
+    .tbl input{font-size:12px}
+    .color-swatch{gap:2px;max-width:120px}
+    .color-dot{width:12px;height:12px}
+    .btn-add{width:100%;justify-content:center}
+    .today-btn{bottom:80px;right:16px}
+    .undo-bar{bottom:80px}
+    .toast{bottom:80px}
+    .month-pills{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:6px;padding:8px 0 12px}
+    .month-pill{white-space:nowrap;flex-shrink:0}
+    .welcome-banner{flex-direction:column;text-align:center;gap:12px}
+    .welcome-dismiss{position:absolute;top:12px;right:12px}
+    .mobile-backup{display:block!important}
+    .toggle-track{width:34px;height:18px}.toggle-thumb{width:14px;height:14px}
+    .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px}
+    .tbl{min-width:600px}
+    .hide-mobile{display:none}
+  }
+  @media(max-width:390px){
+    .card-grid{grid-template-columns:1fr}
+    .countdown-grid{grid-template-columns:1fr 1fr}
+  }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-brand">MS4 Calendar<span>June 2026 – May 2027</span></div>
+  <div class="nav-brand" style="cursor:pointer" onclick="document.querySelector('[data-view=dashboard]').click()">MS4 Calendar<span>June 2026 – May 2027</span></div>
   <div class="nav-section">Overview</div>
   <div class="nav-item active" data-view="dashboard">Dashboard</div>
   <div class="nav-item" data-view="year">Year</div>
+  <div class="nav-item" data-view="month">Month</div>
   <div class="nav-section">Plan</div>
   <div class="nav-item" data-view="rotations">Rotations</div>
   <div class="nav-item" data-view="interviews">Interviews</div>
   <div class="nav-item" data-view="keydates">Key Dates</div>
   <div class="nav-item" data-view="letters">Letters</div>
   <div class="nav-spacer"></div>
+  <div style="padding:12px 20px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:11px;color:var(--text-3)">☀</span>
+    <label class="toggle"><input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+    <span style="font-size:11px;color:var(--text-3)">☾</span>
+  </div>
   <div class="nav-footer">
     Data saves to your browser automatically.
     <br><br>
@@ -167,11 +427,30 @@
   </div>
 </nav>
 
+<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div><div class="drawer-date" id="drawer-date"></div><div class="drawer-date-sub" id="drawer-date-sub"></div></div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-actions" id="drawer-actions"></div>
+</div>
+<div class="toast" id="toast">Saved</div>
+<button class="today-btn" id="today-btn" onclick="scrollToToday()">Today</button>
+<div class="undo-bar" id="undo-bar"><span id="undo-text"></span><button onclick="undoAction()">Undo</button></div>
 <main id="main-content">
   <!-- DASHBOARD -->
   <div class="view active" id="view-dashboard">
     <h1 class="page-title">Dashboard</h1>
     <p class="page-subtitle" id="dash-subtitle"></p>
+    <div class="welcome-banner" id="welcome-banner" style="display:none">
+      <div class="welcome-banner-icon">👋</div>
+      <div class="welcome-banner-text"><h3>Welcome to your MS4 Calendar</h3><p>Start by adding your rotations — everything else builds from there.</p>
+        <button class="btn btn-primary" onclick="document.querySelector('[data-view=rotations]').click();document.getElementById('welcome-banner').style.display='none';localStorage.setItem('ms4cal_welcomed','1')">Go to Rotations</button></div>
+      <button class="welcome-dismiss" onclick="this.parentElement.style.display='none';localStorage.setItem('ms4cal_welcomed','1')">✕</button>
+    </div>
     <div class="card-grid">
       <div class="card card-accent"><div class="card-label">Current Rotation</div><div class="card-value" id="dash-rot">—</div><div class="card-detail" id="dash-rot-d"></div></div>
       <div class="card card-accent"><div class="card-label">Next Event</div><div class="card-value" id="dash-next">—</div><div class="card-detail" id="dash-next-d"></div></div>
@@ -183,20 +462,37 @@
     <div class="countdown-grid" id="dash-cd"></div>
     <div class="card-grid card-grid-4" id="dash-stats"></div>
     <div class="feed" id="dash-feed"></div>
+    <div class="mobile-backup" style="display:none;margin-top:24px;text-align:center;font-size:12px;color:var(--text-3)">
+      <a href="#" onclick="exportData();return false" style="color:var(--accent);text-decoration:none;font-weight:500">Export Backup</a> ·
+      <label style="color:var(--accent);font-weight:500;cursor:pointer">Import<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
+    </div>
   </div>
 
   <!-- YEAR -->
   <div class="view" id="view-year">
     <h1 class="page-title">Year</h1>
     <p class="page-subtitle">★ interview · ▶ key date · today is highlighted</p>
+    <div class="month-pills" id="month-pills"></div>
     <div id="year-cal"></div>
+  </div>
+
+  <!-- MONTH DETAIL -->
+  <div class="view" id="view-month">
+    <div class="month-nav">
+      <button class="month-nav-arrow" onclick="changeMonth(-1)">‹</button>
+      <h1 class="page-title" id="month-title" style="margin-bottom:0;flex:1"></h1>
+      <button class="month-nav-arrow" onclick="changeMonth(1)">›</button>
+    </div>
+    <p class="page-subtitle">Click any day to add notes</p>
+    <div class="month-pills-detail" id="month-pills-detail"></div>
+    <div class="md-container"><div class="md-inner" id="month-cal"></div></div>
   </div>
 
   <!-- ROTATIONS -->
   <div class="view" id="view-rotations">
     <h1 class="page-title">Rotations</h1>
     <p class="page-subtitle">Blocks can be any length. Click a color to assign it.</p>
-    <table class="tbl" id="rot-tbl"><thead><tr><th></th><th>Color</th><th>Start</th><th>End</th><th>Rotation</th><th>Location</th><th>Type</th><th></th></tr></thead><tbody id="rot-body"></tbody></table>
+    <div class="tbl-wrap"><table class="tbl" id="rot-tbl"><thead><tr><th></th><th>Color</th><th>Start</th><th>End</th><th>Rotation</th><th>Location</th><th class="hide-mobile">Type</th><th></th></tr></thead><tbody id="rot-body"></tbody></table></div>
     <button class="btn btn-primary btn-add" onclick="addBlock()">+ Add Block</button>
   </div>
 
@@ -244,8 +540,18 @@ const DEF_INTV=[{program:"Johns Hopkins EM",specialty:"Emergency Medicine",date:
 const DEF_KD=[{date:"2026-09-01",event:"ERAS Opens",category:"Application",status:"Not Started"},{date:"2026-09-29",event:"ERAS Deadline",category:"Application",status:"Not Started"},{date:"2027-02-20",event:"Rank List Due",category:"Application",status:"Not Started"},{date:"2027-03-20",event:"Match Day",category:"Application",status:"Not Started"},{date:"",event:"USMLE Step 2 CK",category:"Exam",status:"Not Started"},{date:"2027-05-15",event:"Graduation",category:"Milestone",status:"Not Started"}];
 
 let S=loadState();
-function loadState(){const s=localStorage.getItem('ms4cal');return s?JSON.parse(s):{rotations:[...DEF_ROT],interviews:[...DEF_INTV],keydates:[...DEF_KD],letters:[]}}
-function save(){localStorage.setItem('ms4cal',JSON.stringify(S))}
+function loadState(){const s=localStorage.getItem('ms4cal');return s?JSON.parse(s):{rotations:[...DEF_ROT],interviews:[...DEF_INTV],keydates:[...DEF_KD],letters:[],notes:{}}}
+function save(){localStorage.setItem('ms4cal',JSON.stringify(S));showToast('Saved')}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  // Offset if undo bar is showing
+  const undo=document.getElementById('undo-bar');
+  t.style.marginBottom=undo.style.display==='flex'?'50px':'0';
+  clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),1500);
+}
+let undoStack=[];
+function pushUndo(label,restoreData){undoStack=[{label,data:JSON.parse(JSON.stringify(restoreData))}];const bar=document.getElementById('undo-bar');document.getElementById('undo-text').textContent=label;bar.style.display='flex';clearTimeout(bar._timer);bar._timer=setTimeout(()=>bar.style.display='none',6000)}
+function undoAction(){if(!undoStack.length)return;const u=undoStack.pop();S=u.data;save();renderAll();document.getElementById('undo-bar').style.display='none';showToast('Undone')}
 function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ms4_calendar_backup.json';a.click()}
 function importData(e){const f=e.target.files[0];if(!f)return;if(!confirm('This will replace all your data. Continue?'))return;const r=new FileReader();r.onload=()=>{S=JSON.parse(r.result);save();renderAll()};r.readAsText(f)}
 
@@ -269,7 +575,11 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     this.classList.add('active');
     document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});
     window.scrollTo({top:0,behavior:'smooth'});
+    document.getElementById('today-btn').style.display='none';
+    const titles={dashboard:'Dashboard',year:'Year',month:'Month',rotations:'Rotations',interviews:'Interviews',keydates:'Key Dates',letters:'Letters'};
+    document.title=`${titles[view]||'MS4'} · MS4 Calendar`;
     if(view==='year')renderYear();
+    if(view==='month')renderMonth();
     if(view==='dashboard')renderDashboard();
   });
 });
@@ -279,9 +589,25 @@ function renderDashboard(){
   const ys=new Date(2026,5,1),ye=new Date(2027,4,31);
   const prog=Math.max(0,Math.min(1,(TODAY-ys)/(ye-ys)));
   document.getElementById('dash-subtitle').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  // Welcome banner for first-time users
+  const isNew=!localStorage.getItem('ms4cal_welcomed')&&S.rotations.filter(r=>r.name).length<=2;
+  document.getElementById('welcome-banner').style.display=isNew?'flex':'none';
   const cur=rotFor(TODAY);
-  document.getElementById('dash-rot').textContent=cur?.name||'No active rotation';
-  document.getElementById('dash-rot-d').textContent=cur?`${cur.location||''} · ${cur.block}`:(TODAY<ys?'Starts June 1, 2026':'');
+  if(cur){
+    document.getElementById('dash-rot').textContent=cur.name||cur.block;
+    document.getElementById('dash-rot-d').textContent=`${cur.location||''} · ${cur.block}`;
+  } else {
+    // Show next upcoming rotation
+    const nextRot=S.rotations.filter(r=>r.name&&pd(r.start)&&pd(r.start)>TODAY).sort((a,b)=>pd(a.start)-pd(b.start))[0];
+    if(nextRot){
+      document.getElementById('dash-rot').textContent=nextRot.name;
+      document.getElementById('dash-rot-d').textContent=`Starts ${sd(pd(nextRot.start))} · ${nextRot.block}`;
+      document.querySelector('#view-dashboard .card-label').textContent='NEXT ROTATION';
+    } else {
+      document.getElementById('dash-rot').textContent='No rotations planned';
+      document.getElementById('dash-rot-d').textContent='';
+    }
+  }
   const fe=S.keydates.filter(k=>pd(k.date)&&pd(k.date)>TODAY).sort((a,b)=>pd(a.date)-pd(b.date));
   const nx=fe[0];
   document.getElementById('dash-next').textContent=nx?.event||'None upcoming';
@@ -290,27 +616,52 @@ function renderDashboard(){
   setTimeout(()=>document.getElementById('dash-fill').style.width=Math.round(prog*100)+'%',100);
 
   const cds=[{l:'ERAS',d:new Date(2026,8,1)},{l:'Match Day',d:new Date(2027,2,20)},{l:'Graduation',d:new Date(2027,4,15)},{l:'Residency',d:new Date(2027,5,15)}];
-  document.getElementById('dash-cd').innerHTML=cds.map(c=>{const days=db(TODAY,c.d);return`<div class="countdown"><div class="countdown-num">${days>0?days:'✓'}</div><div class="countdown-unit">${days>0?'days':''}</div><div class="countdown-label">${c.l}</div></div>`}).join('');
+  document.getElementById('dash-cd').innerHTML=cds.map(c=>{const days=db(TODAY,c.d);const color=days<=0?'var(--green)':days<=7?'var(--red-fg)':days<=30?'var(--orange-fg)':'var(--text)';return`<div class="countdown"><div class="countdown-num" style="color:${color}">${days>0?days:'✓'}</div><div class="countdown-unit">${days>0?'days':''}</div><div class="countdown-label">${c.l}</div></div>`}).join('');
 
   document.getElementById('dash-stats').innerHTML=[
     {l:'Interviews',v:S.interviews.length,d:`${S.interviews.filter(i=>i.status==='Completed').length} completed`},
     {l:'Key Dates',v:`${S.keydates.filter(k=>k.status==='Complete').length}/${S.keydates.length}`,d:'done'},
-    {l:'Letters',v:`${S.letters.filter(l=>l.status==='Submitted').length}/${S.letters.length}`,d:'submitted'},
+    {l:'Letters',v:S.letters.length?`${S.letters.filter(l=>l.status==='Submitted').length}/${S.letters.length}`:'—',d:S.letters.length?'submitted':'none yet'},
     {l:'Rotations',v:`${S.rotations.filter(r=>r.name).length}/${S.rotations.length}`,d:'planned'},
   ].map(s=>`<div class="card"><div class="card-label">${s.l}</div><div class="card-value">${s.v}</div><div class="card-detail">${s.d}</div></div>`).join('');
 
-  const all=[...S.keydates.map(k=>({date:k.date,name:k.event,icon:'▶'})),...S.interviews.map(i=>({date:i.date,name:i.program,icon:'★'}))].filter(e=>pd(e.date)&&pd(e.date)>=TODAY&&db(TODAY,pd(e.date))<=14).sort((a,b)=>pd(a.date)-pd(b.date));
-  document.getElementById('dash-feed').innerHTML=`<div class="feed-header">Upcoming · Next 14 Days</div>`+(all.length?all.map(e=>`<div class="feed-item"><span class="feed-date">${sd(pd(e.date))}</span><span class="feed-name">${e.icon} ${e.name}</span></div>`).join(''):'<div class="feed-empty">No events in the next 14 days</div>');
+  const allFuture=[...S.keydates.map(k=>({date:k.date,name:k.event,icon:'▶'})),...S.interviews.map(i=>({date:i.date,name:i.program,icon:'★'}))].filter(e=>pd(e.date)&&pd(e.date)>=TODAY).sort((a,b)=>pd(a.date)-pd(b.date));
+  const soon=allFuture.filter(e=>db(TODAY,pd(e.date))<=14);
+  const feed=document.getElementById('dash-feed');
+  if(soon.length){
+    feed.innerHTML=`<div class="feed-header">Upcoming · Next 14 Days</div>`+soon.map(e=>`<div class="feed-item"><span class="feed-date">${sd(pd(e.date))}</span><span class="feed-name">${e.icon} ${e.name}</span></div>`).join('');
+  } else if(allFuture.length){
+    const nxt=allFuture[0];const days=db(TODAY,pd(nxt.date));
+    feed.innerHTML=`<div class="feed-header">Upcoming</div><div class="feed-item"><span class="feed-date">${sd(pd(nxt.date))}</span><span class="feed-name">${nxt.icon} ${nxt.name}</span><span class="feed-tag" style="background:var(--accent-light);color:var(--accent)">in ${days} days</span></div>`;
+  } else {
+    feed.innerHTML=`<div class="feed-header">Upcoming</div><div class="feed-empty">No events scheduled yet</div>`;
+  }
 }
 
 // ── Year ──
+function scrollToToday(){
+  const el=document.querySelector('.cal-day.today');
+  if(el){el.scrollIntoView({behavior:'smooth',block:'center'});return}
+  const cur=document.querySelector('.cal-month[data-current]');
+  if(cur){cur.scrollIntoView({behavior:'smooth',block:'start'});return}
+  // Today is outside the calendar range — scroll to first month
+  const first=document.querySelector('.cal-month');
+  if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function renderYear(){
   const c=document.getElementById('year-cal');c.innerHTML='';
+  // Month jump pills
+  const pills=document.getElementById('month-pills');
+  const todayMonth=TODAY.getMonth(),todayYear=TODAY.getFullYear();
+  pills.innerHTML=MIY.map(({y,m})=>{const isCur=(m===todayMonth&&y===todayYear);return`<span class="month-pill${isCur?' current':''}" onclick="document.getElementById('month-${y}-${m}').scrollIntoView({behavior:'smooth',block:'start'})">${MN[m].slice(0,3)}</span>`}).join('');
+  // Show Today button on Year view
+  document.getElementById('today-btn').style.display='block';
   let prevYear=null;
   MIY.forEach(({y,m})=>{
-    const div=document.createElement('div');div.className='cal-month';
+    const div=document.createElement('div');div.className='cal-month';div.id=`month-${y}-${m}`;
+    if(m===TODAY.getMonth()&&y===TODAY.getFullYear())div.dataset.current='1';
     const showYear=(y!==prevYear);prevYear=y;
-    let h=`<div class="cal-month-name">${MN[m]}${showYear?` <span class="cal-month-year">${y}</span>`:''}</div>`;
+    let h=`<div class="cal-month-name" style="cursor:pointer" onclick="openMonth(${y},${m})" title="Click for monthly detail">${MN[m]}${showYear?` <span class="cal-month-year">${y}</span>`:''}</div>`;
     h+=`<div class="cal-header">${['S','M','T','W','T','F','S'].map(d=>`<span>${d}</span>`).join('')}<span>Events</span></div>`;
     const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
     let day=1-fd;
@@ -326,7 +677,9 @@ function renderYear(){
         else if(kd){info=`▶ ${kd.event}`;wEvents.push(`<span class="ev-highlight">▶ ${kd.event}</span>`);title=`Key Date: ${kd.event}`}
         else if(rot?.name){info=`${rot.name}`;if(rot.location)info+=` · ${rot.location}`;title=`${rot.name}\n${rot.location||''}\n${rot.block}`}
         if(!wRot&&rot?.name)wRot=rot;
-        h+=`<div class="cal-day ${cc} ${isT?'today':''} ${isW?'weekend':''}" title="${title.replace(/"/g,'&quot;')}"><div class="cal-date">${day}</div><div class="cal-info">${info}</div></div>`;
+        const dateKey=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        const hasNote=S.notes?.[dateKey];
+        h+=`<div class="cal-day ${cc} ${isT?'today':''} ${isW?'weekend':''}" title="${title.replace(/"/g,'&quot;')}" onclick="this.classList.add('selected');openDrawer('${dateKey}')"><div class="cal-date">${day}</div><div class="cal-info">${info}</div>${hasNote?'<div class="note-dot"></div>':''}</div>`;
       }
       const evHtml=wEvents.length?wEvents.join('<br>'):(wRot?`<span style="color:var(--text-3)">${wRot.name}</span>`:'');
       h+=`<div class="cal-events">${evHtml}</div></div>`;
@@ -344,66 +697,247 @@ function renderRotations(){
     <td><input type="date" value="${r.end}" onchange="updRot(${i},'end',this.value)"></td>
     <td><input value="${r.name}" placeholder="Rotation name" onchange="updRot(${i},'name',this.value)"></td>
     <td><input value="${r.location}" placeholder="Hospital / clinic" onchange="updRot(${i},'location',this.value)"></td>
-    <td><select onchange="updRot(${i},'type',this.value)"><option value="">—</option>${['Core','Elective','Sub-I','Away'].map(t=>`<option ${t===r.type?'selected':''}>${t}</option>`).join('')}</select></td>
+    <td class="hide-mobile"><select onchange="updRot(${i},'type',this.value)"><option value="">—</option>${['Core','Elective','Sub-I','Away'].map(t=>`<option ${t===r.type?'selected':''}>${t}</option>`).join('')}</select></td>
     <td>${S.rotations.length>1?`<button class="btn btn-ghost" onclick="delRot(${i})" title="Remove">✕</button>`:''}</td>
   </tr>`).join('');
 }
-function updRot(i,f,v){S.rotations[i][f]=v;save();renderRotations()}
-function delRot(i){if(confirm(`Remove ${S.rotations[i].block}?`)){S.rotations.splice(i,1);S.rotations.forEach((r,j)=>r.block=`Block ${j+1}`);save();renderRotations()}}
+function updRot(i,f,v){
+  S.rotations[i][f]=v;
+  // Date validation
+  const r=S.rotations[i];
+  if((f==='start'||f==='end')&&r.start&&r.end&&pd(r.end)<pd(r.start)){
+    showToast('⚠ End date is before start date');
+  }
+  save();renderRotations();
+}
+function delRot(i){const prev=JSON.parse(JSON.stringify(S));S.rotations.splice(i,1);S.rotations.forEach((r,j)=>r.block=`Block ${j+1}`);save();renderRotations();pushUndo('Block removed',prev)}
 function addBlock(){S.rotations.push({block:`Block ${S.rotations.length+1}`,color:CN[S.rotations.length%CN.length],start:'',end:'',name:'',location:'',type:''});save();renderRotations()}
 
 // ── Interviews ──
 function renderInterviews(){
   const ct=document.getElementById('intv-container');
   if(!S.interviews.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">★</div><div class="empty-state-text">No interviews yet. Add one to see it on your calendar.</div></div>';return}
-  ct.innerHTML=`<table class="tbl"><thead><tr><th>Program</th><th>Specialty</th><th>Date</th><th>Location</th><th>Status</th><th></th></tr></thead><tbody>${S.interviews.map((v,i)=>`<tr>
+  // Sort by date (upcoming first, undated last)
+  const sorted=S.interviews.map((v,i)=>({...v,_i:i})).sort((a,b)=>{if(!a.date&&!b.date)return 0;if(!a.date)return 1;if(!b.date)return -1;return pd(a.date)-pd(b.date)});
+  ct.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Program</th><th>Specialty</th><th>Date</th><th>Location</th><th>Status</th><th></th></tr></thead><tbody>${sorted.map(v=>{const i=v._i;return`<tr>
     <td><input value="${v.program||''}" placeholder="Program name" onchange="updI(${i},'program',this.value)"></td>
     <td><input value="${v.specialty||''}" placeholder="Specialty" onchange="updI(${i},'specialty',this.value)"></td>
     <td><input type="date" value="${v.date||''}" onchange="updI(${i},'date',this.value)"></td>
     <td><input value="${v.location||''}" placeholder="City, State" onchange="updI(${i},'location',this.value)"></td>
     <td><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select></td>
     <td><button class="btn btn-ghost" onclick="delI(${i})" title="Remove">✕</button></td>
-  </tr>`).join('')}</tbody></table>`;
+  </tr>`}).join('')}</tbody></table></div>`;
 }
 function updI(i,f,v){S.interviews[i][f]=v;save()}
-function delI(i){S.interviews.splice(i,1);save();renderInterviews()}
+function delI(i){const prev=JSON.parse(JSON.stringify(S));S.interviews.splice(i,1);save();renderInterviews();pushUndo('Interview removed',prev)}
 function addInterview(){S.interviews.push({program:'',specialty:'',date:'',location:'',status:'Invited'});save();renderInterviews()}
 
 // ── Key Dates ──
 function renderKeyDates(){
   const ct=document.getElementById('kd-container');
   if(!S.keydates.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">▶</div><div class="empty-state-text">No key dates yet. Add ERAS deadlines, exam dates, and milestones.</div></div>';return}
-  ct.innerHTML=`<table class="tbl"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr>
+  const CAT_BG={Application:'var(--blue-bg)',Exam:'var(--red-bg)',Milestone:'var(--green-bg)',Personal:'var(--accent-light)'};
+  ct.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr style="background:${CAT_BG[k.category]||'transparent'}"
     <td><input type="date" value="${k.date||''}" onchange="updK(${i},'date',this.value)"></td>
     <td><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></td>
     <td><select onchange="updK(${i},'category',this.value)">${['Application','Exam','Milestone','Personal'].map(c=>`<option ${c===k.category?'selected':''}>${c}</option>`).join('')}</select></td>
     <td><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select></td>
     <td><button class="btn btn-ghost" onclick="delK(${i})" title="Remove">✕</button></td>
-  </tr>`).join('')}</tbody></table>`;
+  </tr>`).join('')}</tbody></table></div>`;
 }
 function updK(i,f,v){S.keydates[i][f]=v;save()}
-function delK(i){S.keydates.splice(i,1);save();renderKeyDates()}
+function delK(i){const prev=JSON.parse(JSON.stringify(S));S.keydates.splice(i,1);save();renderKeyDates();pushUndo('Key date removed',prev)}
 function addKeyDate(){S.keydates.push({date:'',event:'',category:'Personal',status:'Not Started'});save();renderKeyDates()}
 
 // ── Letters ──
 function renderLetters(){
   const ct=document.getElementById('lor-container');
   if(!S.letters.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">✉</div><div class="empty-state-text">No letters yet. Track your recommendation requests here.</div></div>';return}
-  ct.innerHTML=`<table class="tbl"><thead><tr><th>Writer</th><th>Specialty</th><th>Institution</th><th>Date Asked</th><th>Status</th><th></th></tr></thead><tbody>${S.letters.map((l,i)=>`<tr>
+  const subCount=S.letters.filter(l=>l.status==='Submitted').length;
+  ct.innerHTML=`<div style="font-size:13px;color:var(--text-2);margin-bottom:12px">${subCount} of ${S.letters.length} submitted</div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Writer</th><th>Specialty</th><th>Institution</th><th>Date Asked</th><th>Status</th><th></th></tr></thead><tbody>${S.letters.map((l,i)=>`<tr>
     <td><input value="${l.writer||''}" placeholder="Dr. Name" onchange="updL(${i},'writer',this.value)"></td>
     <td><input value="${l.specialty||''}" placeholder="Specialty" onchange="updL(${i},'specialty',this.value)"></td>
     <td><input value="${l.institution||''}" placeholder="Institution" onchange="updL(${i},'institution',this.value)"></td>
     <td><input type="date" value="${l.asked||''}" onchange="updL(${i},'asked',this.value)"></td>
     <td><select class="status-select ${ssClass(l.status)}" onchange="updL(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Asked','Asked','Accepted','In Progress','Submitted'].map(s=>`<option ${s===l.status?'selected':''}>${s}</option>`).join('')}</select></td>
     <td><button class="btn btn-ghost" onclick="delL(${i})" title="Remove">✕</button></td>
-  </tr>`).join('')}</tbody></table>`;
+  </tr>`).join('')}</tbody></table></div>`;
 }
 function updL(i,f,v){S.letters[i][f]=v;save()}
-function delL(i){S.letters.splice(i,1);save();renderLetters()}
+function delL(i){const prev=JSON.parse(JSON.stringify(S));S.letters.splice(i,1);save();renderLetters();pushUndo('Letter removed',prev)}
 function addLetter(){S.letters.push({writer:'',specialty:'',institution:'',asked:'',status:'Not Asked'});save();renderLetters()}
 
+// ── Month Detail View ──
+let currentMonthIdx=MIY.findIndex(({y,m})=>m===TODAY.getMonth()&&y===TODAY.getFullYear());
+if(currentMonthIdx<0)currentMonthIdx=0; // default to first month if today is outside range
+
+function changeMonth(delta){
+  const prev=currentMonthIdx;
+  currentMonthIdx=Math.max(0,Math.min(MIY.length-1,currentMonthIdx+delta));
+  if(currentMonthIdx===prev)return;
+  const dir=delta>0?'slide-left':'slide-right';
+  renderMonth(dir);
+}
+function jumpToMonth(idx){
+  const prev=currentMonthIdx;
+  currentMonthIdx=idx;
+  if(currentMonthIdx===prev)return;
+  const dir=idx>prev?'slide-left':'slide-right';
+  renderMonth(dir);
+}
+function openMonth(y,m){
+  currentMonthIdx=MIY.findIndex(v=>v.y===y&&v.m===m);
+  if(currentMonthIdx<0)currentMonthIdx=0;
+  document.querySelector('[data-view=month]').click();
+}
+// Keyboard: left/right arrows to change month
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('view-month').classList.contains('active')&&!e.target.matches('input,textarea,select')){
+    if(e.key==='ArrowLeft')changeMonth(-1);
+    if(e.key==='ArrowRight')changeMonth(1);
+  }
+});
+function renderMonth(animClass){
+  const{y,m}=MIY[currentMonthIdx];
+  document.getElementById('month-title').textContent=`${MN[m]} ${y}`;
+  // Month pills
+  document.getElementById('month-pills-detail').innerHTML=MIY.map(({y:yy,m:mm},idx)=>
+    `<span class="month-pill${idx===currentMonthIdx?' current':''}" onclick="jumpToMonth(${idx})">${MN[mm].slice(0,3)}${mm===0?' \''+String(yy).slice(2):''}</span>`
+  ).join('');
+  const c=document.getElementById('month-cal');
+  // Slide animation
+  if(animClass){c.className='md-inner';void c.offsetWidth;c.classList.add(animClass)}else{c.className='md-inner'}
+  let h='<div class="md-grid">';
+  ['S','M','T','W','T','F','S'].forEach(d=>h+=`<div class="md-header">${d}</div>`);
+  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
+  // Empty cells before first day
+  for(let i=0;i<fd;i++)h+='<div class="md-day md-empty"></div>';
+  // Days
+  let dayOfWeek=fd; // track position in week for separators
+  for(let day=1;day<=dim;day++){
+    const d=new Date(y,m,day);
+    const dateKey=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const rot=rotFor(d),intv=intvFor(d),kd=kdFor(d),isT=same(d,TODAY);
+    const isW=(dayOfWeek===0||dayOfWeek===6);
+    const cc=rot?'block-'+rot.color.toLowerCase():'';
+    const note=S.notes?.[dateKey]||'';
+    h+=`<div class="md-day ${cc} ${isT?'md-today':''} ${isW?'md-weekend':''}" onclick="if(event.target.tagName!=='TEXTAREA'){this.classList.add('selected');openDrawer('${dateKey}')}">`;
+    h+=`<div class="md-date">${day}</div>`;
+    if(intv)h+=`<div class="md-event">★ ${intv.program}</div>`;
+    if(kd)h+=`<div class="md-event">▶ ${kd.event}</div>`;
+    if(rot?.name)h+=`<div class="md-rot">${rot.name}</div>`;
+    if(rot?.location)h+=`<div class="md-loc">${rot.location}</div>`;
+    h+=`<textarea class="md-note" placeholder="Add note..." oninput="saveNote('${dateKey}',this.value)">${note}</textarea>`;
+    h+=`</div>`;
+    dayOfWeek=(dayOfWeek+1)%7;
+    // Week separator after Saturday
+    if(dayOfWeek===0&&day<dim)h+=`<div class="md-week-sep"></div>`;
+  }
+  h+='</div>';
+  c.innerHTML=h;
+}
+function saveNote(dateKey,val){
+  if(!S.notes)S.notes={};
+  if(val)S.notes[dateKey]=val;else delete S.notes[dateKey];
+  save();
+}
+
+// ── Day Detail Drawer ──
+let drawerDateKey=null;
+function openDrawer(dateStr){
+  drawerDateKey=dateStr;
+  const d=pd(dateStr);if(!d)return;
+  const rot=rotFor(d),intv=intvFor(d),kd=kdFor(d);
+  const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  document.getElementById('drawer-date').textContent=`${dayNames[d.getDay()]}, ${MN[d.getMonth()]} ${d.getDate()}`;
+  document.getElementById('drawer-date-sub').textContent=d.getFullYear();
+
+  let body='';
+  // Rotation
+  body+=`<div class="drawer-section"><div class="drawer-label">Rotation</div>`;
+  if(rot?.name){
+    body+=`<div class="drawer-rot"><div class="drawer-rot-dot" style="background:${COLORS[rot.color]||'#eee'}"></div><div><div class="drawer-rot-name">${rot.name}</div><div class="drawer-rot-detail">${rot.location||''} · ${rot.block}${rot.type?' · '+rot.type:''}</div></div></div>`;
+  } else {
+    body+=`<div class="drawer-empty">No rotation scheduled</div>`;
+  }
+  body+=`</div>`;
+
+  // Events
+  body+=`<div class="drawer-section"><div class="drawer-label">Events</div>`;
+  let hasEvents=false;
+  if(intv){body+=`<div class="drawer-event"><span class="drawer-event-icon">★</span><div><strong>${intv.program}</strong><br><span style="font-size:12px;color:var(--text-2)">${intv.specialty||''} · ${intv.location||''}</span></div></div>`;hasEvents=true}
+  if(kd){body+=`<div class="drawer-event drawer-event-kd"><span class="drawer-event-icon">▶</span><div><strong>${kd.event}</strong><br><span style="font-size:12px;color:var(--text-2)">${kd.category||''}</span></div></div>`;hasEvents=true}
+  if(!hasEvents)body+=`<div class="drawer-empty">No events</div>`;
+  body+=`</div>`;
+
+  // Notes
+  const note=S.notes?.[dateStr]||'';
+  body+=`<div class="drawer-section"><div class="drawer-label">Notes</div>`;
+  body+=`<textarea class="drawer-notes" placeholder="Add notes — call schedule, clinic times, study plans..." oninput="saveNote('${dateStr}',this.value)">${note}</textarea>`;
+  body+=`</div>`;
+
+  document.getElementById('drawer-body').innerHTML=body;
+
+  // Actions
+  document.getElementById('drawer-actions').innerHTML=`
+    <button class="btn btn-secondary" onclick="addInterviewForDate('${dateStr}')">+ Interview</button>
+    <button class="btn btn-secondary" onclick="addKeyDateForDate('${dateStr}')">+ Key Date</button>`;
+
+  // Open
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-backdrop').classList.add('open');
+
+  // Highlight selected day
+  document.querySelectorAll('.cal-day.selected,.md-day.selected').forEach(el=>el.classList.remove('selected'));
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.querySelectorAll('.cal-day.selected,.md-day.selected').forEach(el=>el.classList.remove('selected'));
+  drawerDateKey=null;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeDrawer();
+  if(e.target.matches('input,textarea,select'))return;
+  if(e.key==='?'){showToast('← → Month nav · Esc close · ? shortcuts')}
+  if(e.key==='d')document.querySelector('[data-view=dashboard]').click();
+  if(e.key==='y')document.querySelector('[data-view=year]').click();
+  if(e.key==='m')document.querySelector('[data-view=month]').click();
+  if(e.key==='r')document.querySelector('[data-view=rotations]').click();
+  if(e.key==='i')document.querySelector('[data-view=interviews]').click();
+  if(e.key==='k')document.querySelector('[data-view=keydates]').click();
+  if(e.key==='l')document.querySelector('[data-view=letters]').click();
+});
+
+function addInterviewForDate(dateStr){
+  S.interviews.push({program:'',specialty:'',date:dateStr,location:'',status:'Scheduled'});
+  save();closeDrawer();
+  document.querySelector('[data-view=interviews]').click();
+  showToast('Interview added — fill in the details');
+}
+function addKeyDateForDate(dateStr){
+  S.keydates.push({date:dateStr,event:'',category:'Personal',status:'Not Started'});
+  save();closeDrawer();
+  document.querySelector('[data-view=keydates]').click();
+  showToast('Key date added — fill in the details');
+}
+
+// ── Dark mode toggle ──
+function toggleTheme(isDark){
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  localStorage.setItem('ms4cal_theme',isDark?'dark':'light');
+}
+(function(){
+  const saved=localStorage.getItem('ms4cal_theme');
+  const prefersDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const isDark=(saved==='dark')||(saved===null&&prefersDark);
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('theme-checkbox').checked=isDark;
+})();
+
 // ── Init ──
-function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters()}
+function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters();renderMonth()}
 renderAll();
 </script>
 </body>
