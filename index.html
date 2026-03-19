@@ -29,7 +29,7 @@ firebase.initializeApp({
   appId:"1:794760877455:web:24f949a480abac907767fa"
 });
 </script>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23007AFF'/><stop offset='1' stop-color='%235856D6'/></linearGradient></defs><rect width='32' height='32' rx='7' fill='url(%23g)'/><polyline points='22 10 13 20 10 16' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   :root {
@@ -80,10 +80,13 @@ firebase.initializeApp({
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
 
-  /* ── Nav ── */
-  nav{width:var(--nav-w);background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
-  .nav-brand{padding:0 20px 24px;font-size:15px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .nav-brand span{color:var(--text-3);font-weight:400;display:block;font-size:11px;margin-top:2px;background:none;-webkit-text-fill-color:var(--text-3)}
+  /* ── Sidebar Nav ── */
+  #sidebar-nav{width:var(--nav-w);background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:10;overflow-y:auto}
+  .nav-brand{padding:0 20px 28px;display:flex;align-items:center;gap:10px;cursor:pointer}
+  .nav-brand-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#5856D6);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .nav-brand-icon svg{width:18px;height:18px}
+  .nav-brand-text{font-size:16px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .nav-brand span{color:var(--text-3);font-weight:400;display:block;font-size:10px;margin-top:1px;background:none;-webkit-text-fill-color:var(--text-3);letter-spacing:0}
   .nav-section{padding:16px 12px 4px;font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
   .nav-item{padding:8px 20px;font-size:13px;color:var(--text-2);cursor:pointer;transition:all var(--ease);border-left:3px solid transparent;font-weight:500;user-select:none}
   .nav-item:hover{background:var(--surface-hover);color:var(--text)}
@@ -96,7 +99,7 @@ firebase.initializeApp({
   .nav-footer a:hover{text-decoration:underline}
 
   /* ── Main ── */
-  main{margin-left:var(--nav-w);flex:1;padding:32px 40px 64px;max-width:1100px}
+  main{margin-left:var(--nav-w);flex:1;padding:32px 48px 64px}
   .view{display:none;animation:fadeIn .4s ease}.view.active{display:block}
   @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   @keyframes stagger1{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -126,7 +129,7 @@ firebase.initializeApp({
   .card-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
   .card-value{font-size:22px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
   .card-detail{font-size:12px;color:var(--text-2);margin-top:4px}
-  .card-accent{border-left:3px solid var(--accent);border-image:linear-gradient(to bottom,var(--accent),#5856D6) 1}
+  .card-accent{border-left:3px solid var(--accent)}
 
   /* ── Progress ── */
   .progress-container{margin-bottom:28px}
@@ -138,7 +141,7 @@ firebase.initializeApp({
 
   /* ── Countdowns ── */
   .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
-  .countdown{text-align:center;padding:16px 8px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-sm);transition:all var(--ease)}
+  .countdown{text-align:center;padding:16px 8px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);transition:all var(--ease)}
   .countdown:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
   .countdown-num{font-size:28px;font-weight:700;letter-spacing:-1px}
   .countdown-unit{font-size:10px;color:var(--text-3);margin-top:0;font-weight:500}
@@ -190,14 +193,87 @@ firebase.initializeApp({
   .tbl th{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;text-align:left;padding:8px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:1}
   .tbl td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border-light);transition:background var(--ease)}
   .tbl tr:nth-child(even) td{background:var(--surface-hover)}
+  .tbl-no-stripe tr:nth-child(even) td{background:inherit}
   .tbl tr:hover td{background:rgba(0,122,255,.04)!important}
-  .tbl input,.tbl select{border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text);outline:none;width:100%;padding:2px 0;transition:border var(--ease)}
+  .tbl input,.tbl select:not(.status-select){border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text);outline:none;width:100%;padding:2px 0;transition:border var(--ease)}
   .tbl input:focus{border-bottom:2px solid var(--accent)}
   .tbl input::placeholder{color:var(--text-3)}
   .tbl input[type="date"]{min-width:110px}
 
+  /* ── Dashboard hero cards ── */
+  .dash-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;align-items:start}
+  .dash-hero-card{border-top:3px solid var(--accent);position:relative;overflow:hidden}
+  .dash-hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--accent),#5856D6)}
+  .dash-hero-card .card-value{font-size:20px}
+
+  /* ── Dashboard expandable cards ── */
+  .dash-expand{cursor:pointer;transition:all var(--ease)}
+  .dash-expand-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.25,.1,.25,1),opacity .3s ease,margin .3s ease;opacity:0;margin-top:0}
+  .dash-expand.open .dash-expand-body{max-height:300px;opacity:1;margin-top:12px}
+  .dash-expand.open{box-shadow:var(--shadow-hover)}
+  .dash-expand-detail{font-size:12px;color:var(--text-2);line-height:1.8;padding-top:10px;border-top:1px solid var(--border-light)}
+  .dash-expand-detail strong{color:var(--text);font-weight:600}
+  .dash-expand-link{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);margin-top:8px;cursor:pointer}
+  .dash-expand-link:hover{text-decoration:underline}
+  .dash-expand-event{font-size:12px;padding:6px 0;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
+  .dash-expand-event:last-of-type{border-bottom:none}
+
+  /* ── Dashboard quick actions ── */
+  .dash-quick-actions{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .dash-quick-actions .btn{font-size:12px;padding:8px 14px;border-radius:20px}
+
+  /* ── My Account ── */
+  .acct-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:0;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+  .acct-profile-row{display:flex;align-items:center;gap:16px;padding:20px}
+  .acct-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border-light);flex-shrink:0}
+  .acct-name{font-size:17px;font-weight:600;margin-bottom:2px}
+  .acct-email{font-size:13px;color:var(--text-2);margin-bottom:4px}
+  .acct-provider{font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:4px;background:var(--surface-hover);padding:2px 8px;border-radius:10px;font-weight:500}
+  .acct-section-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-left:4px}
+  .acct-plan-row{display:flex;justify-content:space-between;align-items:flex-start;padding:20px;gap:16px}
+  .acct-plan-name{font-size:15px;font-weight:600;margin-bottom:4px}
+  .acct-plan-desc{font-size:13px;color:var(--text-2);line-height:1.5}
+  .acct-plan-badge{font-size:11px;font-weight:600;color:var(--green-fg);background:var(--green-bg);padding:4px 12px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+  .acct-data-item{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;cursor:pointer;transition:background var(--ease)}
+  .acct-data-item:hover{background:var(--surface-hover)}
+  .acct-data-title{font-size:14px;font-weight:500;margin-bottom:2px}
+  .acct-data-desc{font-size:12px;color:var(--text-3)}
+  .acct-arrow{font-size:16px;color:var(--text-3);font-weight:300}
+  .acct-divider{height:1px;background:var(--border-light);margin:0 20px}
+  .acct-signout{width:100%;padding:14px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:600;color:var(--red-fg);cursor:pointer;transition:all var(--ease);box-shadow:var(--shadow)}
+  .acct-signout:hover{background:var(--red-bg)}
+  .acct-footer{text-align:center;font-size:11px;color:var(--text-3);margin-top:32px;padding-bottom:20px}
+
+  /* ── Key Dates legend ── */
+  .kd-legend{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2);margin-bottom:16px;flex-wrap:wrap}
+  .kd-legend-dot{width:14px;height:14px;border-radius:4px;border:1.5px solid;margin-left:10px;flex-shrink:0}
+  .kd-legend-dot:first-child{margin-left:0}
+
+  /* ── Mobile cards (hidden by default, shown on mobile) ── */
+  .mobile-cards{display:none;flex-direction:column;gap:12px}
+  .m-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);position:relative}
+  .m-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .m-card-title{font-size:14px;font-weight:700;color:var(--text)}
+  .m-card-delete{background:transparent;border:none;color:var(--text-3);font-size:16px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all var(--ease)}
+  .m-card-delete:hover{color:var(--red-fg);background:var(--red-bg)}
+  .m-card-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .m-card-row:last-child{margin-bottom:0}
+  .m-card-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;min-width:70px;flex-shrink:0}
+  .m-card-value{flex:1}
+  .m-card-value input,.m-card-value select{border:none;background:transparent;font-family:inherit;font-size:14px;color:var(--text);outline:none;width:100%;padding:10px 0;border-bottom:1px solid var(--border-light);transition:border var(--ease);min-height:44px}
+  .m-card-value input[type="date"]{-webkit-appearance:none;appearance:none;background:var(--surface-hover);border-radius:var(--radius-sm);padding:10px 12px;border-bottom:none;cursor:pointer}
+  .m-card-value input[type="date"]:focus{outline:2px solid var(--accent);outline-offset:-2px}
+  .m-card-value input:focus{border-bottom:2px solid var(--accent)}
+  .m-card-value input::placeholder{color:var(--text-3)}
+  .m-card-value select{padding:6px 4px;border-bottom:1px solid var(--border-light)}
+  .m-card-colors{display:flex;gap:5px;flex-wrap:wrap}
+  .m-card-colors .color-dot{width:16px;height:16px}
+  .m-card-dates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .m-card-dates .m-card-row{margin-bottom:0}
+  .m-card-badge{display:inline-block;font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px}
+
   /* ── Status select ── */
-  .status-select{border:none;background:transparent;font-family:inherit;font-size:11px;font-weight:600;padding:3px 8px;border-radius:10px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none}
+  .status-select{border:none;font-family:inherit;font-size:12px;font-weight:600;padding:6px 8px 6px 12px;border-radius:20px;cursor:pointer;outline:none;width:auto}
   .ss-green{background:var(--green-bg);color:var(--green-fg)}
   .ss-yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
   .ss-blue{background:var(--blue-bg);color:var(--blue-fg)}
@@ -221,42 +297,107 @@ firebase.initializeApp({
   .empty-state-icon{font-size:32px;margin-bottom:12px}
   .empty-state-text{font-size:14px;color:var(--text-3);margin-bottom:16px}
 
-  /* ── Auth / Landing page ── */
-  .auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;transition:opacity .3s ease}
+  /* ── Landing page ── */
+  .auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);overflow-y:auto;transition:opacity .4s ease}
   .auth-screen.hidden{opacity:0;pointer-events:none}
+  .app-hidden #sidebar-nav,.app-hidden main,.app-hidden .more-sheet,.app-hidden .more-sheet-backdrop,.app-hidden .toast,.app-hidden .today-btn,.app-hidden .undo-bar{display:none!important}
 
-  .landing{max-width:680px;margin:0 auto;padding:60px 24px 40px;text-align:center}
-  .landing-logo{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:24px}
-  .landing-title{font-size:48px;font-weight:700;letter-spacing:-1px;line-height:1.1;margin-bottom:12px}
+  .landing-nav{position:sticky;top:0;z-index:100;background:rgba(250,250,250,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border-light);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;animation:fadeIn .6s ease both}
+  .landing-nav-brand{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .landing-nav-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#5856D6);display:flex;align-items:center;justify-content:center}
+  .landing-nav-icon svg{width:20px;height:20px}
+  .landing-nav-links{display:flex;gap:28px;align-items:center}
+  .landing-nav-link{font-size:15px;color:var(--text-2);text-decoration:none;cursor:pointer;transition:color var(--ease);font-weight:500}
+  .landing-nav-link:hover{color:var(--text)}
+  .landing-nav-btn{padding:12px 28px;background:linear-gradient(135deg,var(--accent),#5856D6);color:white;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all var(--ease);box-shadow:0 2px 8px rgba(0,122,255,.2)}
+  .landing-nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,122,255,.3)}
+
+  /* Hero */
+  .landing-hero{max-width:900px;margin:0 auto;padding:64px 40px 48px;text-align:center}
+  .landing-brand{font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;animation:fadeIn .6s ease both .2s;opacity:0}
+  .landing-title{font-size:72px;font-weight:800;letter-spacing:-3px;line-height:1;margin-bottom:20px;
+    animation:heroIn .8s cubic-bezier(.25,.1,.25,1) both .3s;opacity:0}
+  @keyframes heroIn{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
   .landing-title span{background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .landing-sub{font-size:18px;color:var(--text-2);line-height:1.5;margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+  .landing-sub{font-size:18px;color:var(--text-2);line-height:1.6;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto;
+    animation:fadeIn .6s ease both .5s;opacity:0}
+  .landing-cta{display:inline-flex;align-items:center;gap:8px;padding:16px 40px;background:linear-gradient(135deg,var(--accent),#5856D6);color:white;
+    border:none;border-radius:14px;font-family:inherit;font-size:17px;font-weight:600;
+    cursor:pointer;transition:all var(--ease);box-shadow:0 4px 24px rgba(0,122,255,.3);
+    animation:fadeIn .6s ease both .6s;opacity:0}
+  .landing-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,122,255,.4)}
 
-  .auth-btn{display:inline-flex;align-items:center;gap:12px;padding:16px 32px;background:var(--text);
-    border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:600;
-    color:var(--bg);cursor:pointer;transition:all var(--ease);box-shadow:0 4px 14px rgba(0,0,0,.15)}
-  .auth-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+  /* How it works */
+  .landing-section{max-width:1000px;margin:0 auto;padding:48px 40px 24px}
+  .landing-section-label{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;text-align:center}
+  .landing-section-title{font-size:40px;font-weight:700;letter-spacing:-1.5px;text-align:center;margin-bottom:32px;line-height:1.15}
+
+  /* Scroll-reveal animations */
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s cubic-bezier(.25,.1,.25,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-delay-1{transition-delay:.1s}
+  .reveal-delay-2{transition-delay:.2s}
+  .reveal-delay-3{transition-delay:.3s}
+  .reveal-delay-4{transition-delay:.4s}
+
+  .landing-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:0}
+  .landing-step{text-align:center;padding:36px 28px;background:var(--surface);border:1px solid var(--border-light);border-radius:16px;transition:all var(--ease)}
+  .landing-step:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px)}
+  .landing-step-num{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#5856D6);color:white;
+    display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin:0 auto 18px}
+  .landing-step-title{font-size:18px;font-weight:600;margin-bottom:10px}
+  .landing-step-desc{font-size:14px;color:var(--text-2);line-height:1.6}
+
+  /* Features */
+  .landing-features{max-width:1000px;margin:0 auto;padding:0 40px 40px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .landing-feature{padding:32px;background:var(--surface);border:1px solid var(--border-light);border-radius:16px;transition:all var(--ease)}
+  .landing-feature:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px)}
+  .landing-feature-icon{font-size:32px;margin-bottom:14px}
+  .landing-feature-title{font-size:17px;font-weight:600;margin-bottom:8px}
+  .landing-feature-desc{font-size:14px;color:var(--text-2);line-height:1.6}
+
+  /* Footer */
+  .landing-footer{text-align:center;padding:32px 40px;font-size:12px;color:var(--text-3);border-top:1px solid var(--border-light)}
+  .landing-footer-brand{font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+
+  /* ── Sign-in modal ── */
+  .signin-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:center;justify-content:center}
+  .signin-modal-backdrop.open{opacity:1;pointer-events:all}
+  .signin-modal{background:var(--surface);border-radius:20px;padding:40px;max-width:400px;width:90%;text-align:center;
+    transform:scale(.95) translateY(10px);transition:transform .3s cubic-bezier(.25,.1,.25,1);box-shadow:0 24px 48px rgba(0,0,0,.15)}
+  .signin-modal-backdrop.open .signin-modal{transform:scale(1) translateY(0)}
+  .signin-modal-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#5856D6);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .signin-modal-icon svg{width:28px;height:28px}
+  .signin-modal h2{font-size:22px;font-weight:700;margin-bottom:6px}
+  .signin-modal p{font-size:14px;color:var(--text-2);margin-bottom:28px}
+  .auth-btn{display:inline-flex;align-items:center;gap:12px;padding:14px 28px;background:var(--surface);
+    border:1px solid var(--border);border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;
+    color:var(--text);cursor:pointer;transition:all var(--ease);box-shadow:var(--shadow)}
+  .auth-btn:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
   .auth-btn img{width:20px;height:20px}
   .auth-loading{font-size:12px;color:var(--text-3);margin-top:16px}
-  .auth-note{font-size:11px;color:var(--text-3);margin-top:12px}
-
-  .landing-features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px;text-align:left}
-  .landing-feature{padding:20px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);transition:all var(--ease)}
-  .landing-feature:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
-  .landing-feature-icon{font-size:24px;margin-bottom:8px}
-  .landing-feature-title{font-size:14px;font-weight:600;margin-bottom:4px}
-  .landing-feature-desc{font-size:12px;color:var(--text-2);line-height:1.4}
-
-  .landing-footer{margin-top:48px;font-size:11px;color:var(--text-3);line-height:1.6}
+  .signin-modal-note{font-size:11px;color:var(--text-3);margin-top:16px;line-height:1.5}
+  .signin-modal-close{position:absolute;top:16px;right:16px;background:var(--surface-hover);border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;color:var(--text-3);display:flex;align-items:center;justify-content:center}
 
   .auth-user{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);padding:8px 16px;cursor:pointer;border-top:1px solid var(--border-light);margin-top:8px}
   .auth-user img{width:20px;height:20px;border-radius:50%}
-  .auth-user:hover{color:var(--red-fg)}
+  .auth-user:hover{color:var(--accent)}
 
   @media(max-width:768px){
-    .landing{padding:40px 20px 32px}
-    .landing-title{font-size:36px}
-    .landing-sub{font-size:15px}
-    .landing-features{grid-template-columns:1fr}
+    .landing-hero{padding:40px 20px 32px}
+    .landing-title{font-size:44px;letter-spacing:-1.5px}
+    .landing-sub{font-size:16px}
+    .landing-features{grid-template-columns:1fr;padding:0 20px 40px}
+    .landing-steps{grid-template-columns:1fr;gap:16px}
+    .landing-section{padding:32px 20px 16px}
+    .landing-section-title{font-size:28px}
+    .landing-nav{padding:16px 20px}
+    .landing-nav-links{gap:12px}
+    .landing-nav-links .landing-nav-link{display:none}
+    .landing-nav-links .landing-nav-btn{display:inline-flex}
+    .signin-modal{padding:32px 24px}
   }
 
   /* ── Mobile More menu ── */
@@ -318,7 +459,7 @@ firebase.initializeApp({
   .drawer-actions .btn{flex:1;justify-content:center;font-size:12px;padding:10px 12px}
   .btn-secondary{background:var(--surface-hover);color:var(--text)}.btn-secondary:hover{background:var(--border)}
 
-  @media(max-width:768px){
+  @media(max-width:768px),(max-height:500px) and (orientation:landscape){
     .drawer{top:auto;bottom:0;right:0;left:0;width:100%;height:75vh;
       border-radius:16px 16px 0 0;transform:translateY(100%)}
     .drawer.open{transform:translateY(0)}
@@ -333,7 +474,8 @@ firebase.initializeApp({
 
   /* ── Month detail: slide animations ── */
   .month-nav{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-  .month-nav-arrow{background:none;border:none;font-size:24px;color:var(--text-2);cursor:pointer;
+  .month-nav-arrow{background:var(--surface-hover);border:1px solid var(--border-light);font-size:20px;color:var(--text);cursor:pointer;
+    width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
     padding:4px 12px;border-radius:8px;transition:all var(--ease);font-weight:300;line-height:1}
   .month-nav-arrow:hover{background:var(--surface-hover);color:var(--text)}
   .month-nav-arrow:active{transform:scale(.95)}
@@ -348,37 +490,120 @@ firebase.initializeApp({
 
   /* ── Month detail view ── */
   .md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
-  .md-header{font-size:10px;color:var(--text-3);text-align:center;padding:10px 0;font-weight:500;border-bottom:1px solid var(--border)}
-  .md-day{min-height:110px;padding:8px;border-bottom:1px solid var(--border-light);border-right:1px solid var(--border-light);
-    transition:all var(--ease);position:relative;display:flex;flex-direction:column}
-  .md-day:nth-child(7n){border-right:none}
+  .md-header{font-size:11px;color:var(--text-3);text-align:center;padding:12px 0 8px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+  .md-day{min-height:100px;padding:6px;transition:all var(--ease);position:relative;display:flex;flex-direction:column;
+    cursor:pointer;border-radius:8px;margin:1px}
   .md-day:hover:not(.md-empty){background:var(--surface-hover)}
-  .md-day.md-today{background:var(--accent-light)!important}
-  .md-day.md-today::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 2px 2px 0}
-  .md-day.md-empty{background:transparent;min-height:40px}
-  .md-day .md-date{font-size:14px;font-weight:600;margin-bottom:2px}
-  .md-day .md-rot{font-size:9px;color:var(--text-2);line-height:1.3}
-  .md-day .md-loc{font-size:8px;color:var(--text-3);font-style:italic;margin-bottom:4px}
-  .md-day .md-event{font-size:9px;color:var(--accent);font-weight:500;margin-bottom:2px}
-  .md-day .md-note{flex:1;width:100%;border:none;background:transparent;font-family:inherit;
-    font-size:10px;color:var(--text);resize:none;outline:none;line-height:1.4;padding:2px 0}
-  .md-day .md-note::placeholder{color:var(--text-3);font-style:italic}
-  .md-day.md-weekend:not([class*="block-"]){background:var(--surface-hover)}
+  .md-day.md-today .md-date{background:var(--accent);color:white;border-radius:50%;width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center}
+  .md-day.md-empty{background:transparent;min-height:32px;cursor:default}
+  .md-day .md-date{font-size:13px;font-weight:600;margin-bottom:4px;width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;border-radius:50%}
+  .md-day .md-rot-bar{height:4px;border-radius:2px;margin-bottom:3px}
+  .md-day .md-rot{font-size:9px;color:var(--text-2);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .md-day .md-loc{display:none}
+  .md-day .md-event-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;margin:1px}
+  .md-day .md-event{font-size:8px;color:var(--accent);font-weight:600;margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .md-day .md-note-dot{position:absolute;bottom:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--text-3);opacity:.4}
   .md-day.md-weekend .md-date{color:var(--text-3)}
-  .md-week-row{display:contents}
-  .md-week-sep{grid-column:1/-1;height:0;border-bottom:2px solid var(--border-light)}
-  .md-day .md-note:focus{background:rgba(0,122,255,.04);border-radius:4px;padding:2px 4px;margin:-2px -4px}
+  .md-week-sep{grid-column:1/-1;height:1px;background:var(--border-light);margin:2px 0}
+  .md-rot-legend{display:none;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:10px 12px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-sm)}
+  .md-rot-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-2);font-weight:500}
+  .md-rot-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
 
+  /* ── Year view mini-calendar grid ── */
+  .year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .year-month{cursor:pointer;padding:12px;border-radius:var(--radius);transition:all var(--ease)}
+  .year-month:hover{background:var(--surface-hover)}
+  .year-month-name{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text)}
+  .year-mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center}
+  .year-mini-hdr{font-size:9px;color:var(--text-3);font-weight:600;padding:2px 0 4px;text-transform:uppercase}
+  .year-mini-day{font-size:11px;padding:3px 0;color:var(--text);line-height:1.4}
+  .year-mini-day.empty{visibility:hidden}
+  .year-mini-day.yr-today{font-weight:800;outline:2px solid var(--accent);border-radius:50%;width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;margin:0 auto}
+  .year-mini-day.yr-event{position:relative}
+  .year-mini-day.yr-event::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:4px;height:4px;border-radius:50%;background:var(--accent)}
   @media(max-width:768px){
-    .md-day{min-height:80px;padding:4px}
-    .md-day .md-date{font-size:12px}
-    .md-day .md-rot{font-size:8px}
-    .md-day .md-note{font-size:9px}
+    .year-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+    .year-month{padding:8px}
+    .year-mini-day{font-size:10px;padding:2px 0}
+  }
+  @media(max-width:400px){
+    .year-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  }
+
+  /* ── Calendar view switcher ── */
+  .cal-view-switcher{display:flex;gap:0;background:var(--surface-hover);border-radius:10px;padding:3px;margin-bottom:16px;width:fit-content}
+  .cal-view-btn{border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:500;
+    padding:6px 16px;border-radius:8px;cursor:pointer;color:var(--text-2);transition:all var(--ease)}
+  .cal-view-btn.active{background:var(--surface);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .cal-view-btn:hover:not(.active){color:var(--text)}
+  .cal-today-btn{position:fixed;bottom:24px;right:24px;z-index:50;
+    background:linear-gradient(135deg,var(--accent),#5856D6);color:white;border:none;font-family:inherit;font-size:13px;
+    font-weight:600;padding:12px 24px;border-radius:24px;cursor:pointer;transition:all var(--ease);
+    box-shadow:0 4px 14px rgba(0,122,255,.35);display:none}
+  .cal-today-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,122,255,.4)}
+
+  /* ── Day view ── */
+  .day-view{max-width:600px}
+  .day-view-header{margin-bottom:20px}
+  .day-view-date{font-size:32px;font-weight:700;letter-spacing:-1px}
+  .day-view-weekday{font-size:14px;color:var(--text-2);margin-top:2px}
+  .day-view-section{margin-bottom:20px}
+  .day-view-section-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .day-view-card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;margin-bottom:8px;box-shadow:var(--shadow)}
+  .day-view-rot{display:flex;align-items:center;gap:12px}
+  .day-view-rot-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+  .day-view-rot-name{font-size:15px;font-weight:600}
+  .day-view-rot-detail{font-size:12px;color:var(--text-2);margin-top:2px}
+  .day-view-event{padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:6px;font-size:13px;font-weight:500}
+  .day-view-notes{width:100%;min-height:100px;border:1px solid var(--border-light);border-radius:var(--radius-sm);
+    padding:12px;font-family:inherit;font-size:14px;color:var(--text);resize:vertical;outline:none;background:var(--surface);line-height:1.6}
+  .day-view-notes:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+  .day-view-notes::placeholder{color:var(--text-3)}
+  .day-view-empty{font-size:13px;color:var(--text-3);padding:12px 0}
+
+  /* ── Multi-day views (3-day, week) ── */
+  .multi-day-grid{display:grid;gap:0}
+  .multi-day-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+  .multi-day-grid.cols-5{grid-template-columns:repeat(5,1fr)}
+  .multi-day-grid.cols-7{grid-template-columns:repeat(7,1fr)}
+  .multi-day-col{border-right:1px solid var(--border-light);min-height:300px;padding:0}
+  .multi-day-col:last-child{border-right:none}
+  .multi-day-col-header{text-align:center;padding:12px 4px 8px;border-bottom:1px solid var(--border-light);position:sticky;top:0;background:var(--bg);z-index:1}
+  .multi-day-col-header .mdc-weekday{font-size:11px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:.3px}
+  .multi-day-col-header .mdc-date{font-size:20px;font-weight:700;margin-top:2px;width:36px;height:36px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center;margin:4px auto 0}
+  .multi-day-col-header.mdc-today .mdc-date{background:var(--accent);color:white}
+  .multi-day-col-body{padding:8px 6px}
+  .multi-day-col-body .mdc-rot-bar{height:4px;border-radius:2px;margin-bottom:6px}
+  .multi-day-col-body .mdc-rot-name{font-size:11px;color:var(--text-2);margin-bottom:2px}
+  .multi-day-col-body .mdc-rot-loc{font-size:10px;color:var(--text-3);margin-bottom:6px}
+  .multi-day-col-body .mdc-event{font-size:10px;color:var(--accent);font-weight:600;padding:4px 6px;
+    background:var(--accent-light);border-radius:6px;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .multi-day-col-body .mdc-note{font-size:10px;color:var(--text-2);margin-top:6px;padding-top:6px;
+    border-top:1px solid var(--border-light);line-height:1.4;white-space:pre-line}
+
+  @media(max-width:768px),(max-height:500px) and (orientation:landscape){
+    .md-rot-legend{display:flex}
+    .md-day{min-height:48px;padding:4px}
+    .md-day .md-date{font-size:12px;width:24px;height:24px}
+    .md-day.md-today .md-date{width:24px;height:24px}
+    .md-day .md-rot{display:none}
+    .md-day .md-event{font-size:0;width:6px;height:6px;border-radius:50%;background:var(--accent);padding:0;margin:2px auto 0;overflow:hidden;white-space:nowrap}
+    .cal-view-switcher{width:100%}
+    .cal-view-btn{flex:1;padding:6px 8px;font-size:11px}
+    .multi-day-col-header .mdc-date{font-size:16px;width:28px;height:28px}
+    .multi-day-col-body .mdc-event{font-size:9px;padding:3px 5px}
+    .day-view{max-width:100%}
     .nav-item[data-view="month"]::before{content:"☐"}
     .month-pills-detail{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:6px}
     .month-pills-detail .month-pill{flex-shrink:0}
-    .month-nav-arrow{padding:4px 8px;font-size:20px}
-    .md-day{min-height:70px}
+    .month-nav-arrow{width:32px;height:32px;font-size:18px}
+    .cal-today-btn{bottom:80px;right:16px;padding:10px 20px;font-size:12px}
+    .md-day{min-height:48px}
   }
 
   /* ── Toast notification ── */
@@ -421,7 +646,7 @@ firebase.initializeApp({
 
   /* ── Print ── */
   @media print{
-    nav,.today-btn,.toast,.undo-bar,.btn-add,.btn-ghost,.welcome-banner,.month-pills,.nav-footer{display:none!important}
+    #sidebar-nav,.landing-nav,.today-btn,.toast,.undo-bar,.btn-add,.btn-ghost,.welcome-banner,.month-pills,.nav-footer{display:none!important}
     main{margin-left:0!important;padding:0!important;max-width:100%!important}
     .card{box-shadow:none;border:1px solid #ddd}
     .cal-day{min-height:40px}
@@ -430,8 +655,8 @@ firebase.initializeApp({
   }
 
   /* ── Mobile: sidebar → bottom tab bar ── */
-  @media(max-width:768px){
-    nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;
+  @media(max-width:768px),(max-height:500px) and (orientation:landscape){
+    #sidebar-nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;
       flex-direction:row;padding:0;border-right:none;border-top:1px solid var(--border);
       background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
       overflow:visible;z-index:100}
@@ -441,14 +666,12 @@ firebase.initializeApp({
     .nav-item.active{border-left:none;border-top-color:var(--accent);background:transparent}
     .nav-item::before{font-size:22px;display:block;line-height:1}
     .nav-item[data-view="dashboard"]::before{content:"🏠"}
-    .nav-item[data-view="year"]::before{content:"📅"}
-    .nav-item[data-view="month"]::before{content:"📋"}
+    .nav-item[data-view="month"]::before{content:"📅"}
     .nav-item[data-view="rotations"]::before{content:"🔄"}
     .nav-item[data-view="interviews"]::before{content:"⭐"}
     .nav-item[data-view="keydates"]::before{content:"📌"}
     .nav-item[data-view="letters"]::before{content:"✉️"}
     /* Hide overflow tabs on mobile — show only 5 */
-    .nav-item[data-view="year"]{display:none}
     .nav-item[data-view="keydates"]{display:none}
     .nav-item[data-view="letters"]{display:none}
     /* More button + sheet visible on mobile */
@@ -461,6 +684,7 @@ firebase.initializeApp({
     main{margin-left:0;padding:20px 16px 100px;max-width:100%}
     .page-title{font-size:24px}
     .card-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .dash-hero-grid{grid-template-columns:1fr;gap:12px;margin-bottom:20px}
     .card-grid-4{grid-template-columns:1fr 1fr}
     .card{padding:14px}
     .card-value{font-size:18px}
@@ -490,9 +714,10 @@ firebase.initializeApp({
     .toggle-wrap{display:none!important}
     .auth-user{display:none!important}
     .nav-footer{display:none!important}
-    nav{padding-bottom:env(safe-area-inset-bottom)}
-    .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px}
-    .tbl{min-width:600px}
+    #sidebar-nav{padding-bottom:env(safe-area-inset-bottom)}
+    /* Hide tables on mobile, show mobile cards */
+    .tbl-wrap{display:none}
+    .mobile-cards{display:flex!important}
     .hide-mobile{display:none}
   }
   @media(max-width:390px){
@@ -501,14 +726,16 @@ firebase.initializeApp({
   }
 </style>
 </head>
-<body>
+<body class="app-hidden">
 
-<nav>
-  <div class="nav-brand" style="cursor:pointer" onclick="document.querySelector('[data-view=dashboard]').click()">MatchReady<span>Fourth Year Planner</span></div>
+<nav id="sidebar-nav">
+  <div class="nav-brand" onclick="document.querySelector('[data-view=dashboard]').click()">
+    <div class="nav-brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div><div class="nav-brand-text">MatchReady</div><span>Fourth Year Planner</span></div>
+  </div>
   <div class="nav-section">Overview</div>
   <div class="nav-item active" data-view="dashboard">Dashboard</div>
-  <div class="nav-item" data-view="year">Year</div>
-  <div class="nav-item" data-view="month">Month</div>
+  <div class="nav-item" data-view="month">Calendar</div>
   <div class="nav-section">Plan</div>
   <div class="nav-item" data-view="rotations">Rotations</div>
   <div class="nav-item" data-view="interviews">Interviews</div>
@@ -521,52 +748,126 @@ firebase.initializeApp({
     <label class="toggle"><input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
     <span style="font-size:11px;color:var(--text-3)">☾</span>
   </div>
-  <div class="auth-user" id="nav-user" onclick="signOutUser()" style="display:none">
-    <img id="nav-user-pic" src="" alt=""><span id="nav-user-name"></span> · Sign out
+  <div class="auth-user" id="nav-user" onclick="showAccountView()" style="display:none">
+    <img id="nav-user-pic" src="" alt=""><span id="nav-user-name"></span> · My Account
   </div>
-  <div class="nav-footer">
-    Data syncs to your Google account.
-    <br><br>
-    <a href="#" onclick="exportData();return false">Export</a> ·
-    <label><a href="#">Import</a><input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
-  </div>
+  <div class="nav-footer">Synced to your Google account.</div>
 </nav>
 
 <div class="auth-screen" id="auth-screen">
-  <div class="landing">
-    <div class="landing-logo">MatchReady</div>
+  <nav class="landing-nav">
+    <div class="landing-nav-brand">
+      <div class="landing-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      MatchReady
+    </div>
+    <div class="landing-nav-links">
+      <a class="landing-nav-link" onclick="document.getElementById('section-features').scrollIntoView({behavior:'smooth'})">Features</a>
+      <a class="landing-nav-link" onclick="document.getElementById('section-how').scrollIntoView({behavior:'smooth'})">How It Works</a>
+      <a class="landing-nav-link" onclick="document.getElementById('section-about').scrollIntoView({behavior:'smooth'})">About</a>
+      <button class="landing-nav-btn" onclick="openSignIn()">Sign In</button>
+    </div>
+  </nav>
+
+  <div class="landing-hero">
+    <div class="landing-brand">MatchReady</div>
     <h1 class="landing-title">Plan your<br><span>fourth year.</span></h1>
-    <p class="landing-sub">The all-in-one planner for MS4s. Track rotations, interviews, ERAS deadlines, and letters of rec — synced to your Google account.</p>
-    <button class="auth-btn" onclick="signIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Get Started — Free</button>
-    <div class="auth-loading" id="auth-loading">Checking sign-in...</div>
-    <div class="auth-note">No credit card required. Your data is private.</div>
+    <p class="landing-sub">The all-in-one planner for MS4s. Rotations, interviews, ERAS deadlines, and letters of rec — synced across every device.</p>
+    <button class="landing-cta" onclick="openSignIn()">Get Started — Free →</button>
+    <div class="auth-loading" id="auth-loading" style="margin-top:20px;display:none"></div>
+  </div>
 
-    <div class="landing-features">
-      <div class="landing-feature">
-        <div class="landing-feature-icon">📊</div>
-        <div class="landing-feature-title">Live Dashboard</div>
-        <div class="landing-feature-desc">Current rotation, countdowns to ERAS and Match Day, and upcoming events — updated every time you open it.</div>
+  <div class="landing-section reveal" id="section-features">
+    <div class="landing-section-label">Features</div>
+    <div class="landing-section-title">Everything you need<br>for fourth year.</div>
+  </div>
+  <div class="landing-features">
+    <div class="landing-feature reveal reveal-delay-1">
+      <div class="landing-feature-icon">📊</div>
+      <div class="landing-feature-title">Live Dashboard</div>
+      <div class="landing-feature-desc">Current rotation, countdowns to ERAS and Match Day, and upcoming events — updated every time you open it.</div>
+    </div>
+    <div class="landing-feature reveal reveal-delay-2">
+      <div class="landing-feature-icon">📅</div>
+      <div class="landing-feature-title">Year & Month Views</div>
+      <div class="landing-feature-desc">Color-coded rotation blocks, daily notes, and click-to-expand day details across your entire year.</div>
+    </div>
+    <div class="landing-feature reveal reveal-delay-3">
+      <div class="landing-feature-icon">⭐</div>
+      <div class="landing-feature-title">Interview Tracking</div>
+      <div class="landing-feature-desc">Log interviews and they automatically appear on your calendar with weekly summaries and status tracking.</div>
+    </div>
+    <div class="landing-feature reveal reveal-delay-4">
+      <div class="landing-feature-icon">☁️</div>
+      <div class="landing-feature-title">Cloud Sync</div>
+      <div class="landing-feature-desc">Sign in with Google. Your data follows you everywhere — phone, laptop, library computer. Never lose your plan.</div>
+    </div>
+  </div>
+
+  <div class="landing-section reveal" id="section-how">
+    <div class="landing-section-label">How It Works</div>
+    <div class="landing-section-title">Three steps. That's it.</div>
+    <div class="landing-steps">
+      <div class="landing-step reveal reveal-delay-1">
+        <div class="landing-step-num">1</div>
+        <div class="landing-step-title">Add your rotations</div>
+        <div class="landing-step-desc">Enter your blocks, pick colors, set dates. Flexible — works with any schedule length.</div>
       </div>
-      <div class="landing-feature">
-        <div class="landing-feature-icon">📅</div>
-        <div class="landing-feature-title">Year & Month Views</div>
-        <div class="landing-feature-desc">Color-coded calendar with rotation blocks, daily notes, and click-to-expand day details.</div>
+      <div class="landing-step reveal reveal-delay-2">
+        <div class="landing-step-num">2</div>
+        <div class="landing-step-title">Track your milestones</div>
+        <div class="landing-step-desc">Log interviews, ERAS deadlines, exam dates, and letters of rec. They appear on your calendar automatically.</div>
       </div>
-      <div class="landing-feature">
-        <div class="landing-feature-icon">⭐</div>
-        <div class="landing-feature-title">Interview Tracking</div>
-        <div class="landing-feature-desc">Log interviews and they automatically appear on your calendar with weekly summaries.</div>
-      </div>
-      <div class="landing-feature">
-        <div class="landing-feature-icon">☁️</div>
-        <div class="landing-feature-title">Cloud Sync</div>
-        <div class="landing-feature-desc">Sign in with Google. Your data follows you across every device — phone, laptop, library computer.</div>
+      <div class="landing-step reveal reveal-delay-3">
+        <div class="landing-step-num">3</div>
+        <div class="landing-step-title">Stay on track</div>
+        <div class="landing-step-desc">Your dashboard shows what's happening today, what's next, and how far you've come. Open it every morning.</div>
       </div>
     </div>
+  </div>
 
-    <div class="landing-footer">
-      Built for medical students, by tech nerds.
-    </div>
+  <div class="landing-section reveal" id="section-about" style="text-align:center;max-width:700px">
+    <div class="landing-section-label">About</div>
+    <div class="landing-section-title">Built for medical students,<br>by tech nerds.</div>
+    <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:24px">Fourth year should be exciting — not stressful. But between ERAS, Step 2, interviews, and rotations, most students end up buried in spreadsheets, sticky notes, and GroupMe reminders.</p>
+    <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:24px">We built MatchReady because our friends deserved better. One place for everything — rotations, interviews, deadlines, letters — that actually looks good and works on every device.</p>
+    <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:36px">No ads. No data selling. No paywalls. Just a tool that helps you get to Match Day with your sanity intact.</p>
+    <button class="landing-cta" onclick="openSignIn()">Get Started — Free →</button>
+  </div>
+
+  <div class="landing-footer">
+    <div class="landing-footer-brand">MatchReady</div>
+  </div>
+</div>
+
+<!-- Sign-in modal (separate from landing page) -->
+<div class="signin-modal-backdrop" id="signin-backdrop" onclick="if(event.target===this)closeSignIn()">
+  <div class="signin-modal" style="position:relative">
+    <button class="signin-modal-close" onclick="closeSignIn()">✕</button>
+    <div class="signin-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Welcome to MatchReady</h2>
+    <p>Sign in to save your schedule to the cloud.</p>
+    <button class="auth-btn" onclick="signIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Continue with Google</button>
+    <div class="signin-modal-note">Free forever. Your data is private and encrypted.<br>No credit card required.</div>
+  </div>
+</div>
+<div class="signin-modal-backdrop" id="clear-data-backdrop" onclick="if(event.target===this)closeClearModal()">
+  <div class="signin-modal" style="position:relative">
+    <button class="signin-modal-close" onclick="closeClearModal()">✕</button>
+    <div class="signin-modal-icon" style="background:linear-gradient(135deg,var(--red-fg),#DC2626)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></div>
+    <h2>Clear All Data?</h2>
+    <p>This will permanently delete all your rotations, interviews, key dates, letters, and notes. This cannot be undone.</p>
+    <button class="auth-btn" style="background:var(--surface-hover);color:var(--text)" onclick="closeClearModal()">Cancel</button>
+    <button class="auth-btn" style="background:transparent;color:var(--red-fg);border:1px solid var(--border-light);margin-top:8px;font-size:13px" onclick="executeClearData()">Delete Everything</button>
+  </div>
+</div>
+<div class="signin-modal-backdrop" id="signout-backdrop" onclick="if(event.target===this)closeSignOutModal()">
+  <div class="signin-modal" style="position:relative">
+    <button class="signin-modal-close" onclick="closeSignOutModal()">✕</button>
+    <div class="signin-modal-icon" style="background:linear-gradient(135deg,var(--orange-fg),#D97706)"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+    <h2>Sign Out?</h2>
+    <p>Your data is saved to the cloud. You can sign back in anytime to pick up where you left off.</p>
+    <button class="auth-btn" style="background:var(--orange-fg);color:white" onclick="executeSignOut()">Sign Out</button>
+    <button class="auth-btn" style="background:var(--surface-hover);color:var(--text);margin-top:8px" onclick="closeSignOutModal()">Cancel</button>
   </div>
 </div>
 <div class="more-sheet-backdrop" id="more-backdrop" onclick="toggleMore()"></div>
@@ -581,16 +882,13 @@ firebase.initializeApp({
     </div>
   </div>
   <div class="more-sheet-divider"></div>
-  <div class="more-sheet-item" onclick="moreNav('year')"><span>📅</span>Year View</div>
   <div class="more-sheet-item" onclick="moreNav('keydates')"><span>📌</span>Key Dates</div>
   <div class="more-sheet-item" onclick="moreNav('letters')"><span>✉️</span>Letters</div>
   <div class="more-sheet-divider"></div>
-  <div class="more-sheet-item" id="more-signout" style="display:none;justify-content:space-between" onclick="signOutUser();toggleMore()">
-    <div style="display:flex;align-items:center;gap:12px">
-      <img id="more-user-pic" src="" style="width:28px;height:28px;border-radius:50%">
-      <span id="more-user-name" style="font-weight:500"></span>
-    </div>
-    <span style="font-size:13px;color:var(--text-3)">Sign out</span>
+  <div class="more-sheet-item" id="more-account" style="display:none" onclick="moreNav('account')">
+    <img id="more-user-pic" src="" style="width:28px;height:28px;border-radius:50%;flex-shrink:0">
+    <span id="more-user-name" style="font-weight:500"></span>
+    <span style="margin-left:auto;font-size:13px;color:var(--text-3)">→</span>
   </div>
 </div>
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
@@ -621,39 +919,51 @@ firebase.initializeApp({
       <div class="card-label">TODAY'S SCHEDULE</div>
       <div id="dash-today"></div>
     </div>
-    <div class="card-grid">
-      <div class="card card-accent" style="cursor:pointer" onclick="document.querySelector('[data-view=rotations]').click()"><div class="card-label" id="dash-rot-label">Current Rotation</div><div class="card-value" id="dash-rot">—</div><div class="card-detail" id="dash-rot-d"></div></div>
-      <div class="card card-accent" style="cursor:pointer" onclick="document.querySelector('[data-view=keydates]').click()"><div class="card-label">Next Event</div><div class="card-value" id="dash-next">—</div><div class="card-detail" id="dash-next-d"></div></div>
+    <div class="dash-hero-grid">
+      <div class="card dash-expand dash-hero-card" id="dash-rot-card" onclick="toggleDashCard('rot')">
+        <div class="card-label" id="dash-rot-label">Current Rotation</div>
+        <div class="card-value" id="dash-rot">—</div>
+        <div class="card-detail" id="dash-rot-d"></div>
+        <div class="dash-expand-body" id="dash-rot-expand"></div>
+      </div>
+      <div class="card dash-expand dash-hero-card" id="dash-next-card" onclick="toggleDashCard('next')">
+        <div class="card-label">Next Event</div>
+        <div class="card-value" id="dash-next">—</div>
+        <div class="card-detail" id="dash-next-d"></div>
+        <div class="dash-expand-body" id="dash-next-expand"></div>
+      </div>
     </div>
     <div class="progress-container">
       <div class="progress-header"><span class="progress-label">Year Progress</span><span class="progress-pct" id="dash-pct">0%</span></div>
       <div class="progress-track"><div class="progress-fill" id="dash-fill" style="width:0%"></div></div>
     </div>
     <div class="countdown-grid" id="dash-cd"></div>
+    <div class="feed" id="dash-week" style="margin-bottom:20px"></div>
+    <div class="dash-quick-actions">
+      <button class="btn btn-secondary" onclick="addInterview();document.querySelector('[data-view=interviews]').click()">+ Interview</button>
+      <button class="btn btn-secondary" onclick="addKeyDate();document.querySelector('[data-view=keydates]').click()">+ Key Date</button>
+      <button class="btn btn-secondary" onclick="addLetter();document.querySelector('[data-view=letters]').click()">+ Letter</button>
+    </div>
     <div class="card-grid card-grid-4" id="dash-stats"></div>
     <div class="feed" id="dash-feed"></div>
-    <div class="mobile-backup" style="display:none;margin-top:24px;text-align:center;font-size:12px;color:var(--text-3)">
-      <a href="#" onclick="exportData();return false" style="color:var(--accent);text-decoration:none;font-weight:500">Export Backup</a> ·
-      <label style="color:var(--accent);font-weight:500;cursor:pointer">Import<input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
-    </div>
   </div>
 
   <!-- YEAR -->
-  <div class="view" id="view-year">
-    <h1 class="page-title"><span>Year</span></h1>
-    <p class="page-subtitle">★ interview · ▶ key date · today is highlighted</p>
-    <div class="month-pills" id="month-pills"></div>
-    <div id="year-cal"></div>
-  </div>
-
-  <!-- MONTH DETAIL -->
+  <!-- CALENDAR -->
   <div class="view" id="view-month">
     <div class="month-nav">
-      <button class="month-nav-arrow" onclick="changeMonth(-1)">‹</button>
+      <button class="month-nav-arrow" onclick="navCalView(-1)">‹</button>
       <h1 class="page-title" id="month-title" style="margin-bottom:0;flex:1"></h1>
-      <button class="month-nav-arrow" onclick="changeMonth(1)">›</button>
+      <button class="month-nav-arrow" onclick="navCalView(1)">›</button>
     </div>
-    <p class="page-subtitle">Click any day to add notes</p>
+    <button class="cal-today-btn" id="cal-today-fab" onclick="goToToday()">Today</button>
+    <div class="cal-view-switcher">
+      <button class="cal-view-btn" data-calview="day" onclick="setCalView('day')">Day</button>
+      <button class="cal-view-btn" data-calview="3day" onclick="setCalView('3day')">3 Day</button>
+      <button class="cal-view-btn" data-calview="week" onclick="setCalView('week')">Week</button>
+      <button class="cal-view-btn active" data-calview="month" onclick="setCalView('month')">Month</button>
+      <button class="cal-view-btn" data-calview="year" onclick="setCalView('year')">Year</button>
+    </div>
     <div class="month-pills-detail" id="month-pills-detail"></div>
     <div class="md-container"><div class="md-inner" id="month-cal"></div></div>
   </div>
@@ -663,6 +973,7 @@ firebase.initializeApp({
     <h1 class="page-title"><span>Rotations</span></h1>
     <p class="page-subtitle">Your rotation schedule. Blocks can be any length.</p>
     <div class="tbl-wrap"><table class="tbl" id="rot-tbl"><thead><tr><th></th><th>Color</th><th>Start</th><th>End</th><th>Rotation</th><th>Location</th><th class="hide-mobile">Type</th><th></th></tr></thead><tbody id="rot-body"></tbody></table></div>
+    <div class="mobile-cards" id="rot-cards"></div>
     <button class="btn btn-primary btn-add" onclick="addBlock()">+ Add Block</button>
   </div>
 
@@ -678,6 +989,7 @@ firebase.initializeApp({
   <div class="view" id="view-keydates">
     <h1 class="page-title"><span>Key Dates</span></h1>
     <p class="page-subtitle">Deadlines and milestones, tracked automatically.</p>
+    <div class="kd-legend"><span class="kd-legend-dot" style="background:var(--blue-bg);border-color:var(--blue-fg)"></span>Application <span class="kd-legend-dot" style="background:var(--red-bg);border-color:var(--red-fg)"></span>Exam <span class="kd-legend-dot" style="background:var(--green-bg);border-color:var(--green-fg)"></span>Milestone <span class="kd-legend-dot" style="background:var(--yellow-bg);border-color:var(--yellow-fg)"></span>Personal</div>
     <div id="kd-container"></div>
     <button class="btn btn-primary btn-add" onclick="addKeyDate()">+ Add Date</button>
   </div>
@@ -689,28 +1001,99 @@ firebase.initializeApp({
     <div id="lor-container"></div>
     <button class="btn btn-primary btn-add" onclick="addLetter()">+ Add Letter</button>
   </div>
+
+  <!-- MY ACCOUNT -->
+  <div class="view" id="view-account">
+    <h1 class="page-title"><span>My Account</span></h1>
+    <p class="page-subtitle">Manage your profile, plan, and data.</p>
+
+    <div class="acct-card" id="acct-profile">
+      <div class="acct-profile-row">
+        <img id="acct-pic" src="" class="acct-avatar">
+        <div>
+          <div class="acct-name" id="acct-name">—</div>
+          <div class="acct-email" id="acct-email">—</div>
+          <div class="acct-provider">Signed in with Google</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acct-section-label">Plan</div>
+    <div class="acct-card">
+      <div class="acct-plan-row">
+        <div>
+          <div class="acct-plan-name">Free Plan</div>
+          <div class="acct-plan-desc">Unlimited rotations, interviews, key dates, and letters. Cloud sync across all devices.</div>
+        </div>
+        <span class="acct-plan-badge">Active</span>
+      </div>
+    </div>
+
+    <div class="acct-section-label">Data</div>
+    <div class="acct-card">
+      <div class="acct-data-item" onclick="confirmClearData()">
+        <div><div class="acct-data-title" style="color:var(--red-fg)">Clear All Data</div><div class="acct-data-desc">Remove all rotations, interviews, dates, and notes</div></div>
+        <span class="acct-arrow" style="color:var(--red-fg)">→</span>
+      </div>
+    </div>
+
+    <div class="acct-section-label">Session</div>
+    <button class="acct-signout" onclick="signOutUser()">Sign Out</button>
+
+    <div class="acct-footer">MatchReady v1.0 · Built for MS4s</div>
+  </div>
 </main>
 
 <script>
 const COLORS={Blue:"#DBEAFE",Rose:"#FFE4E6",Mint:"#DCFCE7",Amber:"#FEF3C7",Lavender:"#EDE9FE",Peach:"#FFEDD5",Teal:"#CFFAFE",Lemon:"#FEF9C3",Pink:"#FCE7F3",Sage:"#D1FAE5",Coral:"#FEE2E2",Sky:"#E0F2FE",Plum:"#F3E8FF"};
 const CN=Object.keys(COLORS);
-const MIY=[];for(let m=5;m<12;m++)MIY.push({y:2026,m});for(let m=0;m<6;m++)MIY.push({y:2027,m});
+let MIY=[];
 const MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
+function buildMIY(){
+  MIY=[];
+  // Derive date range from rotation data
+  const dates=S.rotations.flatMap(r=>[pd(r.start),pd(r.end)]).filter(Boolean);
+  let startDate,endDate;
+  if(dates.length){
+    startDate=new Date(Math.min(...dates));
+    endDate=new Date(Math.max(...dates));
+  } else {
+    // Default: June of current year → May of next year
+    const y=TODAY.getMonth()>=5?TODAY.getFullYear():TODAY.getFullYear()-1;
+    startDate=new Date(y,5,1);
+    endDate=new Date(y+1,4,31);
+  }
+  // Build month list from startDate month to endDate month
+  let y=startDate.getFullYear(),m=startDate.getMonth();
+  const ey=endDate.getFullYear(),em=endDate.getMonth();
+  while(y<ey||(y===ey&&m<=em)){
+    MIY.push({y,m});
+    m++;if(m>11){m=0;y++}
+  }
+}
 
 const STATUS_COLORS={Completed:'ss-green',Complete:'ss-green','In Progress':'ss-yellow',Scheduled:'ss-blue',Invited:'ss-yellow','Not Started':'ss-red','Not Asked':'ss-red',Asked:'ss-yellow',Accepted:'ss-blue',Submitted:'ss-green',Waitlisted:'ss-orange',Declined:'ss-red'};
 
-// ── Default data ──
-const DEF_ROT=[
-  {block:"Block 1",color:"Blue",start:"2026-06-01",end:"2026-06-28",name:"Emergency Medicine",location:"University Hospital",type:"Core"},
-  {block:"Block 2",color:"Rose",start:"2026-06-29",end:"2026-07-26",name:"Internal Medicine",location:"VA Medical Center",type:"Core"},
-  ...Array.from({length:11},(_,i)=>({block:`Block ${i+3}`,color:CN[(i+2)%CN.length],start:["2026-07-27","2026-08-24","2026-09-21","2026-10-19","2026-11-16","2026-12-14","2027-01-11","2027-02-08","2027-03-08","2027-04-05","2027-05-03"][i],end:["2026-08-23","2026-09-20","2026-10-18","2026-11-15","2026-12-13","2027-01-10","2027-02-07","2027-03-07","2027-04-04","2027-05-02","2027-05-31"][i],name:"",location:"",type:""}))
+// ── Default data (relative to current academic year) ──
+const MS4_Y=2026; // MS4 year starts June 2026 — change this for future cohorts
+const Y1=MS4_Y,Y2=MS4_Y+1;
+function fmt(y,m,d){return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+// Generate 13 four-week blocks starting June 1
+const DEF_ROT=(()=>{const blocks=[];let cur=new Date(Y1,5,1);for(let i=0;i<13;i++){const s=new Date(cur);const e=new Date(cur);e.setDate(e.getDate()+27);blocks.push({block:`Block ${i+1}`,color:CN[i%CN.length],start:fmt(s.getFullYear(),s.getMonth()+1,s.getDate()),end:fmt(e.getFullYear(),e.getMonth()+1,e.getDate()),name:i===0?'Emergency Medicine':i===1?'Internal Medicine':'',location:i===0?'University Hospital':i===1?'VA Medical Center':'',type:i<2?'Core':''});cur.setDate(cur.getDate()+28)}return blocks})();
+const DEF_INTV=[{program:"Johns Hopkins EM",specialty:"Emergency Medicine",date:fmt(Y1,10,15),location:"Baltimore, MD",status:"Scheduled"}];
+const DEF_KD=[
+  {date:fmt(Y1,9,1),event:"ERAS Opens",category:"Application",status:"Not Started"},
+  {date:fmt(Y1,9,29),event:"ERAS Deadline",category:"Application",status:"Not Started"},
+  {date:fmt(Y2,2,20),event:"Rank List Due",category:"Application",status:"Not Started"},
+  {date:fmt(Y2,3,20),event:"Match Day",category:"Milestone",status:"Not Started"},
+  {date:"",event:"USMLE Step 2 CK",category:"Exam",status:"Not Started"},
+  {date:fmt(Y2,5,15),event:"Graduation",category:"Milestone",status:"Not Started"}
 ];
-const DEF_INTV=[{program:"Johns Hopkins EM",specialty:"Emergency Medicine",date:"2026-10-15",location:"Baltimore, MD",status:"Scheduled"}];
-const DEF_KD=[{date:"2026-09-01",event:"ERAS Opens",category:"Application",status:"Not Started"},{date:"2026-09-29",event:"ERAS Deadline",category:"Application",status:"Not Started"},{date:"2027-02-20",event:"Rank List Due",category:"Application",status:"Not Started"},{date:"2027-03-20",event:"Match Day",category:"Application",status:"Not Started"},{date:"",event:"USMLE Step 2 CK",category:"Exam",status:"Not Started"},{date:"2027-05-15",event:"Graduation",category:"Milestone",status:"Not Started"}];
 
 let S=loadState();
-function loadState(){const s=localStorage.getItem('ms4cal');return s?JSON.parse(s):{rotations:[...DEF_ROT],interviews:[...DEF_INTV],keydates:[...DEF_KD],letters:[],notes:{}}}
+function loadState(){const s=localStorage.getItem('ms4cal');return s?JSON.parse(s):{rotations:DEF_ROT.map(r=>({...r})),interviews:DEF_INTV.map(i=>({...i})),keydates:DEF_KD.map(k=>({...k})),letters:[],notes:{}}}
+buildMIY();
 function save(){localStorage.setItem('ms4cal',JSON.stringify(S));showToast('Saved')}
 function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
@@ -745,18 +1128,24 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     this.classList.add('active');
     document.getElementById('main-content').scrollTo({top:0,behavior:'smooth'});
     window.scrollTo({top:0,behavior:'smooth'});
-    document.getElementById('today-btn').style.display='none';
-    const titles={dashboard:'Dashboard',year:'Year',month:'Month',rotations:'Rotations',interviews:'Interviews',keydates:'Key Dates',letters:'Letters'};
+    // Dismiss More sheet if open
+    const ms=document.getElementById('more-sheet');if(ms)ms.classList.remove('open');
+    const mb=document.getElementById('more-backdrop');if(mb)mb.classList.remove('open');
+    const titles={dashboard:'Dashboard',month:'Calendar',rotations:'Rotations',interviews:'Interviews',keydates:'Key Dates',letters:'Letters',account:'My Account'};
     document.title=`${titles[view]||'MS4'} · MatchReady`;
-    if(view==='year')renderYear();
-    if(view==='month')renderMonth();
+    const fab=document.getElementById('cal-today-fab');
+    if(fab)fab.style.display=(view==='month')?'block':'none';
+    if(view==='month')renderCalView();
     if(view==='dashboard')renderDashboard();
   });
 });
 
 // ── Dashboard ──
 function renderDashboard(){
-  const ys=new Date(2026,5,1),ye=new Date(2027,4,31);
+  // Year progress from first rotation start to last rotation end
+  const rotDates=S.rotations.flatMap(r=>[pd(r.start),pd(r.end)]).filter(Boolean);
+  const ys=rotDates.length?new Date(Math.min(...rotDates)):new Date(Y1,5,1);
+  const ye=rotDates.length?new Date(Math.max(...rotDates)):new Date(Y2,4,31);
   const prog=Math.max(0,Math.min(1,(TODAY-ys)/(ye-ys)));
   document.getElementById('dash-subtitle').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   // Welcome banner for first-time users
@@ -780,27 +1169,83 @@ function renderDashboard(){
   if(cur){
     document.getElementById('dash-rot').textContent=cur.name||cur.block;
     document.getElementById('dash-rot-d').textContent=`${cur.location||''} · ${cur.block}`;
+    // Expand content: block progress + next rotation
+    const blockStart=pd(cur.start),blockEnd=pd(cur.end);
+    const dayIn=blockStart?db(blockStart,TODAY)+1:0;
+    const blockLen=blockStart&&blockEnd?db(blockStart,blockEnd)+1:0;
+    const nextRot=S.rotations.find(r=>pd(r.start)&&pd(r.start)>TODAY&&r.block!==cur.block);
+    let expandHtml=`<div class="dash-expand-detail">`;
+    if(blockLen)expandHtml+=`<strong>Day ${dayIn} of ${blockLen}</strong><br>`;
+    if(cur.start)expandHtml+=`${sd(blockStart)} → ${sd(blockEnd)}<br>`;
+    if(cur.location)expandHtml+=`📍 ${cur.location}<br>`;
+    if(cur.type)expandHtml+=`${cur.type}<br>`;
+    if(nextRot)expandHtml+=`<br>Up next: <strong>${nextRot.name||nextRot.block}</strong>${nextRot.start?' · starts '+sd(pd(nextRot.start)):''}`;
+    expandHtml+=`</div><span class="dash-expand-link" onclick="event.stopPropagation();document.querySelector('[data-view=rotations]').click()">View All Rotations →</span>`;
+    document.getElementById('dash-rot-expand').innerHTML=expandHtml;
   } else {
-    // Show next upcoming rotation
     const nextRot=S.rotations.filter(r=>r.name&&pd(r.start)&&pd(r.start)>TODAY).sort((a,b)=>pd(a.start)-pd(b.start))[0];
     if(nextRot){
       document.getElementById('dash-rot').textContent=nextRot.name;
       document.getElementById('dash-rot-d').textContent=`Starts ${sd(pd(nextRot.start))} · ${nextRot.block}`;
       document.getElementById('dash-rot-label').textContent='NEXT ROTATION';
+      let expandHtml=`<div class="dash-expand-detail">`;
+      expandHtml+=`${sd(pd(nextRot.start))} → ${sd(pd(nextRot.end))}<br>`;
+      if(nextRot.location)expandHtml+=`📍 ${nextRot.location}<br>`;
+      if(nextRot.type)expandHtml+=`${nextRot.type}<br>`;
+      const daysUntil=db(TODAY,pd(nextRot.start));
+      expandHtml+=`Starts in <strong>${daysUntil} days</strong>`;
+      expandHtml+=`</div><span class="dash-expand-link" onclick="event.stopPropagation();document.querySelector('[data-view=rotations]').click()">View All Rotations →</span>`;
+      document.getElementById('dash-rot-expand').innerHTML=expandHtml;
     } else {
       document.getElementById('dash-rot').textContent='No rotations planned';
       document.getElementById('dash-rot-d').textContent='';
+      document.getElementById('dash-rot-expand').innerHTML=`<span class="dash-expand-link" onclick="event.stopPropagation();document.querySelector('[data-view=rotations]').click()">Add Rotations →</span>`;
     }
   }
+
+  // Next Event expandable
   const fe=S.keydates.filter(k=>pd(k.date)&&pd(k.date)>TODAY).sort((a,b)=>pd(a.date)-pd(b.date));
   const nx=fe[0];
   document.getElementById('dash-next').textContent=nx?.event||'None upcoming';
   document.getElementById('dash-next-d').textContent=nx?`${sd(pd(nx.date))} · in ${db(TODAY,pd(nx.date))} days`:'';
+  if(fe.length){
+    let expandHtml='';
+    fe.slice(0,4).forEach(k=>{
+      const days=db(TODAY,pd(k.date));
+      const color=days<=7?'var(--red-fg)':days<=30?'var(--orange-fg)':'var(--text-2)';
+      expandHtml+=`<div class="dash-expand-event"><span>${k.event}</span><span style="font-size:11px;color:${color};font-weight:600">${sd(pd(k.date))}</span></div>`;
+    });
+    if(fe.length>4)expandHtml+=`<div style="font-size:11px;color:var(--text-3);padding-top:6px">+${fe.length-4} more</div>`;
+    expandHtml+=`<span class="dash-expand-link" onclick="event.stopPropagation();document.querySelector('[data-view=keydates]').click()">View All Key Dates →</span>`;
+    document.getElementById('dash-next-expand').innerHTML=expandHtml;
+  } else {
+    document.getElementById('dash-next-expand').innerHTML=`<span class="dash-expand-link" onclick="event.stopPropagation();document.querySelector('[data-view=keydates]').click()">Add Key Dates →</span>`;
+  }
+
   document.getElementById('dash-pct').textContent=Math.round(prog*100)+'%';
   setTimeout(()=>document.getElementById('dash-fill').style.width=Math.round(prog*100)+'%',100);
 
-  const cds=[{l:'ERAS',d:new Date(2026,8,1)},{l:'Match Day',d:new Date(2027,2,20)},{l:'Graduation',d:new Date(2027,4,15)},{l:'Residency',d:new Date(2027,5,15)}];
-  document.getElementById('dash-cd').innerHTML=cds.map(c=>{const days=db(TODAY,c.d);const color=days<=0?'var(--green)':days<=7?'var(--red-fg)':days<=30?'var(--orange-fg)':'var(--text)';return`<div class="countdown" style="cursor:pointer" onclick="document.querySelector('[data-view=keydates]').click()"><div class="countdown-num" style="color:${color}">${days>0?days:'✓'}</div><div class="countdown-unit">${days>0?'days':''}</div><div class="countdown-label">${c.l}</div></div>`}).join('');
+  // Build countdowns from key dates (up to 4, sorted by date)
+  const cdKd=S.keydates.filter(k=>pd(k.date)).map(k=>({l:k.event.length>14?k.event.slice(0,12)+'…':k.event,d:pd(k.date)})).sort((a,b)=>a.d-b.d).slice(0,4);
+  document.getElementById('dash-cd').innerHTML=cdKd.length?cdKd.map(c=>{const days=db(TODAY,c.d);const color=days<=0?'var(--green)':days<=7?'var(--red-fg)':days<=30?'var(--orange-fg)':'var(--text)';return`<div class="countdown"><div class="countdown-num" style="color:${color}">${days>0?days:'✓'}</div><div class="countdown-unit">${days>0?'days':''}</div><div class="countdown-label">${c.l}</div></div>`}).join(''):'<div style="grid-column:1/-1;text-align:center;color:var(--text-3);font-size:13px;padding:16px">Add key dates to see countdowns</div>';
+
+  // This Week feed
+  const weekEnd=new Date(TODAY);weekEnd.setDate(weekEnd.getDate()+7);
+  const weekEvents=[
+    ...S.keydates.map(k=>({date:k.date,name:k.event,type:'event',icon:'📌'})),
+    ...S.interviews.map(i=>({date:i.date,name:i.program,type:'interview',icon:'⭐'})),
+    ...S.rotations.filter(r=>pd(r.start)).map(r=>({date:r.start,name:`${r.name||r.block} begins`,type:'rotation',icon:'🔄'})),
+    ...S.rotations.filter(r=>pd(r.end)).map(r=>({date:r.end,name:`${r.name||r.block} ends`,type:'rotation',icon:'🏁'}))
+  ].filter(e=>pd(e.date)&&pd(e.date)>=TODAY&&pd(e.date)<=weekEnd).sort((a,b)=>pd(a.date)-pd(b.date));
+  const weekFeed=document.getElementById('dash-week');
+  if(weekEvents.length){
+    weekFeed.innerHTML=`<div class="feed-header">This Week</div>`+weekEvents.map(e=>{
+      const d=pd(e.date);const isToday=same(d,TODAY);
+      return`<div class="feed-item" style="cursor:pointer" onclick="openDrawer('${e.date}')"><span class="feed-date">${isToday?'Today':sd(d)}</span><span class="feed-name">${e.icon} ${e.name}</span></div>`;
+    }).join('');
+  } else {
+    weekFeed.innerHTML=`<div class="feed-header">This Week</div><div class="feed-empty">Nothing coming up this week</div>`;
+  }
 
   document.getElementById('dash-stats').innerHTML=[
     {l:'Interviews',v:S.interviews.length,d:`${S.interviews.filter(i=>i.status==='Completed').length} completed`,nav:'interviews'},
@@ -822,54 +1267,43 @@ function renderDashboard(){
   }
 }
 
-// ── Year ──
-function scrollToToday(){
-  const el=document.querySelector('.cal-day.today');
-  if(el){el.scrollIntoView({behavior:'smooth',block:'center'});return}
-  const cur=document.querySelector('.cal-month[data-current]');
-  if(cur){cur.scrollIntoView({behavior:'smooth',block:'start'});return}
-  // Today is outside the calendar range — scroll to first month
-  const first=document.querySelector('.cal-month');
-  if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
+function showAccountView(){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-account').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.title='My Account · MatchReady';
 }
-function renderYear(){
-  const c=document.getElementById('year-cal');c.innerHTML='';
-  // Month jump pills
-  const pills=document.getElementById('month-pills');
-  const todayMonth=TODAY.getMonth(),todayYear=TODAY.getFullYear();
-  pills.innerHTML=MIY.map(({y,m})=>{const isCur=(m===todayMonth&&y===todayYear);return`<span class="month-pill${isCur?' current':''}" onclick="document.getElementById('month-${y}-${m}').scrollIntoView({behavior:'smooth',block:'start'})">${MN[m].slice(0,3)}</span>`}).join('');
-  // Show Today button on Year view
-  document.getElementById('today-btn').style.display='block';
-  let prevYear=null;
-  MIY.forEach(({y,m})=>{
-    const div=document.createElement('div');div.className='cal-month';div.id=`month-${y}-${m}`;
-    if(m===TODAY.getMonth()&&y===TODAY.getFullYear())div.dataset.current='1';
-    const showYear=(y!==prevYear);prevYear=y;
-    let h=`<div class="cal-month-name" style="cursor:pointer" onclick="openMonth(${y},${m})" title="Click for monthly detail">${MN[m]}${showYear?` <span class="cal-month-year">${y}</span>`:''}</div>`;
-    h+=`<div class="cal-header">${['S','M','T','W','T','F','S'].map(d=>`<span>${d}</span>`).join('')}<span>Events</span></div>`;
-    const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
-    let day=1-fd;
-    while(day<=dim){
-      let wEvents=[],wRot=null;
-      h+='<div class="cal-week">';
-      for(let i=0;i<7;i++,day++){
-        if(day<1||day>dim){h+='<div class="cal-day empty"></div>';continue}
-        const d=new Date(y,m,day),rot=rotFor(d),intv=intvFor(d),kd=kdFor(d),isT=same(d,TODAY),isW=(i===0||i===6);
-        const cc=rot?'block-'+rot.color.toLowerCase():'';
-        let info='',title='';
-        if(intv){info=`★ ${intv.program}`;wEvents.push(`<span class="ev-highlight">★ ${intv.program}</span>`);title=`Interview: ${intv.program}\n${intv.location||''}`}
-        else if(kd){info=`▶ ${kd.event}`;wEvents.push(`<span class="ev-highlight">▶ ${kd.event}</span>`);title=`Key Date: ${kd.event}`}
-        else if(rot?.name){info=`${rot.name}`;if(rot.location)info+=` · ${rot.location}`;title=`${rot.name}\n${rot.location||''}\n${rot.block}`}
-        if(!wRot&&rot?.name)wRot=rot;
-        const dateKey=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-        const hasNote=S.notes?.[dateKey];
-        h+=`<div class="cal-day ${cc} ${isT?'today':''} ${isW?'weekend':''}" title="${title.replace(/"/g,'&quot;')}" onclick="this.classList.add('selected');openDrawer('${dateKey}')"><div class="cal-date">${day}</div><div class="cal-info">${info}</div>${hasNote?'<div class="note-dot"></div>':''}</div>`;
-      }
-      const evHtml=wEvents.length?wEvents.join('<br>'):(wRot?`<span style="color:var(--text-3)">${wRot.name}</span>`:'');
-      h+=`<div class="cal-events">${evHtml}</div></div>`;
+
+function toggleDashCard(id){
+  const card=document.getElementById('dash-'+id+'-card');
+  card.classList.toggle('open');
+}
+
+// ── Year ──
+function renderYearView(c){
+  const yr=calViewDate.getFullYear();
+  document.getElementById('month-title').innerHTML=`<span>${yr}</span>`;
+  document.getElementById('month-pills-detail').style.display='none';
+  let html='<div class="year-grid">';
+  for(let m=0;m<12;m++){
+    const fd=new Date(yr,m,1).getDay(),dim=new Date(yr,m+1,0).getDate();
+    html+=`<div class="year-month" onclick="calViewDate=new Date(${yr},${m},1);setCalView('month')">`;
+    html+=`<div class="year-month-name">${MN[m]}</div>`;
+    html+=`<div class="year-mini-grid">`;
+    ['S','M','T','W','T','F','S'].forEach(d=>html+=`<div class="year-mini-hdr">${d}</div>`);
+    for(let i=0;i<fd;i++)html+=`<div class="year-mini-day empty"></div>`;
+    for(let day=1;day<=dim;day++){
+      const d=new Date(yr,m,day),rot=rotFor(d),isT=same(d,TODAY);
+      const intv=intvFor(d),kd=kdFor(d);
+      const bg=rot?COLORS[rot.color]||'var(--accent)':'';
+      const hasEvent=intv||kd;
+      html+=`<div class="year-mini-day${isT?' yr-today':''}${hasEvent?' yr-event':''}" ${bg?`style="background:${bg};color:#fff;border-radius:4px"`:''}>${day}</div>`;
     }
-    div.innerHTML=h;c.appendChild(div);
-  });
+    html+=`</div></div>`;
+  }
+  html+='</div>';
+  c.innerHTML=html;
 }
 
 // ── Rotations ──
@@ -884,6 +1318,19 @@ function renderRotations(){
     <td class="hide-mobile"><select onchange="updRot(${i},'type',this.value)"><option value="">—</option>${['Core','Elective','Sub-I','Away'].map(t=>`<option ${t===r.type?'selected':''}>${t}</option>`).join('')}</select></td>
     <td>${S.rotations.length>1?`<button class="btn btn-ghost" onclick="delRot(${i})" title="Remove">✕</button>`:''}</td>
   </tr>`).join('');
+  // Mobile cards
+  document.getElementById('rot-cards').innerHTML=S.rotations.map((r,i)=>`<div class="m-card" style="border-left:4px solid ${COLORS[r.color]||'var(--accent)'}">
+    <div class="m-card-header">
+      <div class="m-card-title">${r.block}${r.name?` — ${r.name}`:''}</div>
+      ${S.rotations.length>1?`<button class="m-card-delete" onclick="delRot(${i})" title="Remove">✕</button>`:''}
+    </div>
+    <div style="margin-bottom:10px"><div class="m-card-colors">${CN.map(c=>`<div class="color-dot ${c===r.color?'active':''}" style="background:${COLORS[c]}" onclick="updRot(${i},'color','${c}')"></div>`).join('')}</div></div>
+    <div class="m-card-row"><span class="m-card-label">Start</span><div class="m-card-value"><input type="date" value="${r.start}" onchange="updRot(${i},'start',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">End</span><div class="m-card-value"><input type="date" value="${r.end}" onchange="updRot(${i},'end',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Rotation</span><div class="m-card-value"><input value="${r.name}" placeholder="Rotation name" onchange="updRot(${i},'name',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Location</span><div class="m-card-value"><input value="${r.location}" placeholder="Hospital / clinic" onchange="updRot(${i},'location',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Type</span><div class="m-card-value"><select onchange="updRot(${i},'type',this.value)"><option value="">—</option>${['Core','Elective','Sub-I','Away'].map(t=>`<option ${t===r.type?'selected':''}>${t}</option>`).join('')}</select></div></div>
+  </div>`).join('');
 }
 function updRot(i,f,v){
   S.rotations[i][f]=v;
@@ -892,16 +1339,16 @@ function updRot(i,f,v){
   if((f==='start'||f==='end')&&r.start&&r.end&&pd(r.end)<pd(r.start)){
     showToast('⚠ End date is before start date');
   }
+  if(f==='start'||f==='end')buildMIY();
   save();renderRotations();
 }
-function delRot(i){const prev=JSON.parse(JSON.stringify(S));S.rotations.splice(i,1);S.rotations.forEach((r,j)=>r.block=`Block ${j+1}`);save();renderRotations();pushUndo('Block removed',prev)}
+function delRot(i){const prev=JSON.parse(JSON.stringify(S));S.rotations.splice(i,1);S.rotations.forEach((r,j)=>r.block=`Block ${j+1}`);buildMIY();save();renderRotations();pushUndo('Block removed',prev)}
 function addBlock(){S.rotations.push({block:`Block ${S.rotations.length+1}`,color:CN[S.rotations.length%CN.length],start:'',end:'',name:'',location:'',type:''});save();renderRotations()}
 
 // ── Interviews ──
 function renderInterviews(){
   const ct=document.getElementById('intv-container');
   if(!S.interviews.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">★</div><div class="empty-state-text">No interviews yet. Add one to see it on your calendar.</div></div>';return}
-  // Sort by date (upcoming first, undated last)
   const sorted=S.interviews.map((v,i)=>({...v,_i:i})).sort((a,b)=>{if(!a.date&&!b.date)return 0;if(!a.date)return 1;if(!b.date)return -1;return pd(a.date)-pd(b.date)});
   ct.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Program</th><th>Specialty</th><th>Date</th><th>Location</th><th>Status</th><th></th></tr></thead><tbody>${sorted.map(v=>{const i=v._i;return`<tr>
     <td><input value="${v.program||''}" placeholder="Program name" onchange="updI(${i},'program',this.value)"></td>
@@ -910,7 +1357,17 @@ function renderInterviews(){
     <td><input value="${v.location||''}" placeholder="City, State" onchange="updI(${i},'location',this.value)"></td>
     <td><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select></td>
     <td><button class="btn btn-ghost" onclick="delI(${i})" title="Remove">✕</button></td>
-  </tr>`}).join('')}</tbody></table></div>`;
+  </tr>`}).join('')}</tbody></table></div>` +
+  `<div class="mobile-cards">${sorted.map(v=>{const i=v._i;return`<div class="m-card">
+    <div class="m-card-header">
+      <div class="m-card-title">${v.program||'New Interview'}</div>
+      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select><button class="m-card-delete" onclick="delI(${i})">✕</button></div>
+    </div>
+    <div class="m-card-row"><span class="m-card-label">Program</span><div class="m-card-value"><input value="${v.program||''}" placeholder="Program name" onchange="updI(${i},'program',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Specialty</span><div class="m-card-value"><input value="${v.specialty||''}" placeholder="Specialty" onchange="updI(${i},'specialty',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Date</span><div class="m-card-value"><input type="date" value="${v.date||''}" onchange="updI(${i},'date',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Location</span><div class="m-card-value"><input value="${v.location||''}" placeholder="City, State" onchange="updI(${i},'location',this.value)"></div></div>
+  </div>`}).join('')}</div>`;
 }
 function updI(i,f,v){S.interviews[i][f]=v;save()}
 function delI(i){const prev=JSON.parse(JSON.stringify(S));S.interviews.splice(i,1);save();renderInterviews();pushUndo('Interview removed',prev)}
@@ -920,14 +1377,23 @@ function addInterview(){S.interviews.push({program:'',specialty:'',date:'',locat
 function renderKeyDates(){
   const ct=document.getElementById('kd-container');
   if(!S.keydates.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">▶</div><div class="empty-state-text">No key dates yet. Add ERAS deadlines, exam dates, and milestones.</div></div>';return}
-  const CAT_BG={Application:'var(--blue-bg)',Exam:'var(--red-bg)',Milestone:'var(--green-bg)',Personal:'var(--accent-light)'};
-  ct.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr style="background:${CAT_BG[k.category]||'transparent'}">
+  const CAT_BG={Application:'var(--blue-bg)',Exam:'var(--red-bg)',Milestone:'var(--green-bg)',Personal:'var(--yellow-bg)'};
+  ct.innerHTML=`<div class="tbl-wrap"><table class="tbl tbl-no-stripe"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr style="background:${CAT_BG[k.category]||'var(--surface)'}">
     <td><input type="date" value="${k.date||''}" onchange="updK(${i},'date',this.value)"></td>
     <td><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></td>
     <td><select onchange="updK(${i},'category',this.value)">${['Application','Exam','Milestone','Personal'].map(c=>`<option ${c===k.category?'selected':''}>${c}</option>`).join('')}</select></td>
     <td><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select></td>
     <td><button class="btn btn-ghost" onclick="delK(${i})" title="Remove">✕</button></td>
-  </tr>`).join('')}</tbody></table></div>`;
+  </tr>`).join('')}</tbody></table></div>` +
+  `<div class="mobile-cards">${S.keydates.map((k,i)=>`<div class="m-card" style="border-left:4px solid ${k.category==='Application'?'var(--blue-fg)':k.category==='Exam'?'var(--red-fg)':k.category==='Milestone'?'var(--green-fg)':'var(--yellow-fg)'}; background:${CAT_BG[k.category]||'var(--surface)'}">
+    <div class="m-card-header">
+      <div class="m-card-title">${k.event||'New Event'}</div>
+      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select><button class="m-card-delete" onclick="delK(${i})">✕</button></div>
+    </div>
+    <div class="m-card-row"><span class="m-card-label">Event</span><div class="m-card-value"><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Date</span><div class="m-card-value"><input type="date" value="${k.date||''}" onchange="updK(${i},'date',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Category</span><div class="m-card-value"><select onchange="updK(${i},'category',this.value)">${['Application','Exam','Milestone','Personal'].map(c=>`<option ${c===k.category?'selected':''}>${c}</option>`).join('')}</select></div></div>
+  </div>`).join('')}</div>`;
 }
 function updK(i,f,v){S.keydates[i][f]=v;save()}
 function delK(i){const prev=JSON.parse(JSON.stringify(S));S.keydates.splice(i,1);save();renderKeyDates();pushUndo('Key date removed',prev)}
@@ -945,7 +1411,17 @@ function renderLetters(){
     <td><input type="date" value="${l.asked||''}" onchange="updL(${i},'asked',this.value)"></td>
     <td><select class="status-select ${ssClass(l.status)}" onchange="updL(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Asked','Asked','Accepted','In Progress','Submitted'].map(s=>`<option ${s===l.status?'selected':''}>${s}</option>`).join('')}</select></td>
     <td><button class="btn btn-ghost" onclick="delL(${i})" title="Remove">✕</button></td>
-  </tr>`).join('')}</tbody></table></div>`;
+  </tr>`).join('')}</tbody></table></div>` +
+  `<div class="mobile-cards">${S.letters.map((l,i)=>`<div class="m-card">
+    <div class="m-card-header">
+      <div class="m-card-title">${l.writer||'New Letter'}</div>
+      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(l.status)}" onchange="updL(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Asked','Asked','Accepted','In Progress','Submitted'].map(s=>`<option ${s===l.status?'selected':''}>${s}</option>`).join('')}</select><button class="m-card-delete" onclick="delL(${i})">✕</button></div>
+    </div>
+    <div class="m-card-row"><span class="m-card-label">Writer</span><div class="m-card-value"><input value="${l.writer||''}" placeholder="Dr. Name" onchange="updL(${i},'writer',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Specialty</span><div class="m-card-value"><input value="${l.specialty||''}" placeholder="Specialty" onchange="updL(${i},'specialty',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Institution</span><div class="m-card-value"><input value="${l.institution||''}" placeholder="Institution" onchange="updL(${i},'institution',this.value)"></div></div>
+    <div class="m-card-row"><span class="m-card-label">Date Asked</span><div class="m-card-value"><input type="date" value="${l.asked||''}" onchange="updL(${i},'asked',this.value)"></div></div>
+  </div>`).join('')}</div>`;
 }
 function updL(i,f,v){S.letters[i][f]=v;save()}
 function delL(i){const prev=JSON.parse(JSON.stringify(S));S.letters.splice(i,1);save();renderLetters();pushUndo('Letter removed',prev)}
@@ -953,72 +1429,212 @@ function addLetter(){S.letters.push({writer:'',specialty:'',institution:'',asked
 
 // ── Month Detail View ──
 let currentMonthIdx=MIY.findIndex(({y,m})=>m===TODAY.getMonth()&&y===TODAY.getFullYear());
-if(currentMonthIdx<0)currentMonthIdx=0; // default to first month if today is outside range
+if(currentMonthIdx<0)currentMonthIdx=0;
+let calViewMode='month';
+let calViewDate=new Date(TODAY);
+const DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DN_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-function changeMonth(delta){
-  const prev=currentMonthIdx;
-  currentMonthIdx=Math.max(0,Math.min(MIY.length-1,currentMonthIdx+delta));
-  if(currentMonthIdx===prev)return;
+function setCalView(mode){
+  calViewMode=mode;
+  document.querySelectorAll('.cal-view-btn').forEach(b=>{b.classList.toggle('active',b.dataset.calview===mode)});
+  // Sync calViewDate with currentMonthIdx when switching to month
+  if(mode==='month'){
+    const mi=MIY.findIndex(({y,m})=>m===calViewDate.getMonth()&&y===calViewDate.getFullYear());
+    if(mi>=0)currentMonthIdx=mi;
+  }
+  renderCalView();
+}
+function navCalView(delta){
   const dir=delta>0?'slide-left':'slide-right';
-  renderMonth(dir);
+  if(calViewMode==='month'){
+    calViewDate.setMonth(calViewDate.getMonth()+delta);
+    const mi=MIY.findIndex(({y,m})=>m===calViewDate.getMonth()&&y===calViewDate.getFullYear());
+    currentMonthIdx=mi>=0?mi:currentMonthIdx;
+  } else if(calViewMode==='day'){
+    calViewDate.setDate(calViewDate.getDate()+delta);
+  } else if(calViewMode==='3day'){
+    calViewDate.setDate(calViewDate.getDate()+(delta*3));
+  } else if(calViewMode==='week'){
+    calViewDate.setDate(calViewDate.getDate()+(delta*7));
+  } else if(calViewMode==='year'){
+    calViewDate.setFullYear(calViewDate.getFullYear()+delta);
+  }
+  renderCalView(dir);
 }
 function jumpToMonth(idx){
-  const prev=currentMonthIdx;
-  currentMonthIdx=idx;
-  if(currentMonthIdx===prev)return;
-  const dir=idx>prev?'slide-left':'slide-right';
-  renderMonth(dir);
+  const prev=currentMonthIdx;currentMonthIdx=idx;
+  calViewDate=new Date(MIY[idx].y,MIY[idx].m,1);
+  renderCalView(idx>prev?'slide-left':'slide-right');
 }
 function openMonth(y,m){
   currentMonthIdx=MIY.findIndex(v=>v.y===y&&v.m===m);
   if(currentMonthIdx<0)currentMonthIdx=0;
+  calViewDate=new Date(y,m,1);
   document.querySelector('[data-view=month]').click();
 }
-// Keyboard: left/right arrows to change month
 document.addEventListener('keydown',e=>{
   if(document.getElementById('view-month').classList.contains('active')&&!e.target.matches('input,textarea,select')){
-    if(e.key==='ArrowLeft')changeMonth(-1);
-    if(e.key==='ArrowRight')changeMonth(1);
+    if(e.key==='ArrowLeft')navCalView(-1);
+    if(e.key==='ArrowRight')navCalView(1);
   }
 });
-function renderMonth(animClass){
-  const{y,m}=MIY[currentMonthIdx];
-  document.getElementById('month-title').innerHTML=`<span>${MN[m]}</span> ${y}`;
-  // Month pills
-  document.getElementById('month-pills-detail').innerHTML=MIY.map(({y:yy,m:mm},idx)=>
-    `<span class="month-pill${idx===currentMonthIdx?' current':''}" onclick="jumpToMonth(${idx})">${MN[mm].slice(0,3)}${mm===0?' \''+String(yy).slice(2):''}</span>`
-  ).join('');
+
+function fmtDateKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+
+function renderCalView(animClass){
   const c=document.getElementById('month-cal');
-  // Slide animation
   if(animClass){c.className='md-inner';void c.offsetWidth;c.classList.add(animClass)}else{c.className='md-inner'}
-  let h='<div class="md-grid">';
-  ['S','M','T','W','T','F','S'].forEach(d=>h+=`<div class="md-header">${d}</div>`);
-  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
-  // Empty cells before first day
-  for(let i=0;i<fd;i++)h+='<div class="md-day md-empty"></div>';
-  // Days
-  let dayOfWeek=fd; // track position in week for separators
+  if(calViewMode==='month')renderMonthView(c);
+  else if(calViewMode==='day')renderDayView(c);
+  else if(calViewMode==='3day')renderMultiDayView(c,3);
+  else if(calViewMode==='week')renderMultiDayView(c,7);
+  else if(calViewMode==='year')renderYearView(c);
+}
+function goToToday(){
+  calViewDate=new Date(TODAY);
+  if(calViewMode==='year'){
+    renderCalView();
+    setTimeout(()=>{
+      const el=document.querySelector('.cal-day.today');
+      if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+    },50);
+  } else {
+    const mi=MIY.findIndex(({y,m})=>m===TODAY.getMonth()&&y===TODAY.getFullYear());
+    if(mi>=0)currentMonthIdx=mi;
+    renderCalView();
+  }
+}
+
+function renderMonthView(c){
+  const y=calViewDate.getFullYear(),m=calViewDate.getMonth();
+  document.getElementById('month-title').innerHTML=`<span>${MN[m]}</span> ${y}`;
+  document.getElementById('month-pills-detail').style.display='';
+  document.getElementById('month-pills-detail').innerHTML=MIY.map(({y:yy,m:mm},idx)=>
+    `<span class="month-pill${mm===m&&yy===y?' current':''}" onclick="jumpToMonth(${idx})">${MN[mm].slice(0,3)}${mm===0?' \''+String(yy).slice(2):''}</span>`
+  ).join('');
+  // Build rotation legend for this month
+  const monthRots=[];const seenRots=new Set();
+  const dim=new Date(y,m+1,0).getDate();
   for(let day=1;day<=dim;day++){
-    const d=new Date(y,m,day);
-    const dateKey=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    const rot=rotFor(d),intv=intvFor(d),kd=kdFor(d),isT=same(d,TODAY);
-    const isW=(dayOfWeek===0||dayOfWeek===6);
-    const cc=rot?'block-'+rot.color.toLowerCase():'';
-    const note=S.notes?.[dateKey]||'';
-    h+=`<div class="md-day ${cc} ${isT?'md-today':''} ${isW?'md-weekend':''}" onclick="if(event.target.tagName!=='TEXTAREA'){this.classList.add('selected');openDrawer('${dateKey}')}">`;
-    h+=`<div class="md-date">${day}</div>`;
-    if(intv)h+=`<div class="md-event">★ ${intv.program}</div>`;
-    if(kd)h+=`<div class="md-event">▶ ${kd.event}</div>`;
-    if(rot?.name)h+=`<div class="md-rot">${rot.name}</div>`;
-    if(rot?.location)h+=`<div class="md-loc">${rot.location}</div>`;
-    h+=`<textarea class="md-note" placeholder="Add note..." oninput="saveNote('${dateKey}',this.value)">${note}</textarea>`;
-    h+=`</div>`;
-    dayOfWeek=(dayOfWeek+1)%7;
-    // Week separator after Saturday
-    if(dayOfWeek===0&&day<dim)h+=`<div class="md-week-sep"></div>`;
+    const rot=rotFor(new Date(y,m,day));
+    if(rot?.name&&!seenRots.has(rot.block)){seenRots.add(rot.block);monthRots.push(rot)}
+  }
+  let h='<div class="md-rot-legend">';
+  if(monthRots.length){
+    h+=monthRots.map(r=>`<div class="md-rot-legend-item"><div class="md-rot-legend-dot" style="background:${COLORS[r.color]||'var(--accent)'}"></div>${r.name}</div>`).join('');
+  } else {
+    h+=`<div class="md-rot-legend-item" style="color:var(--text-3)">No rotations this month</div>`;
   }
   h+='</div>';
-  c.innerHTML=h;
+  h+='<div class="md-grid">';
+  ['S','M','T','W','T','F','S'].forEach(d=>h+=`<div class="md-header">${d}</div>`);
+  const fd=new Date(y,m,1).getDay();
+  for(let i=0;i<fd;i++)h+='<div class="md-day md-empty"></div>';
+  let dayOfWeek=fd;
+  for(let day=1;day<=dim;day++){
+    const d=new Date(y,m,day);
+    const dateKey=fmtDateKey(d);
+    const rot=rotFor(d),intv=intvFor(d),kd=kdFor(d),isT=same(d,TODAY);
+    const isW=(dayOfWeek===0||dayOfWeek===6);
+    const note=S.notes?.[dateKey]||'';
+    h+=`<div class="md-day ${isT?'md-today':''} ${isW?'md-weekend':''}" onclick="this.classList.add('selected');openDrawer('${dateKey}')">`;
+    h+=`<div class="md-date">${day}</div>`;
+    if(rot)h+=`<div class="md-rot-bar" style="background:${COLORS[rot.color]||'var(--accent)'}"></div>`;
+    if(intv)h+=`<div class="md-event">⭐ ${intv.program}</div>`;
+    if(kd)h+=`<div class="md-event">📌 ${kd.event}</div>`;
+    if(rot?.name)h+=`<div class="md-rot">${rot.name}</div>`;
+    if(note)h+=`<div class="md-note-dot"></div>`;
+    h+=`</div>`;
+    dayOfWeek=(dayOfWeek+1)%7;
+    if(dayOfWeek===0&&day<dim)h+=`<div class="md-week-sep"></div>`;
+  }
+  h+='</div>';c.innerHTML=h;
+}
+
+function renderDayView(c){
+  const d=calViewDate;
+  const dateKey=fmtDateKey(d);
+  const rot=rotFor(d),intv=intvFor(d),kd=kdFor(d);
+  const note=S.notes?.[dateKey]||'';
+  const isT=same(d,TODAY);
+  document.getElementById('month-title').innerHTML=`<span>${MN[d.getMonth()]}</span> ${d.getDate()}, ${d.getFullYear()}`;
+  document.getElementById('month-pills-detail').style.display='none';
+
+  let h='<div class="day-view">';
+  h+=`<div class="day-view-header"><div class="day-view-weekday">${DN_FULL[d.getDay()]}${isT?' · Today':''}</div></div>`;
+
+  // Rotation
+  h+=`<div class="day-view-section"><div class="day-view-section-label">Rotation</div>`;
+  if(rot){
+    const blockStart=pd(rot.start),blockEnd=pd(rot.end);
+    const dayIn=blockStart?db(blockStart,d)+1:0;
+    const blockLen=blockStart&&blockEnd?db(blockStart,blockEnd)+1:0;
+    h+=`<div class="day-view-card"><div class="day-view-rot"><div class="day-view-rot-dot" style="background:${COLORS[rot.color]||'var(--accent)'}"></div><div><div class="day-view-rot-name">${rot.name||rot.block}</div><div class="day-view-rot-detail">${rot.location||''} ${blockLen?` · Day ${dayIn} of ${blockLen}`:''}</div></div></div></div>`;
+  } else {
+    h+=`<div class="day-view-empty">No rotation scheduled</div>`;
+  }
+  h+=`</div>`;
+
+  // Events
+  const allIntv=S.interviews.filter(i=>same(pd(i.date),d));
+  const allKd=S.keydates.filter(k=>same(pd(k.date),d));
+  if(allIntv.length||allKd.length){
+    h+=`<div class="day-view-section"><div class="day-view-section-label">Events</div>`;
+    allIntv.forEach(i=>h+=`<div class="day-view-event" style="background:var(--accent-light);color:var(--accent)">⭐ ${i.program}${i.location?' · '+i.location:''}</div>`);
+    allKd.forEach(k=>h+=`<div class="day-view-event" style="background:${k.category==='Exam'?'var(--red-bg)':k.category==='Application'?'var(--blue-bg)':'var(--green-bg)'};color:${k.category==='Exam'?'var(--red-fg)':k.category==='Application'?'var(--blue-fg)':'var(--green-fg)'}">📌 ${k.event}</div>`);
+    h+=`</div>`;
+  }
+
+  // Notes
+  h+=`<div class="day-view-section"><div class="day-view-section-label">Notes</div>`;
+  h+=`<textarea class="day-view-notes" placeholder="Add notes for this day..." oninput="saveNote('${dateKey}',this.value)">${note}</textarea>`;
+  h+=`</div>`;
+
+  h+='</div>';c.innerHTML=h;
+}
+
+function renderMultiDayView(c,numDays){
+  document.getElementById('month-pills-detail').style.display='none';
+  // For week view, start on Sunday of the current week
+  let startDate=new Date(calViewDate);
+  if(numDays===7){startDate.setDate(startDate.getDate()-startDate.getDay())}
+
+  // Title
+  const endDate=new Date(startDate);endDate.setDate(endDate.getDate()+numDays-1);
+  if(startDate.getMonth()===endDate.getMonth()){
+    document.getElementById('month-title').innerHTML=`<span>${MN[startDate.getMonth()]}</span> ${startDate.getDate()}–${endDate.getDate()}, ${startDate.getFullYear()}`;
+  } else {
+    document.getElementById('month-title').innerHTML=`<span>${MN[startDate.getMonth()].slice(0,3)} ${startDate.getDate()}</span> – ${MN[endDate.getMonth()].slice(0,3)} ${endDate.getDate()}`;
+  }
+
+  let h=`<div class="multi-day-grid cols-${numDays}">`;
+  // Headers
+  for(let i=0;i<numDays;i++){
+    const d=new Date(startDate);d.setDate(d.getDate()+i);
+    const isT=same(d,TODAY);
+    h+=`<div class="multi-day-col-header ${isT?'mdc-today':''}"><div class="mdc-weekday">${DN[d.getDay()]}</div><div class="mdc-date">${d.getDate()}</div></div>`;
+  }
+  // Bodies
+  for(let i=0;i<numDays;i++){
+    const d=new Date(startDate);d.setDate(d.getDate()+i);
+    const dateKey=fmtDateKey(d);
+    const rot=rotFor(d),note=S.notes?.[dateKey]||'';
+    const dayIntv=S.interviews.filter(iv=>same(pd(iv.date),d));
+    const dayKd=S.keydates.filter(k=>same(pd(k.date),d));
+
+    h+=`<div class="multi-day-col"><div class="multi-day-col-body" onclick="calViewDate=new Date(${d.getFullYear()},${d.getMonth()},${d.getDate()});setCalView('day')">`;
+    if(rot){
+      h+=`<div class="mdc-rot-bar" style="background:${COLORS[rot.color]||'var(--accent)'}"></div>`;
+      if(rot.name)h+=`<div class="mdc-rot-name">${rot.name}</div>`;
+      if(rot.location)h+=`<div class="mdc-rot-loc">${rot.location}</div>`;
+    }
+    dayIntv.forEach(iv=>h+=`<div class="mdc-event">⭐ ${iv.program}</div>`);
+    dayKd.forEach(k=>h+=`<div class="mdc-event">📌 ${k.event}</div>`);
+    if(note)h+=`<div class="mdc-note">${note}</div>`;
+    h+=`</div></div>`;
+  }
+  h+='</div>';c.innerHTML=h;
 }
 function saveNote(dateKey,val){
   if(!S.notes)S.notes={};
@@ -1086,13 +1702,33 @@ document.addEventListener('keydown',e=>{
   if(e.target.matches('input,textarea,select'))return;
   if(e.key==='?'){showToast('← → Month nav · Esc close · ? shortcuts')}
   if(e.key==='d')document.querySelector('[data-view=dashboard]').click();
-  if(e.key==='y')document.querySelector('[data-view=year]').click();
+  if(e.key==='y'){document.querySelector('[data-view=month]').click();setTimeout(()=>setCalView('year'),50)}
   if(e.key==='m')document.querySelector('[data-view=month]').click();
   if(e.key==='r')document.querySelector('[data-view=rotations]').click();
   if(e.key==='i')document.querySelector('[data-view=interviews]').click();
   if(e.key==='k')document.querySelector('[data-view=keydates]').click();
   if(e.key==='l')document.querySelector('[data-view=letters]').click();
 });
+
+// ── Account: Export & Clear ──
+function exportData(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`matchready-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();URL.revokeObjectURL(a.href);
+  showToast('Data exported');
+}
+function confirmClearData(){
+  document.getElementById('clear-data-backdrop').classList.add('open');
+}
+function closeClearModal(){
+  document.getElementById('clear-data-backdrop').classList.remove('open');
+}
+function executeClearData(){
+  S={rotations:[],interviews:[],keydates:[],letters:[],notes:{}};
+  buildMIY();save();renderAll();closeClearModal();
+  showToast('All data cleared');
+}
 
 function addInterviewForDate(dateStr){
   S.interviews.push({program:'',specialty:'',date:dateStr,location:'',status:'Scheduled'});
@@ -1107,6 +1743,12 @@ function addKeyDateForDate(dateStr){
   showToast('Key date added — fill in the details');
 }
 
+// ── Scroll-reveal animations ──
+const revealObserver=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObserver.unobserve(e.target)}});
+},{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
 // ── Mobile More menu ──
 function toggleMore(){
   document.getElementById('more-sheet').classList.toggle('open');
@@ -1114,7 +1756,15 @@ function toggleMore(){
 }
 function moreNav(view){
   toggleMore();
-  document.querySelector(`[data-view=${view}]`).click();
+  const navItem=document.querySelector(`.nav-item[data-view=${view}]`);
+  if(navItem){navItem.click();return}
+  // Views without a nav-item (e.g. account)
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  const titles={account:'My Account'};
+  document.title=`${titles[view]||view} · MatchReady`;
 }
 
 // ── Dark mode toggle ──
@@ -1134,22 +1784,31 @@ function syncThemeChecks(isDark){
 })();
 
 // ── Init ──
-function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters();renderMonth()}
+function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters();renderCalView()}
 
 // ── Firebase Integration ──
 let currentUser=null;
 let firebaseReady=false;
 
+function openSignIn(){document.getElementById('signin-backdrop').classList.add('open')}
+function closeSignIn(){document.getElementById('signin-backdrop').classList.remove('open')}
 function signIn(){
   const provider=new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider).catch(e=>showToast('Sign-in failed: '+e.message));
+  firebase.auth().signInWithPopup(provider).then(()=>closeSignIn()).catch(e=>showToast('Sign-in failed: '+e.message));
 }
 function signOutUser(){
-  if(confirm('Sign out?'))firebase.auth().signOut();
+  document.getElementById('signout-backdrop').classList.add('open');
+}
+function closeSignOutModal(){
+  document.getElementById('signout-backdrop').classList.remove('open');
+}
+function executeSignOut(){
+  closeSignOutModal();
+  firebase.auth().signOut();
 }
 
-function showAuth(){document.getElementById('auth-screen').classList.remove('hidden')}
-function hideAuth(){document.getElementById('auth-screen').classList.add('hidden');document.getElementById('auth-loading').style.display='none'}
+function showAuth(){document.getElementById('auth-screen').classList.remove('hidden');document.body.classList.add('app-hidden')}
+function hideAuth(){document.getElementById('auth-screen').classList.add('hidden');document.body.classList.remove('app-hidden');document.getElementById('auth-loading').style.display='none'}
 
 // Debounced Firestore save
 let saveTimer=null;
@@ -1177,20 +1836,23 @@ firebase.auth().onAuthStateChanged(async(user)=>{
     document.getElementById('nav-user').style.display='flex';
     document.getElementById('nav-user-pic').src=user.photoURL||'';
     document.getElementById('nav-user-name').textContent=user.displayName||user.email;
-    document.getElementById('more-signout').style.display='flex';
+    document.getElementById('more-account').style.display='flex';
     document.getElementById('more-user-name').textContent=user.displayName||user.email;
     const morePic=document.getElementById('more-user-pic');if(morePic)morePic.src=user.photoURL||'';
+    document.getElementById('acct-name').textContent=user.displayName||'User';
+    document.getElementById('acct-email').textContent=user.email||'';
+    const acctPic=document.getElementById('acct-pic');if(acctPic)acctPic.src=user.photoURL||'';
     try{
       const doc=await firebase.firestore().collection('users').doc(user.uid).get();
       if(doc.exists){S=doc.data();if(!S.notes)S.notes={}}
       else{const l=localStorage.getItem('ms4cal');if(l){S=JSON.parse(l);if(!S.notes)S.notes={};await firebase.firestore().collection('users').doc(user.uid).set(S)}}
       localStorage.setItem('ms4cal',JSON.stringify(S));firebaseReady=true;
     }catch(e){console.error(e);const l=localStorage.getItem('ms4cal');if(l)S=JSON.parse(l);firebaseReady=true}
-    hideAuth();renderAll();
+    buildMIY();hideAuth();renderAll();
   } else {
     currentUser=null;firebaseReady=false;
     document.getElementById('nav-user').style.display='none';
-    document.getElementById('more-signout').style.display='none';
+    document.getElementById('more-account').style.display='none';
     showAuth();
   }
 });
