@@ -487,6 +487,10 @@ firebase.initializeApp({
   .md-inner.slide-right{animation:slideRight .25s ease}
   @keyframes slideLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
   @keyframes slideRight{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes zoomIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+  .md-inner.zoom-today{animation:zoomIn .35s cubic-bezier(.25,.1,.25,1)}
+  @keyframes todayPulse{0%{box-shadow:0 0 0 0 rgba(0,122,255,.5)}70%{box-shadow:0 0 0 10px rgba(0,122,255,0)}100%{box-shadow:0 0 0 0 rgba(0,122,255,0)}}
+  .md-day.md-today.pulse .md-date,.year-mini-day.yr-today.pulse{animation:todayPulse .8s ease-out}
 
   /* ── Month detail view ── */
   .md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
@@ -1480,6 +1484,23 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+// ── Swipe gestures for calendar navigation ──
+(function(){
+  const el=document.getElementById('view-month');
+  let sx=0,sy=0,swiping=false;
+  el.addEventListener('touchstart',e=>{
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;swiping=true;
+  },{passive:true});
+  el.addEventListener('touchend',e=>{
+    if(!swiping)return;swiping=false;
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){
+      navCalView(dx<0?1:-1);
+    }
+  },{passive:true});
+})();
+
 function fmtDateKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 
 function renderCalView(animClass){
@@ -1492,27 +1513,45 @@ function renderCalView(animClass){
   else if(calViewMode==='year')renderYearView(c);
 }
 function goToToday(){
-  calViewDate=new Date(TODAY);
-  if(calViewMode==='year'){
-    renderCalView();
-    setTimeout(()=>{
-      const el=document.querySelector('.cal-day.today');
-      if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
-    },50);
-  } else {
-    const mi=MIY.findIndex(({y,m})=>m===TODAY.getMonth()&&y===TODAY.getFullYear());
-    if(mi>=0)currentMonthIdx=mi;
-    renderCalView();
-  }
+  const c=document.getElementById('month-cal');
+  // Fade out current view
+  c.style.transition='opacity .15s ease, transform .15s ease';
+  c.style.opacity='0';
+  c.style.transform='scale(.96)';
+  setTimeout(()=>{
+    calViewDate=new Date(TODAY);
+    if(calViewMode==='year'){
+      renderCalView('zoom-today');
+      setTimeout(()=>{
+        const el=document.querySelector('.yr-today');
+        if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('pulse')}
+      },50);
+    } else {
+      const mi=MIY.findIndex(({y,m})=>m===TODAY.getMonth()&&y===TODAY.getFullYear());
+      if(mi>=0)currentMonthIdx=mi;
+      renderCalView('zoom-today');
+      // Pulse today's date
+      setTimeout(()=>{
+        const el=document.querySelector('.md-today');
+        if(el)el.classList.add('pulse');
+      },50);
+    }
+    c.style.opacity='';c.style.transform='';c.style.transition='';
+  },160);
 }
 
 function renderMonthView(c){
   const y=calViewDate.getFullYear(),m=calViewDate.getMonth();
   document.getElementById('month-title').innerHTML=`<span>${MN[m]}</span> ${y}`;
   document.getElementById('month-pills-detail').style.display='';
-  document.getElementById('month-pills-detail').innerHTML=MIY.map(({y:yy,m:mm},idx)=>
-    `<span class="month-pill${mm===m&&yy===y?' current':''}" onclick="jumpToMonth(${idx})">${MN[mm].slice(0,3)}${mm===0?' \''+String(yy).slice(2):''}</span>`
-  ).join('');
+  // Show full calendar years in chronological order (Jan-Dec for each year)
+  const vy=calViewDate.getFullYear();
+  let pillsHtml='';
+  for(let pm=0;pm<12;pm++){
+    const isCur=(pm===m&&vy===y);
+    pillsHtml+=`<span class="month-pill${isCur?' current':''}" onclick="calViewDate=new Date(${vy},${pm},1);renderCalView()">${MN[pm].slice(0,3)}</span>`;
+  }
+  document.getElementById('month-pills-detail').innerHTML=pillsHtml;
   // Build rotation legend for this month
   const monthRots=[];const seenRots=new Set();
   const dim=new Date(y,m+1,0).getDate();
