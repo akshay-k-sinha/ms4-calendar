@@ -450,6 +450,8 @@ firebase.initializeApp({
     .mobile-backup{display:block!important}
     .toggle-track{width:34px;height:18px}.toggle-thumb{width:14px;height:14px}
     .toggle-wrap{display:none!important}
+    .auth-user{display:none!important}
+    .nav-footer{display:none!important}
     nav{padding-bottom:env(safe-area-inset-bottom)}
     .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px}
     .tbl{min-width:600px}
@@ -503,6 +505,15 @@ firebase.initializeApp({
 <div class="more-sheet-backdrop" id="more-backdrop" onclick="toggleMore()"></div>
 <div class="more-sheet" id="more-sheet">
   <div class="more-sheet-handle"></div>
+  <div style="padding:16px 24px 8px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:13px;font-weight:600;color:var(--text)">More</span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;color:var(--text-3)">☀️</span>
+      <label class="toggle"><input type="checkbox" id="theme-checkbox-more" onchange="toggleTheme(this.checked);syncThemeChecks(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+      <span style="font-size:12px;color:var(--text-3)">🌙</span>
+    </div>
+  </div>
+  <div class="more-sheet-divider"></div>
   <div class="more-sheet-item" onclick="moreNav('year')"><span>📅</span>Year View</div>
   <div class="more-sheet-item" onclick="moreNav('keydates')"><span>📌</span>Key Dates</div>
   <div class="more-sheet-item" onclick="moreNav('letters')"><span>✉️</span>Letters</div>
@@ -510,12 +521,13 @@ firebase.initializeApp({
   <div class="more-sheet-item" onclick="exportData();toggleMore()"><span>💾</span>Export Backup</div>
   <div class="more-sheet-item"><span>📂</span><label style="cursor:pointer;flex:1">Import Backup<input type="file" accept=".json" onchange="importData(event);toggleMore()" style="display:none"></label></div>
   <div class="more-sheet-divider"></div>
-  <div class="more-sheet-item" style="justify-content:space-between">
-    <div style="display:flex;align-items:center;gap:12px"><span>🌙</span>Dark Mode</div>
-    <label class="toggle"><input type="checkbox" id="theme-checkbox-more" onchange="toggleTheme(this.checked);syncThemeChecks(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+  <div class="more-sheet-item" id="more-signout" style="display:none;justify-content:space-between" onclick="signOutUser();toggleMore()">
+    <div style="display:flex;align-items:center;gap:12px">
+      <img id="more-user-pic" src="" style="width:28px;height:28px;border-radius:50%">
+      <span id="more-user-name" style="font-weight:500"></span>
+    </div>
+    <span style="font-size:13px;color:var(--text-3)">Sign out</span>
   </div>
-  <div class="more-sheet-divider"></div>
-  <div class="more-sheet-item" onclick="signOutUser();toggleMore()" id="more-signout" style="display:none"><span>👋</span><span id="more-user-name"></span> · Sign out</div>
 </div>
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
@@ -1103,6 +1115,7 @@ firebase.auth().onAuthStateChanged(async(user)=>{
     document.getElementById('nav-user-name').textContent=user.displayName||user.email;
     document.getElementById('more-signout').style.display='flex';
     document.getElementById('more-user-name').textContent=user.displayName||user.email;
+    const morePic=document.getElementById('more-user-pic');if(morePic)morePic.src=user.photoURL||'';
     try{
       const doc=await firebase.firestore().collection('users').doc(user.uid).get();
       if(doc.exists){S=doc.data();if(!S.notes)S.notes={}}
