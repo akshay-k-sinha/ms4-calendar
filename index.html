@@ -16,6 +16,19 @@
 <meta name="apple-mobile-web-app-title" content="MS4 Calendar">
 <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1C1C1E" media="(prefers-color-scheme: dark)">
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyCplOwbpmn6_6d-nxrSRTahPkbRL5X6wMc",
+  authDomain:"ms4-calendar.firebaseapp.com",
+  projectId:"ms4-calendar",
+  storageBucket:"ms4-calendar.firebasestorage.app",
+  messagingSenderId:"794760877455",
+  appId:"1:794760877455:web:24f949a480abac907767fa"
+});
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -191,6 +204,22 @@
   .empty-state{padding:48px 20px;text-align:center}
   .empty-state-icon{font-size:32px;margin-bottom:12px}
   .empty-state-text{font-size:14px;color:var(--text-3);margin-bottom:16px}
+
+  /* ── Auth screen ── */
+  .auth-screen{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .3s ease}
+  .auth-screen.hidden{opacity:0;pointer-events:none}
+  .auth-content{text-align:center;max-width:360px;padding:40px}
+  .auth-title{font-size:36px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+  .auth-sub{font-size:14px;color:var(--text-3);margin-bottom:40px}
+  .auth-btn{display:inline-flex;align-items:center;gap:12px;padding:14px 28px;background:var(--surface);
+    border:1px solid var(--border);border-radius:12px;font-family:inherit;font-size:15px;font-weight:600;
+    color:var(--text);cursor:pointer;transition:all var(--ease);box-shadow:var(--shadow)}
+  .auth-btn:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
+  .auth-btn img{width:20px;height:20px}
+  .auth-loading{font-size:13px;color:var(--text-3);margin-top:20px}
+  .auth-user{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);padding:8px 16px;cursor:pointer;border-top:1px solid var(--border-light);margin-top:8px}
+  .auth-user img{width:20px;height:20px;border-radius:50%}
+  .auth-user:hover{color:var(--red-fg)}
 
   /* ── Mobile More menu ── */
   .more-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);z-index:90;
@@ -452,14 +481,25 @@
     <label class="toggle"><input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
     <span style="font-size:11px;color:var(--text-3)">☾</span>
   </div>
+  <div class="auth-user" id="nav-user" onclick="signOutUser()" style="display:none">
+    <img id="nav-user-pic" src="" alt=""><span id="nav-user-name"></span> · Sign out
+  </div>
   <div class="nav-footer">
-    Data saves to your browser automatically.
+    Data syncs to your Google account.
     <br><br>
-    <a href="#" onclick="exportData();return false">Export Backup</a> ·
+    <a href="#" onclick="exportData();return false">Export</a> ·
     <label><a href="#">Import</a><input type="file" accept=".json" onchange="importData(event)" style="display:none"></label>
   </div>
 </nav>
 
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-content">
+    <div class="auth-title">MS4 Calendar</div>
+    <div class="auth-sub">June 2026 – May 2027</div>
+    <button class="auth-btn" onclick="signIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Sign in with Google</button>
+    <div class="auth-loading" id="auth-loading">Checking sign-in...</div>
+  </div>
+</div>
 <div class="more-sheet-backdrop" id="more-backdrop" onclick="toggleMore()"></div>
 <div class="more-sheet" id="more-sheet">
   <div class="more-sheet-handle"></div>
@@ -474,6 +514,8 @@
     <div style="display:flex;align-items:center;gap:12px"><span>🌙</span>Dark Mode</div>
     <label class="toggle"><input type="checkbox" id="theme-checkbox-more" onchange="toggleTheme(this.checked);syncThemeChecks(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
   </div>
+  <div class="more-sheet-divider"></div>
+  <div class="more-sheet-item" onclick="signOutUser();toggleMore()" id="more-signout" style="display:none"><span>👋</span><span id="more-user-name"></span> · Sign out</div>
 </div>
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
@@ -1017,7 +1059,64 @@ function syncThemeChecks(isDark){
 
 // ── Init ──
 function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters();renderMonth()}
-renderAll();
+
+// ── Firebase Integration ──
+let currentUser=null;
+let firebaseReady=false;
+
+function signIn(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).catch(e=>showToast('Sign-in failed: '+e.message));
+}
+function signOutUser(){
+  if(confirm('Sign out?'))firebase.auth().signOut();
+}
+
+function showAuth(){document.getElementById('auth-screen').classList.remove('hidden')}
+function hideAuth(){document.getElementById('auth-screen').classList.add('hidden');document.getElementById('auth-loading').style.display='none'}
+
+// Debounced Firestore save
+let saveTimer=null;
+const origSave=save;
+save=function(){
+  localStorage.setItem('ms4cal',JSON.stringify(S));
+  showToast('Saved');
+  if(currentUser&&firebaseReady){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      firebase.firestore().collection('users').doc(currentUser.uid).set(S)
+        .catch(e=>console.error('Firestore save error:',e));
+    },1000);
+  }
+};
+
+// Auth state listener is set up after Firebase SDK loads (bottom of file)
+</script>
+
+<!-- Firebase auth listener (SDK loaded in head) -->
+<script>
+firebase.auth().onAuthStateChanged(async(user)=>{
+  if(user){
+    currentUser=user;
+    document.getElementById('nav-user').style.display='flex';
+    document.getElementById('nav-user-pic').src=user.photoURL||'';
+    document.getElementById('nav-user-name').textContent=user.displayName||user.email;
+    document.getElementById('more-signout').style.display='flex';
+    document.getElementById('more-user-name').textContent=user.displayName||user.email;
+    try{
+      const doc=await firebase.firestore().collection('users').doc(user.uid).get();
+      if(doc.exists){S=doc.data();if(!S.notes)S.notes={}}
+      else{const l=localStorage.getItem('ms4cal');if(l){S=JSON.parse(l);if(!S.notes)S.notes={};await firebase.firestore().collection('users').doc(user.uid).set(S)}}
+      localStorage.setItem('ms4cal',JSON.stringify(S));firebaseReady=true;
+    }catch(e){console.error(e);const l=localStorage.getItem('ms4cal');if(l)S=JSON.parse(l);firebaseReady=true}
+    hideAuth();renderAll();
+  } else {
+    currentUser=null;firebaseReady=false;
+    document.getElementById('nav-user').style.display='none';
+    document.getElementById('more-signout').style.display='none';
+    showAuth();
+  }
+});
 </script>
 </body>
 </html>
