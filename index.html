@@ -737,7 +737,7 @@ function renderKeyDates(){
   const ct=document.getElementById('kd-container');
   if(!S.keydates.length){ct.innerHTML='<div class="empty-state"><div class="empty-state-icon">▶</div><div class="empty-state-text">No key dates yet. Add ERAS deadlines, exam dates, and milestones.</div></div>';return}
   const CAT_BG={Application:'var(--blue-bg)',Exam:'var(--red-bg)',Milestone:'var(--green-bg)',Personal:'var(--accent-light)'};
-  ct.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr style="background:${CAT_BG[k.category]||'transparent'}"
+  ct.innerHTML=`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${S.keydates.map((k,i)=>`<tr style="background:${CAT_BG[k.category]||'transparent'}">
     <td><input type="date" value="${k.date||''}" onchange="updK(${i},'date',this.value)"></td>
     <td><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></td>
     <td><select onchange="updK(${i},'category',this.value)">${['Application','Exam','Milestone','Personal'].map(c=>`<option ${c===k.category?'selected':''}>${c}</option>`).join('')}</select></td>
