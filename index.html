@@ -641,6 +641,21 @@ firebase.initializeApp({
   .welcome-banner .btn{margin-top:8px;font-size:12px;padding:6px 14px}
   .welcome-dismiss{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:4px;margin-left:auto;align-self:flex-start}
 
+  /* ── Calendar export popover ── */
+  .cal-export-btn{background:var(--surface-hover);border:1px solid var(--border-light);cursor:pointer;font-size:11px;padding:4px 10px;border-radius:16px;
+    color:var(--text-2);transition:all var(--ease);position:relative;display:inline-flex;align-items:center;gap:4px;font-family:inherit;font-weight:500;white-space:nowrap}
+  .cal-export-btn:hover{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+  .cal-export-pop{background:var(--surface);border:1px solid var(--border-light);
+    border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:100;min-width:180px;overflow:hidden;
+    opacity:0;transform:translateY(-4px) scale(.96);pointer-events:none;transition:all .15s ease}
+  .cal-export-pop.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
+  .cal-export-pop-item{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:13px;font-weight:500;
+    color:var(--text);cursor:pointer;transition:background .15s ease;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+  .cal-export-pop-item:hover{background:var(--surface-hover)}
+  .cal-export-pop-item span{font-size:16px;width:20px;text-align:center}
+  .cal-export-backdrop{position:fixed;inset:0;z-index:99;display:none}
+  .cal-export-backdrop.open{display:block}
+
   /* ── Undo bar ── */
   .undo-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
     background:var(--text);color:white;padding:10px 16px 10px 20px;border-radius:12px;font-size:13px;
@@ -907,6 +922,7 @@ firebase.initializeApp({
 </div>
 <div class="toast" id="toast">Saved</div>
 <button class="today-btn" id="today-btn" onclick="scrollToToday()">Today</button>
+<div class="cal-export-backdrop" id="cal-export-backdrop" onclick="closeCalExport()"></div>
 <div class="undo-bar" id="undo-bar"><span id="undo-text"></span><button onclick="undoAction()">Undo</button></div>
 <main id="main-content">
   <!-- DASHBOARD -->
@@ -1320,13 +1336,13 @@ function renderRotations(){
     <td><input value="${r.name}" placeholder="Rotation name" onchange="updRot(${i},'name',this.value)"></td>
     <td><input value="${r.location}" placeholder="Hospital / clinic" onchange="updRot(${i},'location',this.value)"></td>
     <td class="hide-mobile"><select onchange="updRot(${i},'type',this.value)"><option value="">—</option>${['Core','Elective','Sub-I','Away'].map(t=>`<option ${t===r.type?'selected':''}>${t}</option>`).join('')}</select></td>
-    <td>${S.rotations.length>1?`<button class="btn btn-ghost" onclick="delRot(${i})" title="Remove">✕</button>`:''}</td>
+    <td style="white-space:nowrap"><button class="cal-export-btn" onclick="showCalExport(this,'rotation',${i},event)" title="Export to calendar">📅 Export</button>${S.rotations.length>1?`<button class="btn btn-ghost" onclick="delRot(${i})" title="Remove">✕</button>`:''}</td>
   </tr>`).join('');
   // Mobile cards
   document.getElementById('rot-cards').innerHTML=S.rotations.map((r,i)=>`<div class="m-card" style="border-left:4px solid ${COLORS[r.color]||'var(--accent)'}">
     <div class="m-card-header">
       <div class="m-card-title">${r.block}${r.name?` — ${r.name}`:''}</div>
-      ${S.rotations.length>1?`<button class="m-card-delete" onclick="delRot(${i})" title="Remove">✕</button>`:''}
+      <button class="cal-export-btn" onclick="showCalExport(this,'rotation',${i},event)" title="Export to calendar">📅 Export</button>${S.rotations.length>1?`<button class="m-card-delete" onclick="delRot(${i})" title="Remove">✕</button>`:''}
     </div>
     <div style="margin-bottom:10px"><div class="m-card-colors">${CN.map(c=>`<div class="color-dot ${c===r.color?'active':''}" style="background:${COLORS[c]}" onclick="updRot(${i},'color','${c}')"></div>`).join('')}</div></div>
     <div class="m-card-row"><span class="m-card-label">Start</span><div class="m-card-value"><input type="date" value="${r.start}" onchange="updRot(${i},'start',this.value)"></div></div>
@@ -1349,6 +1365,66 @@ function updRot(i,f,v){
 function delRot(i){const prev=JSON.parse(JSON.stringify(S));S.rotations.splice(i,1);S.rotations.forEach((r,j)=>r.block=`Block ${j+1}`);buildMIY();save();renderRotations();pushUndo('Block removed',prev)}
 function addBlock(){S.rotations.push({block:`Block ${S.rotations.length+1}`,color:CN[S.rotations.length%CN.length],start:'',end:'',name:'',location:'',type:''});save();renderRotations()}
 
+// ── Calendar Export ──
+function icsDate(dateStr){return dateStr.replace(/-/g,'')}
+function icsDateEnd(dateStr){const d=pd(dateStr);d.setDate(d.getDate()+1);return`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`}
+function generateICS(title,startDate,endDate,location,description){
+  const uid=btoa(title+startDate).replace(/[^a-zA-Z0-9]/g,'').slice(0,32)+'@matchready';
+  return`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//MatchReady//EN\r\nBEGIN:VEVENT\r\nUID:${uid}\r\nDTSTART;VALUE=DATE:${icsDate(startDate)}\r\nDTEND;VALUE=DATE:${endDate?icsDateEnd(endDate):icsDateEnd(startDate)}\r\nSUMMARY:${title}\r\n${location?'LOCATION:'+location+'\r\n':''}${description?'DESCRIPTION:'+description+'\r\n':''}END:VEVENT\r\nEND:VCALENDAR`;
+}
+function downloadICS(title,startDate,endDate,location,description){
+  const ics=generateICS(title,startDate,endDate,location,description);
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=title.replace(/[^a-zA-Z0-9 ]/g,'').replace(/ /g,'_')+'.ics';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  showToast('Downloaded .ics file');
+}
+function openGoogleCal(title,startDate,endDate,location,description){
+  const s=icsDate(startDate),e=endDate?icsDateEnd(endDate):icsDateEnd(startDate);
+  const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${s}/${e}${location?'&location='+encodeURIComponent(location):''}${description?'&details='+encodeURIComponent(description):''}`;
+  window.open(url,'_blank');
+  showToast('Opened Google Calendar');
+}
+let activeExportPop=null;
+function showCalExport(btn,type,idx,evt){
+  evt.stopPropagation();
+  closeCalExport();
+  let title='',startDate='',endDate='',location='',description='';
+  if(type==='interview'){
+    const v=S.interviews[idx];if(!v.date){showToast('Add a date first');return}
+    title='Interview: '+(v.program||'TBD');startDate=v.date;location=v.location||'';
+    description=v.specialty?'Specialty: '+v.specialty:'';
+  } else if(type==='keydate'){
+    const k=S.keydates[idx];if(!k.date){showToast('Add a date first');return}
+    title=k.event||'Key Date';startDate=k.date;description='Category: '+k.category;
+  } else if(type==='rotation'){
+    const r=S.rotations[idx];if(!r.start){showToast('Add dates first');return}
+    title=(r.name||r.block)+(r.location?' — '+r.location:'');startDate=r.start;endDate=r.end;
+    location=r.location||'';description=r.type?'Type: '+r.type:'';
+  }
+  const esc=s=>(s||'').replace(/'/g,"\\'");
+  const pop=document.createElement('div');pop.className='cal-export-pop open';
+  pop.innerHTML=`<button class="cal-export-pop-item" onclick="downloadICS('${esc(title)}','${startDate}','${endDate||''}','${esc(location)}','${esc(description)}');closeCalExport()"><span>🍎</span>Apple Calendar</button><button class="cal-export-pop-item" onclick="openGoogleCal('${esc(title)}','${startDate}','${endDate||''}','${esc(location)}','${esc(description)}');closeCalExport()"><span>📅</span>Google Calendar</button>`;
+  // Position popover at button location, appended to body
+  const rect=btn.getBoundingClientRect();
+  pop.style.position='fixed';
+  pop.style.top=(rect.bottom+4)+'px';
+  // Align right edge with button, but clamp to viewport
+  const popW=180;
+  let left=rect.right-popW;
+  if(left<8)left=rect.left;
+  if(left+popW>window.innerWidth-8)left=window.innerWidth-popW-8;
+  pop.style.left=left+'px';
+  document.body.appendChild(pop);
+  const backdrop=document.getElementById('cal-export-backdrop');backdrop.classList.add('open');
+  activeExportPop=pop;
+}
+function closeCalExport(){
+  if(activeExportPop){activeExportPop.remove();activeExportPop=null}
+  const backdrop=document.getElementById('cal-export-backdrop');if(backdrop)backdrop.classList.remove('open');
+}
+
 // ── Interviews ──
 function renderInterviews(){
   const ct=document.getElementById('intv-container');
@@ -1360,12 +1436,12 @@ function renderInterviews(){
     <td><input type="date" value="${v.date||''}" onchange="updI(${i},'date',this.value)"></td>
     <td><input value="${v.location||''}" placeholder="City, State" onchange="updI(${i},'location',this.value)"></td>
     <td><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select></td>
-    <td><button class="btn btn-ghost" onclick="delI(${i})" title="Remove">✕</button></td>
+    <td style="white-space:nowrap"><button class="cal-export-btn" onclick="showCalExport(this,'interview',${i},event)" title="Export to calendar">📅 Export</button><button class="btn btn-ghost" onclick="delI(${i})" title="Remove">✕</button></td>
   </tr>`}).join('')}</tbody></table></div>` +
   `<div class="mobile-cards">${sorted.map(v=>{const i=v._i;return`<div class="m-card">
     <div class="m-card-header">
       <div class="m-card-title">${v.program||'New Interview'}</div>
-      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select><button class="m-card-delete" onclick="delI(${i})">✕</button></div>
+      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(v.status)}" onchange="updI(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Invited','Scheduled','Completed','Waitlisted','Declined'].map(s=>`<option ${s===v.status?'selected':''}>${s}</option>`).join('')}</select><button class="cal-export-btn" onclick="showCalExport(this,'interview',${i},event)" title="Export to calendar">📅 Export</button><button class="m-card-delete" onclick="delI(${i})">✕</button></div>
     </div>
     <div class="m-card-row"><span class="m-card-label">Program</span><div class="m-card-value"><input value="${v.program||''}" placeholder="Program name" onchange="updI(${i},'program',this.value)"></div></div>
     <div class="m-card-row"><span class="m-card-label">Specialty</span><div class="m-card-value"><input value="${v.specialty||''}" placeholder="Specialty" onchange="updI(${i},'specialty',this.value)"></div></div>
@@ -1387,12 +1463,12 @@ function renderKeyDates(){
     <td><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></td>
     <td><select onchange="updK(${i},'category',this.value)">${['Application','Exam','Milestone','Personal'].map(c=>`<option ${c===k.category?'selected':''}>${c}</option>`).join('')}</select></td>
     <td><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select></td>
-    <td><button class="btn btn-ghost" onclick="delK(${i})" title="Remove">✕</button></td>
+    <td style="white-space:nowrap"><button class="cal-export-btn" onclick="showCalExport(this,'keydate',${i},event)" title="Export to calendar">📅 Export</button><button class="btn btn-ghost" onclick="delK(${i})" title="Remove">✕</button></td>
   </tr>`).join('')}</tbody></table></div>` +
   `<div class="mobile-cards">${S.keydates.map((k,i)=>`<div class="m-card" style="border-left:4px solid ${k.category==='Application'?'var(--blue-fg)':k.category==='Exam'?'var(--red-fg)':k.category==='Milestone'?'var(--green-fg)':'var(--yellow-fg)'}; background:${CAT_BG[k.category]||'var(--surface)'}">
     <div class="m-card-header">
       <div class="m-card-title">${k.event||'New Event'}</div>
-      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select><button class="m-card-delete" onclick="delK(${i})">✕</button></div>
+      <div style="display:flex;align-items:center;gap:8px"><select class="status-select ${ssClass(k.status)}" onchange="updK(${i},'status',this.value);this.className='status-select '+ssClass(this.value)">${['Not Started','Scheduled','In Progress','Complete'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select><button class="cal-export-btn" onclick="showCalExport(this,'keydate',${i},event)" title="Export to calendar">📅 Export</button><button class="m-card-delete" onclick="delK(${i})">✕</button></div>
     </div>
     <div class="m-card-row"><span class="m-card-label">Event</span><div class="m-card-value"><input value="${k.event||''}" placeholder="Event name" onchange="updK(${i},'event',this.value)"></div></div>
     <div class="m-card-row"><span class="m-card-label">Date</span><div class="m-card-value"><input type="date" value="${k.date||''}" onchange="updK(${i},'date',this.value)"></div></div>
