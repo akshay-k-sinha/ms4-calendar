@@ -1398,10 +1398,10 @@ function downloadICS(title,startDate,endDate,location,description){
   showToast('Downloaded .ics file');
 }
 function openGoogleCal(title,startDate,endDate,location,description){
-  const s=icsDate(startDate),e=endDate?icsDateEnd(endDate):icsDateEnd(startDate);
+  const s=icsDate(startDate),e=endDate?icsNextDay(endDate):icsNextDay(startDate);
   const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${s}/${e}${location?'&location='+encodeURIComponent(location):''}${description?'&details='+encodeURIComponent(description):''}`;
-  window.open(url,'_blank');
-  showToast('Opened Google Calendar');
+  const w=window.open(url,'_blank');
+  if(w){showToast('Opened Google Calendar')}else{showToast('Please allow popups for Google Calendar')}
 }
 let activeExportPop=null;
 function showCalExport(btn,type,idx,evt){
@@ -1592,6 +1592,28 @@ function jumpToMonth(idx){
     c.style.transform='translateX(0)';
   },120);
 }
+function jumpToMonthDate(y,m){
+  const prevM=calViewDate.getMonth(),prevY=calViewDate.getFullYear();
+  if(y===prevY&&m===prevM)return;
+  const delta=(y>prevY||(y===prevY&&m>prevM))?1:-1;
+  const c=document.getElementById('month-cal');
+  c.style.transition='opacity .12s ease, transform .12s ease';
+  c.style.opacity='0';
+  c.style.transform=delta>0?'translateX(-20px)':'translateX(20px)';
+  setTimeout(()=>{
+    calViewDate=new Date(y,m,1);
+    const mi=MIY.findIndex(v=>v.y===y&&v.m===m);
+    if(mi>=0)currentMonthIdx=mi;
+    c.style.transition='none';
+    c.style.opacity='0';
+    c.style.transform=delta>0?'translateX(20px)':'translateX(-20px)';
+    renderCalView();
+    void c.offsetWidth;
+    c.style.transition='opacity .2s ease, transform .2s ease';
+    c.style.opacity='1';
+    c.style.transform='translateX(0)';
+  },120);
+}
 function openMonth(y,m){
   currentMonthIdx=MIY.findIndex(v=>v.y===y&&v.m===m);
   if(currentMonthIdx<0)currentMonthIdx=0;
@@ -1670,7 +1692,7 @@ function renderMonthView(c){
   let pillsHtml='';
   for(let pm=0;pm<12;pm++){
     const isCur=(pm===m&&vy===y);
-    pillsHtml+=`<span class="month-pill${isCur?' current':''}" onclick="calViewDate=new Date(${vy},${pm},1);renderCalView()">${MN[pm].slice(0,3)}</span>`;
+    pillsHtml+=`<span class="month-pill${isCur?' current':''}" onclick="jumpToMonthDate(${vy},${pm})">${MN[pm].slice(0,3)}</span>`;
   }
   document.getElementById('month-pills-detail').innerHTML=pillsHtml;
   // Build rotation legend for this month
