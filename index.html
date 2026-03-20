@@ -47,7 +47,7 @@ firebase.initializeApp({
     --blue-bg:#DBEAFE;--blue-fg:#1E40AF;
     --shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.06);
     --shadow-hover:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.06);
-    --radius:12px;--radius-sm:8px;--nav-w:220px;
+    --radius:12px;--radius-sm:8px;--nav-w:180px;
     --ease:0.2s cubic-bezier(.25,.1,.25,1);
   }
   /* ── Dark mode ── */
@@ -100,23 +100,31 @@ firebase.initializeApp({
   .nav-footer{padding:16px 20px;font-size:10px;color:var(--text-3);line-height:1.6;border-top:1px solid var(--border-light)}
   .nav-footer a{color:var(--accent);text-decoration:none;font-weight:500}
   .nav-footer a:hover{text-decoration:underline}
-  /* Sidebar mini calendar */
-  .sidebar-mini-cal{padding:16px 16px 8px;border-top:1px solid var(--border-light);margin-top:12px}
-  .sidebar-mini-cal-title{font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px;text-align:center}
-  .sidebar-mini-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
-  .sidebar-mini-cal-hdr{font-size:8px;color:var(--text-3);text-align:center;padding:2px 0;font-weight:600}
-  .sidebar-mini-cal-day{text-align:center;font-size:9px;color:var(--text-2);padding:3px 0;border-radius:4px;cursor:pointer;position:relative}
-  .sidebar-mini-cal-day:hover{background:var(--surface-hover)}
-  .sidebar-mini-cal-day.smc-today{background:var(--accent);color:white;font-weight:700;border-radius:50%}
-  .sidebar-mini-cal-day.smc-has-rot::after{content:'';position:absolute;bottom:1px;left:25%;right:25%;height:2px;border-radius:1px}
-  .sidebar-mini-cal-day.smc-empty{visibility:hidden}
-  /* Sidebar stats */
-  .sidebar-stats{padding:8px 16px 4px}
-  .sidebar-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:10px;color:var(--text-2)}
-  .sidebar-stat-val{font-weight:600;color:var(--accent);font-size:11px}
 
   /* ── Main ── */
-  main{margin-left:var(--nav-w);flex:1;padding:32px 48px 64px}
+  main{margin-left:var(--nav-w);flex:1;padding:32px 48px 64px;max-width:calc(100% - var(--nav-w))}
+  .view{max-width:960px;margin:0 auto}
+  #view-month{max-width:100%}
+  /* Calendar inline detail panel */
+  .cal-layout{display:flex;gap:20px}
+  .cal-layout-main{flex:1;min-width:0}
+  .cal-layout-panel{width:280px;flex-shrink:0;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:20px;position:sticky;top:32px;align-self:flex-start;max-height:calc(100vh - 200px);overflow-y:auto;transition:opacity .2s ease}
+  .cal-panel-empty{font-size:13px;color:var(--text-3);text-align:center;padding:40px 0}
+  .cal-panel-date{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
+  .cal-panel-year{font-size:12px;color:var(--text-3);margin-bottom:16px}
+  .cal-panel-section{margin-bottom:16px}
+  .cal-panel-label{font-size:9px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .cal-panel-rot{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+  .cal-panel-rot-dot{width:10px;height:10px;border-radius:3px;margin-top:3px;flex-shrink:0}
+  .cal-panel-rot-name{font-size:13px;font-weight:600;color:var(--text)}
+  .cal-panel-rot-detail{font-size:11px;color:var(--text-2);margin-top:1px}
+  .cal-panel-event{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:12px;color:var(--text)}
+  .cal-panel-event-icon{font-size:11px;margin-top:1px}
+  .cal-panel-empty-section{font-size:12px;color:var(--text-3)}
+  .cal-panel-notes{width:100%;border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:8px 10px;font-family:inherit;font-size:12px;resize:vertical;min-height:60px;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s}
+  .cal-panel-notes:focus{border-color:var(--accent)}
+  .cal-panel-actions{display:flex;gap:6px;margin-top:12px}
+  .cal-panel-actions .btn{font-size:11px;padding:6px 10px}
   .view{display:none;animation:fadeIn .4s ease}.view.active{display:block}
   @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   @keyframes stagger1{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -786,7 +794,7 @@ firebase.initializeApp({
       flex-direction:row;padding:0;border-right:none;border-top:1px solid var(--border);
       background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
       overflow:visible;z-index:100}
-    .nav-brand,.nav-section,.nav-spacer,.nav-footer,.sidebar-mini-cal,.sidebar-stats{display:none}
+    .nav-brand,.nav-section,.nav-spacer,.nav-footer{display:none}
     .nav-item{flex:1;text-align:center;padding:12px 4px 10px;font-size:10px;border-left:none;
       border-top:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px}
     .nav-item.active{border-left:none;border-top-color:var(--accent);background:transparent}
@@ -808,6 +816,8 @@ firebase.initializeApp({
     .nav-more:active{color:var(--accent)}
     .more-sheet,.more-sheet-backdrop{display:block!important}
     main{margin-left:0;padding:20px 16px 100px;max-width:100%}
+    .cal-layout{flex-direction:column}
+    .cal-layout-panel{display:none}
     .page-title{font-size:24px}
     .card-grid{grid-template-columns:1fr 1fr;gap:10px}
     .dash-hero-grid{grid-template-columns:1fr;gap:12px;margin-bottom:20px}
@@ -868,8 +878,6 @@ firebase.initializeApp({
   <div class="nav-item" data-view="keydates">Key Dates</div>
   <div class="nav-item" data-view="letters">Letters</div>
   <div class="nav-more" onclick="toggleMore()">More</div>
-  <div class="sidebar-mini-cal" id="sidebar-mini-cal"></div>
-  <div class="sidebar-stats" id="sidebar-stats"></div>
   <div class="nav-spacer"></div>
   <div class="toggle-wrap" style="padding:12px 20px;display:flex;align-items:center;gap:10px">
     <span style="font-size:11px;color:var(--text-3)">☀</span>
@@ -1360,7 +1368,12 @@ firebase.initializeApp({
       <button class="cal-view-btn" data-calview="year" onclick="setCalView('year')">Year</button>
     </div>
     <div class="month-pills-detail" id="month-pills-detail"></div>
-    <div class="md-container"><div class="md-inner" id="month-cal"></div></div>
+    <div class="cal-layout">
+      <div class="cal-layout-main"><div class="md-container"><div class="md-inner" id="month-cal"></div></div></div>
+      <div class="cal-layout-panel" id="cal-inline-panel">
+        <div class="cal-panel-empty">Click a day to see details</div>
+      </div>
+    </div>
   </div>
 
   <!-- ROTATIONS -->
@@ -1421,17 +1434,6 @@ firebase.initializeApp({
           <div class="acct-plan-desc">Unlimited rotations, interviews, key dates, and letters. Cloud sync across all devices.</div>
         </div>
         <span class="acct-plan-badge">Active</span>
-      </div>
-    </div>
-
-    <div class="acct-section-label">Match Year</div>
-    <div class="acct-card">
-      <div class="acct-data-item">
-        <div>
-          <div class="acct-data-title">Academic Year</div>
-          <div class="acct-data-desc">Your MS4 year starting June. Default dates adjust to match.</div>
-        </div>
-        <select id="acct-match-year" onchange="changeMatchYear(this.value)" style="font-family:inherit;font-size:14px;font-weight:600;color:var(--accent);background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:6px 10px;cursor:pointer"></select>
       </div>
     </div>
 
@@ -1684,21 +1686,6 @@ function showAccountView(){
   document.getElementById('view-account').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   document.title='My Account · MatchReady';
-  // Populate match year dropdown
-  const sel=document.getElementById('acct-match-year');
-  if(sel&&!sel.options.length){
-    const now=new Date().getFullYear();
-    for(let y=now-2;y<=now+50;y++){
-      const opt=document.createElement('option');opt.value=y;
-      opt.textContent=y+'–'+(y+1);
-      if(y===MS4_Y)opt.selected=true;
-      sel.appendChild(opt);
-    }
-  }
-}
-function changeMatchYear(val){
-  localStorage.setItem('ms4cal_year',val);
-  showToast('Match year updated — reload to apply');
 }
 
 function toggleDashCard(id){
@@ -2284,12 +2271,44 @@ function openDrawer(dateStr){
     <button class="btn btn-secondary" onclick="addInterviewForDate('${dateStr}')">+ Interview</button>
     <button class="btn btn-secondary" onclick="addKeyDateForDate('${dateStr}')">+ Key Date</button>`;
 
-  // Open
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-backdrop').classList.add('open');
-
   // Highlight selected day
   document.querySelectorAll('.cal-day.selected,.md-day.selected').forEach(el=>el.classList.remove('selected'));
+
+  // Desktop calendar: use inline panel instead of drawer
+  const panel=document.getElementById('cal-inline-panel');
+  const isDesktopCal=window.innerWidth>768&&document.getElementById('view-month').classList.contains('active')&&calViewMode==='month';
+  if(isDesktopCal&&panel){
+    let ph=`<div class="cal-panel-date">${dayNames[d.getDay()]}, ${MN[d.getMonth()]} ${d.getDate()}</div>`;
+    ph+=`<div class="cal-panel-year">${d.getFullYear()}</div>`;
+    // Rotation
+    ph+=`<div class="cal-panel-section"><div class="cal-panel-label">Rotation</div>`;
+    if(rot?.name){
+      ph+=`<div class="cal-panel-rot"><div class="cal-panel-rot-dot" style="background:${COLORS[rot.color]||'#eee'}"></div><div><div class="cal-panel-rot-name">${rot.name}</div><div class="cal-panel-rot-detail">${rot.location||''} · ${rot.block}${rot.type?' · '+rot.type:''}</div></div></div>`;
+    } else {ph+=`<div class="cal-panel-empty-section">No rotation</div>`}
+    ph+=`</div>`;
+    // Events
+    ph+=`<div class="cal-panel-section"><div class="cal-panel-label">Events</div>`;
+    let hasEv=false;
+    if(intv){ph+=`<div class="cal-panel-event"><span class="cal-panel-event-icon">★</span><div><strong>${intv.program}</strong><br><span style="font-size:11px;color:var(--text-2)">${intv.specialty||''} · ${intv.location||''}</span></div></div>`;hasEv=true}
+    if(kd){ph+=`<div class="cal-panel-event"><span class="cal-panel-event-icon">▶</span><div><strong>${kd.event}</strong><br><span style="font-size:11px;color:var(--text-2)">${kd.category||''}</span></div></div>`;hasEv=true}
+    if(!hasEv)ph+=`<div class="cal-panel-empty-section">No events</div>`;
+    ph+=`</div>`;
+    // Notes
+    const note=S.notes?.[dateStr]||'';
+    ph+=`<div class="cal-panel-section"><div class="cal-panel-label">Notes</div>`;
+    ph+=`<textarea class="cal-panel-notes" placeholder="Add notes..." oninput="saveNote('${dateStr}',this.value)">${note}</textarea></div>`;
+    // Actions
+    ph+=`<div class="cal-panel-actions"><button class="btn btn-secondary" onclick="addInterviewForDate('${dateStr}')">+ Interview</button><button class="btn btn-secondary" onclick="addKeyDateForDate('${dateStr}')">+ Key Date</button></div>`;
+    panel.style.opacity='0';
+    panel.innerHTML=ph;
+    void panel.offsetWidth;
+    panel.style.opacity='1';
+    return; // Don't open the drawer
+  }
+
+  // Mobile/other views: open the drawer
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-backdrop').classList.add('open');
 }
 function closeDrawer(){
   document.getElementById('drawer').classList.remove('open');
@@ -2460,6 +2479,7 @@ function moreNav(view){
   const navItem=document.querySelector(`.nav-item[data-view=${view}]`);
   if(navItem){navItem.click();return}
   // Views without a nav-item (e.g. account)
+  if(view==='account'){showAccountView();return}
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
@@ -2485,40 +2505,7 @@ function syncThemeChecks(isDark){
 })();
 
 // ── Init ──
-function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters();renderCalView();renderSidebarMiniCal();renderSidebarStats()}
-function renderSidebarMiniCal(){
-  const el=document.getElementById('sidebar-mini-cal');if(!el)return;
-  const now=new Date();const y=now.getFullYear(),m=now.getMonth();
-  const dim=new Date(y,m+1,0).getDate();
-  const fd=new Date(y,m,1).getDay();
-  let h=`<div class="sidebar-mini-cal-title">${MN[m]} ${y}</div><div class="sidebar-mini-cal-grid">`;
-  ['S','M','T','W','T','F','S'].forEach(d=>h+=`<div class="sidebar-mini-cal-hdr">${d}</div>`);
-  for(let i=0;i<fd;i++)h+='<div class="sidebar-mini-cal-day smc-empty"></div>';
-  for(let day=1;day<=dim;day++){
-    const d=new Date(y,m,day);
-    const isT=same(d,TODAY);
-    const rot=rotFor(d);
-    const rotStyle=rot?`style="color:${isT?'white':'var(--text)'}"`:''
-    const barStyle=rot?`style="background:${COLORS[rot.color]||'var(--accent)'}"`:'';
-    h+=`<div class="sidebar-mini-cal-day${isT?' smc-today':''}${rot?' smc-has-rot':''}" ${rotStyle} onclick="calViewDate=new Date(${y},${m},${day});document.querySelector('[data-view=month]').click()"><span>${day}</span>${rot?`<span class="smc-bar" ${barStyle}></span>`:''}</div>`;
-  }
-  h+='</div>';el.innerHTML=h;
-}
-function renderSidebarStats(){
-  const el=document.getElementById('sidebar-stats');if(!el)return;
-  const upcoming=S.interviews.filter(iv=>{const d=pd(iv.date);return d&&d>=TODAY}).length;
-  const completed=S.interviews.filter(iv=>iv.status==='Completed').length;
-  const lettersSubmitted=S.letters.filter(l=>l.status==='Submitted').length;
-  const lettersTotal=S.letters.length;
-  const nextKd=S.keydates.filter(k=>{const d=pd(k.date);return d&&d>=TODAY&&k.status!=='Complete'}).sort((a,b)=>pd(a.date)-pd(b.date))[0];
-  let h='';
-  if(upcoming)h+=`<div class="sidebar-stat"><span>Upcoming interviews</span><span class="sidebar-stat-val">${upcoming}</span></div>`;
-  if(completed)h+=`<div class="sidebar-stat"><span>Completed</span><span class="sidebar-stat-val">${completed}</span></div>`;
-  if(lettersTotal)h+=`<div class="sidebar-stat"><span>Letters submitted</span><span class="sidebar-stat-val">${lettersSubmitted}/${lettersTotal}</span></div>`;
-  if(nextKd){const d=pd(nextKd.date);const days=Math.ceil((d-TODAY)/(1000*60*60*24));h+=`<div class="sidebar-stat"><span>${nextKd.event}</span><span class="sidebar-stat-val">${days>0?'in '+days+'d':'Today'}</span></div>`}
-  el.innerHTML=h;
-}
-
+function renderAll(){renderDashboard();renderRotations();renderInterviews();renderKeyDates();renderLetters();renderCalView()}
 // ── Firebase Integration ──
 let currentUser=null;
 let firebaseReady=false;
