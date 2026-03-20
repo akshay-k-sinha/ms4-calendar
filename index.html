@@ -101,24 +101,31 @@ firebase.initializeApp({
   .nav-footer a{color:var(--accent);text-decoration:none;font-weight:500}
   .nav-footer a:hover{text-decoration:underline}
   /* Sidebar collapse */
-  .nav-collapse-btn{padding:8px 20px;font-size:11px;color:var(--text-3);cursor:pointer;border:none;background:none;font-family:inherit;text-align:left;width:100%;transition:all var(--ease)}
-  .nav-collapse-btn:hover{color:var(--text)}
+  .nav-collapse-btn{padding:8px 16px;font-size:11px;color:var(--text-3);cursor:pointer;border:none;background:none;font-family:inherit;text-align:left;width:100%;transition:all var(--ease);display:flex;align-items:center;gap:6px}
+  .nav-collapse-btn:hover{color:var(--text);background:var(--surface-hover)}
+  .nav-collapse-btn-icon{font-size:14px;transition:transform .25s ease}
   #sidebar-nav{transition:width .25s cubic-bezier(.25,.1,.25,1)}
-  #sidebar-nav.collapsed{width:60px;overflow:hidden}
-  #sidebar-nav.collapsed .nav-brand-text,#sidebar-nav.collapsed .nav-brand span,#sidebar-nav.collapsed .nav-section,#sidebar-nav.collapsed .nav-footer,#sidebar-nav.collapsed .toggle-wrap,#sidebar-nav.collapsed .auth-user{display:none}
-  #sidebar-nav.collapsed .nav-brand{padding:0 14px 20px;justify-content:center}
-  #sidebar-nav.collapsed .nav-item{padding:10px 0;text-align:center;font-size:0;border-left:none;border-bottom:2px solid transparent}
-  #sidebar-nav.collapsed .nav-item.active{border-left:none;border-bottom-color:var(--accent)}
-  #sidebar-nav.collapsed .nav-item::before{font-size:18px;display:block}
+  #sidebar-nav.collapsed{width:80px}
+  #sidebar-nav.collapsed .nav-brand-text,#sidebar-nav.collapsed .nav-brand span,#sidebar-nav.collapsed .nav-section,#sidebar-nav.collapsed .nav-footer{display:none}
+  #sidebar-nav.collapsed .nav-brand{padding:0 0 20px;justify-content:center}
+  #sidebar-nav.collapsed .nav-item{padding:8px 0 6px;text-align:center;font-size:9px;border-left:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+  #sidebar-nav.collapsed .nav-item.active{border-left:none;background:var(--accent-light)}
+  #sidebar-nav.collapsed .nav-item::before{font-size:18px;display:block;line-height:1}
   #sidebar-nav.collapsed .nav-item[data-view="dashboard"]::before{content:"🏠"}
   #sidebar-nav.collapsed .nav-item[data-view="month"]::before{content:"📅"}
   #sidebar-nav.collapsed .nav-item[data-view="rotations"]::before{content:"🔄"}
   #sidebar-nav.collapsed .nav-item[data-view="interviews"]::before{content:"⭐"}
   #sidebar-nav.collapsed .nav-item[data-view="keydates"]::before{content:"📌"}
   #sidebar-nav.collapsed .nav-item[data-view="letters"]::before{content:"✉️"}
-  #sidebar-nav.collapsed .nav-collapse-btn{padding:10px 0;text-align:center}
-  #sidebar-nav.collapsed+.auth-screen~main,#sidebar-nav.collapsed~main{margin-left:60px;max-width:calc(100% - 60px)}
-  body.sidebar-collapsed main{margin-left:60px!important;max-width:calc(100% - 60px)!important}
+  #sidebar-nav.collapsed .nav-collapse-btn{justify-content:center;padding:8px 0}
+  #sidebar-nav.collapsed .nav-collapse-btn-label{display:none}
+  #sidebar-nav.collapsed .nav-collapse-btn-icon{transform:rotate(180deg)}
+  #sidebar-nav.collapsed .toggle-wrap{justify-content:center;padding:8px 0!important}
+  #sidebar-nav.collapsed .toggle-wrap span{display:none}
+  #sidebar-nav.collapsed .auth-user{padding:8px 0;justify-content:center;font-size:0}
+  #sidebar-nav.collapsed .auth-user img{margin:0}
+  #sidebar-nav.collapsed .auth-user span{display:none}
+  body.sidebar-collapsed main{margin-left:80px!important;max-width:calc(100% - 80px)!important}
 
   /* ── Main ── */
   main{margin-left:var(--nav-w);flex:1;padding:32px 48px 64px;max-width:calc(100% - var(--nav-w))}
@@ -887,6 +894,7 @@ firebase.initializeApp({
 </style>
 </head>
 <body class="app-hidden">
+<script>if(localStorage.getItem('ms4cal_authed')){document.body.classList.remove('app-hidden');document.addEventListener('DOMContentLoaded',()=>{const a=document.getElementById('auth-screen');if(a)a.classList.add('hidden')})}</script>
 
 <nav id="sidebar-nav">
   <div class="nav-brand" onclick="document.querySelector('[data-view=dashboard]').click()">
@@ -903,7 +911,7 @@ firebase.initializeApp({
   <div class="nav-item" data-view="letters">Letters</div>
   <div class="nav-more" onclick="toggleMore()">More</div>
   <div class="nav-spacer"></div>
-  <button class="nav-collapse-btn" id="nav-collapse-btn" onclick="toggleSidebar()">« Collapse</button>
+  <button class="nav-collapse-btn" id="nav-collapse-btn" onclick="toggleSidebar()"><span class="nav-collapse-btn-icon">◀</span><span class="nav-collapse-btn-label">Collapse</span></button>
   <div class="toggle-wrap" style="padding:12px 20px;display:flex;align-items:center;gap:10px">
     <span style="font-size:11px;color:var(--text-3)">☀</span>
     <label class="toggle"><input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this.checked)"><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
@@ -1720,14 +1728,12 @@ function renderDashboard(){
 
 function toggleSidebar(){
   const nav=document.getElementById('sidebar-nav');
-  const btn=document.getElementById('nav-collapse-btn');
   const collapsed=nav.classList.toggle('collapsed');
   document.body.classList.toggle('sidebar-collapsed',collapsed);
-  btn.textContent=collapsed?'»':'« Collapse';
   localStorage.setItem('ms4cal_sidebar',collapsed?'collapsed':'expanded');
 }
 // Restore sidebar state
-(function(){if(localStorage.getItem('ms4cal_sidebar')==='collapsed'){const nav=document.getElementById('sidebar-nav');if(nav&&window.innerWidth>768){nav.classList.add('collapsed');document.body.classList.add('sidebar-collapsed');const btn=document.getElementById('nav-collapse-btn');if(btn)btn.textContent='»'}}})();
+(function(){if(localStorage.getItem('ms4cal_sidebar')==='collapsed'){const nav=document.getElementById('sidebar-nav');if(nav&&window.innerWidth>768){nav.classList.add('collapsed');document.body.classList.add('sidebar-collapsed')}}})();
 
 function showAccountView(){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -2587,11 +2593,12 @@ function closeSignOutModal(){
 }
 function executeSignOut(){
   closeSignOutModal();
+  localStorage.removeItem('ms4cal_authed');
   firebase.auth().signOut();
 }
 
-function showAuth(){document.getElementById('auth-screen').classList.remove('hidden');document.body.classList.add('app-hidden')}
-function hideAuth(){document.getElementById('auth-screen').classList.add('hidden');document.body.classList.remove('app-hidden');document.getElementById('auth-loading').style.display='none'}
+function showAuth(){document.getElementById('auth-screen').classList.remove('hidden');document.body.classList.add('app-hidden');localStorage.removeItem('ms4cal_authed')}
+function hideAuth(){document.getElementById('auth-screen').classList.add('hidden');document.body.classList.remove('app-hidden');document.getElementById('auth-loading').style.display='none';localStorage.setItem('ms4cal_authed','1')}
 
 // Debounced Firestore save
 let saveTimer=null;
