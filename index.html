@@ -911,7 +911,7 @@ firebase.initializeApp({
             <div class="demo-today-loc demo-anim-slide" style="animation-delay:.5s">University Hospital · Block 4</div>
           </div>
           <div class="demo-progress demo-anim-slide" style="animation-delay:.55s">
-            <div class="demo-progress-header"><span class="demo-label">YEAR PROGRESS</span><span class="demo-progress-pct" id="demo-pct">26%</span></div>
+            <div class="demo-progress-header"><span class="demo-label">YEAR PROGRESS</span><span class="demo-progress-pct" id="demo-pct"></span></div>
             <div class="demo-progress-track"><div class="demo-progress-fill" id="demo-fill"></div></div>
           </div>
           <div class="demo-countdowns">
@@ -1414,7 +1414,7 @@ firebase.initializeApp({
           <div class="acct-data-title">Academic Year</div>
           <div class="acct-data-desc">Your MS4 year starting June. Default dates adjust to match.</div>
         </div>
-        <input type="number" id="acct-match-year" onchange="changeMatchYear(this.value)" min="2024" step="1" style="font-family:inherit;font-size:14px;font-weight:600;color:var(--accent);background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:6px 10px;width:70px;text-align:center;cursor:pointer">
+        <select id="acct-match-year" onchange="changeMatchYear(this.value)" style="font-family:inherit;font-size:14px;font-weight:600;color:var(--accent);background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:6px 10px;cursor:pointer"></select>
       </div>
     </div>
 
@@ -1667,9 +1667,17 @@ function showAccountView(){
   document.getElementById('view-account').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   document.title='My Account · MatchReady';
-  // Set match year input
+  // Populate match year dropdown
   const sel=document.getElementById('acct-match-year');
-  if(sel)sel.value=MS4_Y;
+  if(sel&&!sel.options.length){
+    const now=new Date().getFullYear();
+    for(let y=now-2;y<=now+50;y++){
+      const opt=document.createElement('option');opt.value=y;
+      opt.textContent=y+'–'+(y+1);
+      if(y===MS4_Y)opt.selected=true;
+      sel.appendChild(opt);
+    }
+  }
 }
 function changeMatchYear(val){
   localStorage.setItem('ms4cal_year',val);
@@ -2345,15 +2353,39 @@ document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
   const views=[{el:'.demo-view-dash',nav:0},{el:'.demo-view-cal',nav:1},{el:'.demo-view-intv',nav:3}];
   const navItems=document.querySelectorAll('.demo-nav-item');
   let current=0;
-  // Animate progress bar on first load
-  setTimeout(()=>{const fill=document.getElementById('demo-fill');if(fill)fill.style.width='26%'},400);
-  // Countdown ticker
-  let cdVal1=27,cdVal2=198;
+  // Progress + countdown state
+  // Academic year = 365 days (Jun 1 – May 31). Sep 4 = day 96. Progress = 96/365 = 26%
+  let dayOfYear=96,cdVal1=27,cdVal2=198;
+  function updateDemoProgress(){
+    const pct=Math.round(dayOfYear/365*100);
+    const fill=document.getElementById('demo-fill');
+    const pctEl=document.getElementById('demo-pct');
+    if(fill)fill.style.width=pct+'%';
+    if(pctEl)pctEl.textContent=pct+'%';
+  }
+  setTimeout(updateDemoProgress,400);
+  // Smooth countdown ticker with scale+fade
+  function flipNum(el,val){
+    if(!el)return;
+    el.style.transition='opacity .2s ease, transform .2s ease';
+    el.style.opacity='0';
+    el.style.transform='scale(.7) translateY(-4px)';
+    setTimeout(()=>{
+      el.textContent=val;
+      el.style.transform='scale(1.1) translateY(4px)';
+      el.style.opacity='0';
+      void el.offsetWidth;
+      el.style.transition='opacity .25s ease, transform .25s cubic-bezier(.25,.1,.25,1)';
+      el.style.opacity='1';
+      el.style.transform='scale(1) translateY(0)';
+    },200);
+  }
   setInterval(()=>{
     cdVal1=cdVal1>1?cdVal1-1:27;cdVal2=cdVal2>1?cdVal2-1:198;
-    const e1=document.getElementById('demo-cd-1'),e2=document.getElementById('demo-cd-2');
-    if(e1){e1.style.transition='opacity .15s';e1.style.opacity='0';setTimeout(()=>{e1.textContent=cdVal1;e1.style.opacity='1'},150)}
-    if(e2){e2.style.transition='opacity .15s';e2.style.opacity='0';setTimeout(()=>{e2.textContent=cdVal2;e2.style.opacity='1'},150)}
+    dayOfYear=dayOfYear<365?dayOfYear+1:96;
+    flipNum(document.getElementById('demo-cd-1'),cdVal1);
+    flipNum(document.getElementById('demo-cd-2'),cdVal2);
+    updateDemoProgress();
   },2000);
   // Badge animations on interview view
   const badgeCycle=[
@@ -2374,7 +2406,7 @@ document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
       el.style.animation='none';void el.offsetWidth;el.style.animation='';
     });
     // Animate progress bar when dashboard comes in
-    if(next.nav===0){const fill=document.getElementById('demo-fill');if(fill){fill.style.width='0';setTimeout(()=>fill.style.width='26%',100)}}
+    if(next.nav===0){const fill=document.getElementById('demo-fill');if(fill){fill.style.width='0';setTimeout(()=>updateDemoProgress(),100)}}
     // Toggle badge states when interview view comes in
     if(next.nav===3){
       badgeState=(badgeState+1)%2;
