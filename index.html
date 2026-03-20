@@ -8,9 +8,11 @@
 <meta property="og:title" content="MatchReady">
 <meta property="og:description" content="Plan your fourth year. Rotations, interviews, ERAS deadlines, and LORs — all in one place.">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="screenshots/og-preview.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MatchReady">
 <meta name="twitter:description" content="Plan your fourth year. Rotations, interviews, ERAS deadlines, and LORs — all in one place.">
+<meta name="twitter:image" content="screenshots/og-preview.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="MatchReady">
@@ -361,6 +363,17 @@ firebase.initializeApp({
   /* Footer */
   .landing-footer{text-align:center;padding:32px 40px;font-size:12px;color:var(--text-3);border-top:1px solid var(--border-light)}
   .landing-footer-brand{font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+  .landing-footer-links{display:flex;gap:8px;justify-content:center;align-items:center}
+  .landing-footer-links a:hover{text-decoration:underline!important}
+  .legal-page{position:fixed;inset:0;z-index:600;background:var(--bg);overflow-y:auto;opacity:0;transform:translateY(20px);transition:opacity .3s ease,transform .3s ease;pointer-events:none}
+  .legal-page.open{opacity:1;transform:translateY(0);pointer-events:auto}
+  .legal-page-inner{max-width:640px;margin:0 auto;padding:48px 24px 80px}
+  .legal-page-inner h1{font-size:28px;font-weight:700;margin-bottom:8px;color:var(--text)}
+  .legal-page-inner h2{font-size:16px;font-weight:600;margin:28px 0 8px;color:var(--text)}
+  .legal-page-inner p,.legal-page-inner li{font-size:14px;line-height:1.8;color:var(--text-2);margin-bottom:8px}
+  .legal-page-inner ul{padding-left:20px;margin-bottom:12px}
+  .legal-updated{font-size:13px;color:var(--text-3);margin-bottom:24px}
+  .legal-back{background:none;border:none;color:var(--accent);font-size:14px;font-weight:500;cursor:pointer;padding:0;margin-bottom:24px;font-family:inherit}
 
   /* ── Sign-in modal ── */
   .signin-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:center;justify-content:center}
@@ -378,6 +391,10 @@ firebase.initializeApp({
   .auth-btn:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px)}
   .auth-btn img{width:20px;height:20px}
   .auth-loading{font-size:12px;color:var(--text-3);margin-top:16px}
+  .consent-check{display:flex;align-items:flex-start;gap:10px;margin:16px 0 4px;cursor:pointer;font-size:12px;color:var(--text-2);line-height:1.5;user-select:none}
+  .consent-check input[type="checkbox"]{width:18px;height:18px;margin-top:1px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;border-radius:4px}
+  .consent-check a{color:var(--accent);text-decoration:none;font-weight:500;cursor:pointer}
+  .consent-check a:hover{text-decoration:underline}
   .signin-modal-note{font-size:11px;color:var(--text-3);margin-top:16px;line-height:1.5}
   .signin-modal-close{position:absolute;top:16px;right:16px;background:var(--surface-hover);border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;color:var(--text-3);display:flex;align-items:center;justify-content:center}
 
@@ -791,7 +808,7 @@ firebase.initializeApp({
     <div class="landing-brand">MatchReady</div>
     <h1 class="landing-title">Plan your<br><span>fourth year.</span></h1>
     <p class="landing-sub">The all-in-one planner for MS4s. Rotations, interviews, ERAS deadlines, and letters of rec — synced across every device.</p>
-    <button class="landing-cta" onclick="openSignIn()">Get Started — Free →</button>
+    <button class="landing-cta" onclick="openSignIn()">Get Started →</button>
     <div class="auth-loading" id="auth-loading" style="margin-top:20px;display:none"></div>
   </div>
 
@@ -846,15 +863,148 @@ firebase.initializeApp({
 
   <div class="landing-section reveal" id="section-about" style="text-align:center;max-width:700px">
     <div class="landing-section-label">About</div>
-    <div class="landing-section-title">Built for medical students,<br>by tech nerds.</div>
+    <div class="landing-section-title">Built for medical students,<br>by people who get it.</div>
     <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:24px">Fourth year should be exciting — not stressful. But between ERAS, Step 2, interviews, and rotations, most students end up buried in spreadsheets, sticky notes, and GroupMe reminders.</p>
     <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:24px">We built MatchReady because our friends deserved better. One place for everything — rotations, interviews, deadlines, letters — that actually looks good and works on every device.</p>
-    <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:36px">No ads. No data selling. No paywalls. Just a tool that helps you get to Match Day with your sanity intact.</p>
-    <button class="landing-cta" onclick="openSignIn()">Get Started — Free →</button>
+    <p style="font-size:16px;color:var(--text-2);line-height:1.8;margin-bottom:36px">No ads. No data selling. Your data is yours — always private, always exportable. Just a tool that helps you get to Match Day with your sanity intact.</p>
+    <button class="landing-cta" onclick="openSignIn()">Get Started →</button>
   </div>
 
   <div class="landing-footer">
     <div class="landing-footer-brand">MatchReady</div>
+    <div class="landing-footer-links">
+      <a onclick="showLegalPage('privacy')" style="color:var(--text-3);font-size:13px;cursor:pointer;text-decoration:none">Privacy Policy</a>
+      <span style="color:var(--text-3);font-size:13px">·</span>
+      <a onclick="showLegalPage('terms')" style="color:var(--text-3);font-size:13px;cursor:pointer;text-decoration:none">Terms of Service</a>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy -->
+<div class="legal-page" id="legal-privacy">
+  <div class="legal-page-inner">
+    <button class="legal-back" onclick="closeLegalPage()">← Back</button>
+    <h1>Privacy Policy</h1>
+    <p class="legal-updated">Last updated: March 20, 2026</p>
+
+    <h2>What We Collect</h2>
+    <p>When you sign in with Google, we receive your name, email address, and profile photo from your Google account. We use this solely to identify your account and display your profile in the app. We do not request access to your Google Calendar, Gmail, or any other Google services beyond basic profile information.</p>
+
+    <h2>What You Store</h2>
+    <p>All schedule data — rotations, interviews, key dates, letters of recommendation, and notes — is entered by you and stored in your personal account. We do not access, read, analyze, or sell your schedule data. Your data is never used for advertising, profiling, or shared with third parties.</p>
+
+    <h2>What We Do Not Collect</h2>
+    <p>MatchReady does not collect Protected Health Information (PHI), medical records, patient data, payment card numbers, Social Security numbers, or any sensitive personal information beyond your Google profile. Do not enter any such information into the app.</p>
+
+    <h2>Where Data Is Stored</h2>
+    <p>Your data is stored in Google Cloud Firestore, hosted on Google Cloud Platform infrastructure in the United States. Data is secured by Firebase Authentication and Firestore Security Rules, which ensure each user can only access their own data. Data is also cached locally in your browser's localStorage for faster loading.</p>
+
+    <h2>Data Security</h2>
+    <p>We use industry-standard security measures provided by Google Cloud Platform, including encryption in transit (TLS) and at rest. However, no method of electronic storage is 100% secure. We cannot guarantee absolute security of your data.</p>
+
+    <h2>Data Retention</h2>
+    <p>Your data is retained for as long as your account is active. If you delete your data using the "Clear All Data" option, it is permanently removed from our servers. If you stop using the service without deleting your data, your data remains stored until you return and delete it or request deletion via email.</p>
+
+    <h2>Third-Party Services</h2>
+    <p>We use the following third-party services:</p>
+    <ul>
+      <li><strong>Firebase Authentication</strong> (Google) — for Google Sign-In and account management</li>
+      <li><strong>Cloud Firestore</strong> (Google) — for storing your schedule data</li>
+      <li><strong>Google Fonts</strong> (Google) — for loading the Inter typeface</li>
+    </ul>
+    <p>These services are governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--accent)">Google's Privacy Policy</a>. We do not use analytics, advertising, tracking pixels, or any other third-party services.</p>
+
+    <h2>Data Deletion</h2>
+    <p>You can delete all your data at any time from the My Account page using the "Clear All Data" option. This permanently removes all your schedule data from our servers. You can also request complete account deletion by emailing matchready.app@gmail.com. We will process deletion requests within 30 days.</p>
+
+    <h2>Cookies and Local Storage</h2>
+    <p>We do not use cookies or any tracking technologies. We use your browser's localStorage to cache your schedule data for faster loading and to remember your theme preference (light/dark mode). This data stays on your device and is not sent to any server.</p>
+
+    <h2>Children's Privacy</h2>
+    <p>MatchReady is not intended for use by anyone under the age of 18. We do not knowingly collect personal information from children. If you believe a child under 18 has provided us with personal information, please contact us and we will delete it.</p>
+
+    <h2>International Users</h2>
+    <p>MatchReady is hosted in the United States. If you access the service from outside the United States, your data will be transferred to and processed in the United States. By using the service, you consent to this transfer.</p>
+
+    <h2>Your Rights</h2>
+    <p>You have the right to:</p>
+    <ul>
+      <li>Access your data (visible in the app at all times)</li>
+      <li>Export your data (calendar export feature)</li>
+      <li>Delete your data (Clear All Data in My Account)</li>
+      <li>Close your account (sign out and request deletion)</li>
+    </ul>
+
+    <h2>Changes to This Policy</h2>
+    <p>We may update this privacy policy from time to time. We will notify you of material changes by displaying a notice within the app. Continued use of the service after changes constitutes acceptance of the updated policy.</p>
+
+    <h2>Contact</h2>
+    <p>For questions about this privacy policy or to request data deletion, reach out at matchready.app@gmail.com.</p>
+  </div>
+</div>
+
+<!-- Terms of Service -->
+<div class="legal-page" id="legal-terms">
+  <div class="legal-page-inner">
+    <button class="legal-back" onclick="closeLegalPage()">← Back</button>
+    <h1>Terms of Service</h1>
+    <p class="legal-updated">Last updated: March 20, 2026</p>
+
+    <h2>Agreement to Terms</h2>
+    <p>By creating an account or using MatchReady, you agree to be bound by these Terms of Service. If you do not agree, do not use the service. These terms constitute a legally binding agreement between you and MatchReady.</p>
+
+    <h2>The Service</h2>
+    <p>MatchReady is a web-based planning and organizational tool for medical students. It helps you organize rotations, interviews, deadlines, and letters of recommendation. MatchReady is <strong>not a medical device, clinical tool, or official academic system</strong>. It is a personal productivity tool only.</p>
+
+    <h2>Not a Medical or HIPAA-Covered Service</h2>
+    <p>MatchReady does not collect, store, or process Protected Health Information (PHI) as defined under HIPAA. The service is not a covered entity or business associate under HIPAA. Do not enter patient information, medical records, or any protected health information into MatchReady. Any schedule data you enter (rotation names, interview locations, etc.) is treated as personal organizational data, not medical data.</p>
+
+    <h2>Your Account</h2>
+    <p>You sign in using your Google account. You are responsible for maintaining access to your Google account and for all activity that occurs under your account. One person per account — do not share your login. You must be at least 18 years old to use MatchReady.</p>
+
+    <h2>Your Data</h2>
+    <p>You own your data. We do not claim any rights to the schedule information you enter. You can export or delete your data at any time. While we take reasonable measures to protect your data, you are responsible for maintaining your own backups of important information.</p>
+
+    <h2>Payment and Refunds</h2>
+    <p>MatchReady may offer paid features or subscription plans. All payments are final unless otherwise required by law. If you believe you were charged in error, contact us within 14 days of the charge. We reserve the right to change pricing with 30 days notice to existing users.</p>
+
+    <h2>Acceptable Use</h2>
+    <p>Use MatchReady for its intended purpose — planning your medical school schedule. You agree not to:</p>
+    <ul>
+      <li>Attempt to access other users' data or accounts</li>
+      <li>Reverse engineer, decompile, or extract the source code of the service</li>
+      <li>Use automated systems (bots, scrapers) to access the service</li>
+      <li>Overload, disrupt, or interfere with the service's infrastructure</li>
+      <li>Use the service for any unlawful purpose</li>
+      <li>Enter Protected Health Information or patient data</li>
+    </ul>
+
+    <h2>Account Termination</h2>
+    <p>We reserve the right to suspend or terminate your account at any time, with or without notice, for conduct that we determine violates these terms or is harmful to other users or the service. You may delete your account and data at any time through the My Account page.</p>
+
+    <h2>Availability</h2>
+    <p>We strive to keep MatchReady available but cannot guarantee 100% uptime. The service may be temporarily unavailable for maintenance, updates, or circumstances beyond our control. We are not liable for any losses resulting from service downtime or interruptions.</p>
+
+    <h2>Disclaimer of Warranties</h2>
+    <p>MatchReady is provided <strong>"as is" and "as available"</strong> without warranties of any kind, whether express, implied, or statutory. We specifically disclaim all implied warranties of merchantability, fitness for a particular purpose, and non-infringement. We do not warrant that the service will be uninterrupted, error-free, or secure.</p>
+
+    <h2>Limitation of Liability</h2>
+    <p>To the maximum extent permitted by law, MatchReady and its creators shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of data, missed deadlines, scheduling errors, or any consequences of relying on information displayed in the app. Our total liability for any claim arising from the use of the service shall not exceed the amount you paid for the service in the 12 months preceding the claim. Always verify important dates with your medical school and official sources (AAMC, NRMP, ERAS).</p>
+
+    <h2>Indemnification</h2>
+    <p>You agree to indemnify and hold harmless MatchReady, its creators, and affiliates from any claims, damages, losses, or expenses (including reasonable attorney fees) arising from your use of the service, your violation of these terms, or your violation of any rights of a third party.</p>
+
+    <h2>Dispute Resolution</h2>
+    <p>Any disputes arising from these terms or your use of MatchReady shall first be attempted to be resolved through informal negotiation. If unresolved after 30 days, disputes shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association. You agree to waive any right to participate in a class action lawsuit or class-wide arbitration.</p>
+
+    <h2>Changes to Terms</h2>
+    <p>We may update these terms from time to time. We will notify you of material changes by displaying a notice within the app. Continued use of the service after changes constitutes acceptance of the updated terms. If you do not agree to the updated terms, you must stop using the service.</p>
+
+    <h2>Severability</h2>
+    <p>If any provision of these terms is found to be unenforceable, the remaining provisions shall remain in full force and effect.</p>
+
+    <h2>Contact</h2>
+    <p>For questions about these terms, reach out at matchready.app@gmail.com.</p>
   </div>
 </div>
 
@@ -865,8 +1015,9 @@ firebase.initializeApp({
     <div class="signin-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
     <h2>Welcome to MatchReady</h2>
     <p>Sign in to save your schedule to the cloud.</p>
-    <button class="auth-btn" onclick="signIn()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Continue with Google</button>
-    <div class="signin-modal-note">Free forever. Your data is private and encrypted.<br>No credit card required.</div>
+    <label class="consent-check" id="consent-label"><input type="checkbox" id="consent-checkbox" onchange="updateConsentBtn()"><span>I agree to the <a onclick="event.stopPropagation();showLegalPage('terms')">Terms of Service</a> and <a onclick="event.stopPropagation();showLegalPage('privacy')">Privacy Policy</a></span></label>
+    <button class="auth-btn" id="signin-btn" onclick="signIn()" disabled style="opacity:.5;cursor:not-allowed"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Continue with Google</button>
+    <div class="signin-modal-note">Your data is private and encrypted.<br>Synced securely across all your devices.</div>
   </div>
 </div>
 <div class="signin-modal-backdrop" id="clear-data-backdrop" onclick="if(event.target===this)closeClearModal()">
@@ -1042,7 +1193,7 @@ firebase.initializeApp({
     <div class="acct-card">
       <div class="acct-plan-row">
         <div>
-          <div class="acct-plan-name">Free Plan</div>
+          <div class="acct-plan-name">MatchReady</div>
           <div class="acct-plan-desc">Unlimited rotations, interviews, key dates, and letters. Cloud sync across all devices.</div>
         </div>
         <span class="acct-plan-badge">Active</span>
@@ -1973,7 +2124,19 @@ let currentUser=null;
 let firebaseReady=false;
 
 function openSignIn(){document.getElementById('signin-backdrop').classList.add('open')}
-function closeSignIn(){document.getElementById('signin-backdrop').classList.remove('open')}
+function closeSignIn(){document.getElementById('signin-backdrop').classList.remove('open');document.getElementById('consent-checkbox').checked=false;updateConsentBtn()}
+function updateConsentBtn(){const btn=document.getElementById('signin-btn');const ok=document.getElementById('consent-checkbox').checked;btn.disabled=!ok;btn.style.transition='opacity .2s ease';btn.style.opacity=ok?'1':'.5';btn.style.cursor=ok?'pointer':'not-allowed'}
+let legalReturnToModal=false;
+function showLegalPage(type){
+  const modal=document.getElementById('signin-backdrop');
+  if(modal.classList.contains('open')){legalReturnToModal=true;modal.classList.remove('open')}
+  const el=document.getElementById('legal-'+type);el.classList.add('open');el.scrollTop=0;document.body.style.overflow='hidden';
+}
+function closeLegalPage(){
+  document.querySelectorAll('.legal-page').forEach(el=>el.classList.remove('open'));
+  if(legalReturnToModal){legalReturnToModal=false;document.getElementById('signin-backdrop').classList.add('open')}
+  else{document.body.style.overflow=''}
+}
 function signIn(){
   const provider=new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider).then(()=>closeSignIn()).catch(e=>showToast('Sign-in failed: '+e.message));
