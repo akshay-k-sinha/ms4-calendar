@@ -1543,26 +1543,54 @@ function setCalView(mode){
   renderCalView();
 }
 function navCalView(delta){
+  const c=document.getElementById('month-cal');
   const dir=delta>0?'slide-left':'slide-right';
-  if(calViewMode==='month'){
-    calViewDate.setMonth(calViewDate.getMonth()+delta);
-    const mi=MIY.findIndex(({y,m})=>m===calViewDate.getMonth()&&y===calViewDate.getFullYear());
-    currentMonthIdx=mi>=0?mi:currentMonthIdx;
-  } else if(calViewMode==='day'){
-    calViewDate.setDate(calViewDate.getDate()+delta);
-  } else if(calViewMode==='3day'){
-    calViewDate.setDate(calViewDate.getDate()+(delta*3));
-  } else if(calViewMode==='week'){
-    calViewDate.setDate(calViewDate.getDate()+(delta*7));
-  } else if(calViewMode==='year'){
-    calViewDate.setFullYear(calViewDate.getFullYear()+delta);
-  }
-  renderCalView(dir);
+  c.style.transition='opacity .12s ease, transform .12s ease';
+  c.style.opacity='0';
+  c.style.transform=delta>0?'translateX(-20px)':'translateX(20px)';
+  setTimeout(()=>{
+    if(calViewMode==='month'){
+      calViewDate.setMonth(calViewDate.getMonth()+delta);
+      const mi=MIY.findIndex(({y,m})=>m===calViewDate.getMonth()&&y===calViewDate.getFullYear());
+      currentMonthIdx=mi>=0?mi:currentMonthIdx;
+    } else if(calViewMode==='day'){
+      calViewDate.setDate(calViewDate.getDate()+delta);
+    } else if(calViewMode==='3day'){
+      calViewDate.setDate(calViewDate.getDate()+(delta*3));
+    } else if(calViewMode==='week'){
+      calViewDate.setDate(calViewDate.getDate()+(delta*7));
+    } else if(calViewMode==='year'){
+      calViewDate.setFullYear(calViewDate.getFullYear()+delta);
+    }
+    c.style.transition='none';
+    c.style.opacity='0';
+    c.style.transform=delta>0?'translateX(20px)':'translateX(-20px)';
+    renderCalView();
+    void c.offsetWidth;
+    c.style.transition='opacity .2s ease, transform .2s ease';
+    c.style.opacity='1';
+    c.style.transform='translateX(0)';
+  },120);
 }
 function jumpToMonth(idx){
-  const prev=currentMonthIdx;currentMonthIdx=idx;
-  calViewDate=new Date(MIY[idx].y,MIY[idx].m,1);
-  renderCalView(idx>prev?'slide-left':'slide-right');
+  const prev=currentMonthIdx;
+  const delta=idx>prev?1:-1;
+  const c=document.getElementById('month-cal');
+  c.style.transition='opacity .12s ease, transform .12s ease';
+  c.style.opacity='0';
+  c.style.transform=delta>0?'translateX(-20px)':'translateX(20px)';
+  setTimeout(()=>{
+    currentMonthIdx=idx;
+    calViewDate=new Date(MIY[idx].y,MIY[idx].m,1);
+    c.style.transition='none';
+    c.style.opacity='0';
+    c.style.transform=delta>0?'translateX(20px)':'translateX(-20px)';
+    renderCalView();
+    void c.offsetWidth;
+    c.style.transition='opacity .2s ease, transform .2s ease';
+    c.style.opacity='1';
+    c.style.transform='translateX(0)';
+  },120);
 }
 function openMonth(y,m){
   currentMonthIdx=MIY.findIndex(v=>v.y===y&&v.m===m);
