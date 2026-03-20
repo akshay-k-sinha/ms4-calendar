@@ -365,6 +365,61 @@ firebase.initializeApp({
   .landing-footer-brand{font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--accent),#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
   .landing-footer-links{display:flex;gap:8px;justify-content:center;align-items:center}
   .landing-footer-links a:hover{text-decoration:underline!important}
+  /* ── Demo mockup ── */
+  .demo-wrap{max-width:900px;margin:0 auto;padding:0 40px 48px}
+  .demo-window{background:var(--surface);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);overflow:hidden;display:flex;border:1px solid var(--border-light)}
+  .demo-sidebar{width:160px;background:var(--bg);border-right:1px solid var(--border-light);padding:16px 0;flex-shrink:0}
+  .demo-brand{display:flex;align-items:center;gap:8px;padding:0 14px 16px;font-size:12px;font-weight:700;color:var(--accent)}
+  .demo-brand-icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#5856D6);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .demo-brand-icon svg{width:12px;height:12px}
+  .demo-nav-item{padding:6px 14px;font-size:11px;color:var(--text-3);font-weight:500;cursor:default;transition:all .2s ease}
+  .demo-nav-active{color:var(--accent);background:var(--accent-light);border-left:2px solid var(--accent);font-weight:600}
+  .demo-main{flex:1;padding:20px 24px;min-height:340px;position:relative;overflow:hidden}
+  .demo-view{position:absolute;inset:0;padding:20px 24px;opacity:0;transform:translateX(20px);transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+  .demo-view.demo-active{opacity:1;transform:translateX(0);pointer-events:auto}
+  .demo-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:2px}
+  .demo-subtitle{font-size:11px;color:var(--text-3);margin-bottom:16px}
+  .demo-label{font-size:9px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+  .demo-today{padding:10px 14px;border-left:3px solid var(--accent);background:var(--accent-light);border-radius:0 8px 8px 0;margin-bottom:14px}
+  .demo-today-rot{font-size:15px;font-weight:600;color:var(--text);margin-top:4px}
+  .demo-today-loc{font-size:11px;color:var(--text-2);margin-top:2px}
+  .demo-countdowns{display:flex;gap:10px;margin-bottom:14px}
+  .demo-countdown{flex:1;text-align:center;padding:10px 6px;border:1px solid var(--border-light);border-radius:10px;background:var(--surface)}
+  .demo-countdown-num{font-size:22px;font-weight:700;color:var(--accent);line-height:1.2}
+  .demo-countdown-label{font-size:8px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.3px;line-height:1.3;margin-top:2px}
+  .demo-interviews{margin-top:4px}
+  .demo-intv-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px;font-size:12px;font-weight:500;color:var(--text)}
+  .demo-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+  .demo-badge-blue{background:var(--blue-bg);color:var(--blue-fg)}
+  .demo-badge-yellow{background:var(--yellow-bg);color:var(--yellow-fg)}
+  .demo-badge-green{background:var(--green-bg);color:var(--green-fg)}
+  /* Calendar view */
+  .demo-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;margin-top:12px}
+  .demo-cal-hdr{text-align:center;font-size:9px;font-weight:600;color:var(--text-3);padding:4px 0}
+  .demo-cal-day{text-align:center;padding:4px 2px 6px;font-size:10px;color:var(--text);position:relative;min-height:32px}
+  .demo-cal-day span{position:relative;z-index:1}
+  .demo-cal-bar{height:3px;border-radius:2px;margin-top:2px}
+  .demo-bar-purple{background:#A78BFA}
+  .demo-bar-teal{background:#2DD4BF}
+  .demo-cal-event{font-size:7px;color:var(--accent);font-weight:600;margin-top:1px;white-space:nowrap}
+  /* Animations */
+  .demo-anim-slide{opacity:0;transform:translateY(8px);animation:demoSlide .4s ease forwards}
+  .demo-anim-pop{opacity:0;transform:scale(.9);animation:demoPop .35s cubic-bezier(.25,.1,.25,1) forwards}
+  @keyframes demoSlide{to{opacity:1;transform:translateY(0)}}
+  @keyframes demoPop{to{opacity:1;transform:scale(1)}}
+  /* Demo view switch animation for nav highlight */
+  .demo-nav-item.demo-nav-active{transition:all .3s ease}
+  /* Mobile */
+  @media(max-width:768px){
+    .demo-wrap{padding:0 16px 32px}
+    .demo-sidebar{display:none}
+    .demo-window{border-radius:12px}
+    .demo-main{min-height:300px}
+    .demo-countdowns{gap:6px}
+    .demo-countdown{padding:8px 4px}
+    .demo-countdown-num{font-size:18px}
+  }
+
   .legal-page{position:fixed;inset:0;z-index:600;background:var(--bg);overflow-y:auto;opacity:0;transform:translateY(20px);transition:opacity .3s ease,transform .3s ease;pointer-events:none}
   .legal-page.open{opacity:1;transform:translateY(0);pointer-events:auto}
   .legal-page-inner{max-width:640px;margin:0 auto;padding:48px 24px 80px}
@@ -812,6 +867,99 @@ firebase.initializeApp({
     <div class="auth-loading" id="auth-loading" style="margin-top:20px;display:none"></div>
   </div>
 
+  <!-- Animated App Demo -->
+  <div class="demo-wrap reveal">
+    <div class="demo-window">
+      <div class="demo-sidebar">
+        <div class="demo-brand">
+          <div class="demo-brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <span>MatchReady</span>
+        </div>
+        <div class="demo-nav-item demo-nav-active">Dashboard</div>
+        <div class="demo-nav-item">Calendar</div>
+        <div class="demo-nav-item">Rotations</div>
+        <div class="demo-nav-item">Interviews</div>
+      </div>
+      <div class="demo-main">
+        <!-- Dashboard view -->
+        <div class="demo-view demo-view-dash demo-active">
+          <div class="demo-title">Dashboard</div>
+          <div class="demo-subtitle">Friday, September 4, 2026</div>
+          <div class="demo-today">
+            <div class="demo-label">TODAY'S ROTATION</div>
+            <div class="demo-today-rot demo-anim-slide" style="animation-delay:.3s">Surgery Sub-I</div>
+            <div class="demo-today-loc demo-anim-slide" style="animation-delay:.5s">University Hospital · Block 4</div>
+          </div>
+          <div class="demo-countdowns">
+            <div class="demo-countdown demo-anim-pop" style="animation-delay:.6s">
+              <div class="demo-countdown-num" id="demo-cd-1">27</div>
+              <div class="demo-countdown-label">ERAS<br>DEADLINE</div>
+            </div>
+            <div class="demo-countdown demo-anim-pop" style="animation-delay:.8s">
+              <div class="demo-countdown-num" id="demo-cd-2">198</div>
+              <div class="demo-countdown-label">MATCH<br>DAY</div>
+            </div>
+            <div class="demo-countdown demo-anim-pop" style="animation-delay:1s">
+              <div class="demo-countdown-num">4/4</div>
+              <div class="demo-countdown-label">LETTERS<br>SUBMITTED</div>
+            </div>
+          </div>
+          <div class="demo-interviews">
+            <div class="demo-label" style="margin-bottom:8px">UPCOMING INTERVIEWS</div>
+            <div class="demo-intv-row demo-anim-slide" style="animation-delay:1.2s">
+              <span>Johns Hopkins EM</span><span class="demo-badge demo-badge-blue">Scheduled</span>
+            </div>
+            <div class="demo-intv-row demo-anim-slide" style="animation-delay:1.4s">
+              <span>UCSF Emergency Med</span><span class="demo-badge demo-badge-yellow">Invited</span>
+            </div>
+            <div class="demo-intv-row demo-anim-slide" style="animation-delay:1.6s">
+              <span>Mass General EM</span><span class="demo-badge demo-badge-green">Completed</span>
+            </div>
+          </div>
+        </div>
+        <!-- Calendar view -->
+        <div class="demo-view demo-view-cal">
+          <div class="demo-title">October 2026</div>
+          <div class="demo-cal-grid">
+            <div class="demo-cal-hdr">S</div><div class="demo-cal-hdr">M</div><div class="demo-cal-hdr">T</div><div class="demo-cal-hdr">W</div><div class="demo-cal-hdr">T</div><div class="demo-cal-hdr">F</div><div class="demo-cal-hdr">S</div>
+            <div></div><div></div><div></div><div></div>
+            <div class="demo-cal-day"><span>1</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>2</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>3</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>4</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>5</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>6</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>7</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>8</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>9</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>10</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>11</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>12</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>13</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>14</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>15</span><div class="demo-cal-bar demo-bar-purple"></div><div class="demo-cal-event">Hopkins</div></div>
+            <div class="demo-cal-day"><span>16</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>17</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>18</span><div class="demo-cal-bar demo-bar-purple"></div></div>
+            <div class="demo-cal-day"><span>19</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>20</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>21</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>22</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>23</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>24</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>25</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>26</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>27</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>28</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>29</span><div class="demo-cal-bar demo-bar-teal"></div><div class="demo-cal-event">UCSF</div></div>
+            <div class="demo-cal-day"><span>30</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+            <div class="demo-cal-day"><span>31</span><div class="demo-cal-bar demo-bar-teal"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="landing-section reveal" id="section-features">
     <div class="landing-section-label">Features</div>
     <div class="landing-section-title">Everything you need<br>for fourth year.</div>
@@ -1013,8 +1161,8 @@ firebase.initializeApp({
   <div class="signin-modal" style="position:relative">
     <button class="signin-modal-close" onclick="closeSignIn()">✕</button>
     <div class="signin-modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <h2>Welcome to MatchReady</h2>
-    <p>Sign in to save your schedule to the cloud.</p>
+    <h2>Your fourth year, organized</h2>
+    <p>Rotations, interviews, deadlines, and letters — all in one place, synced across every device.</p>
     <label class="consent-check" id="consent-label"><input type="checkbox" id="consent-checkbox" onchange="updateConsentBtn()"><span>I agree to the <a onclick="event.stopPropagation();showLegalPage('terms')">Terms of Service</a> and <a onclick="event.stopPropagation();showLegalPage('privacy')">Privacy Policy</a></span></label>
     <button class="auth-btn" id="signin-btn" onclick="signIn()" disabled style="opacity:.5;cursor:not-allowed"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">Continue with Google</button>
     <div class="signin-modal-note">Your data is private and encrypted.<br>Synced securely across all your devices.</div>
@@ -1202,6 +1350,11 @@ firebase.initializeApp({
 
     <div class="acct-section-label">Data</div>
     <div class="acct-card">
+      <div class="acct-data-item" onclick="exportData()" style="cursor:pointer">
+        <div><div class="acct-data-title">Export My Data</div><div class="acct-data-desc">Download all your data as a JSON file</div></div>
+        <span class="acct-arrow">↓</span>
+      </div>
+      <div style="height:1px;background:var(--border-light);margin:0 16px"></div>
       <div class="acct-data-item" onclick="confirmClearData()">
         <div><div class="acct-data-title" style="color:var(--red-fg)">Clear All Data</div><div class="acct-data-desc">Remove all rotations, interviews, dates, and notes</div></div>
         <span class="acct-arrow" style="color:var(--red-fg)">→</span>
@@ -2051,6 +2204,14 @@ function exportData(){
   a.click();URL.revokeObjectURL(a.href);
   showToast('Data exported');
 }
+function exportData(){
+  const data=JSON.stringify(S,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='matchready-data.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  showToast('Data exported');
+}
 function confirmClearData(){
   document.getElementById('clear-data-backdrop').classList.add('open');
 }
@@ -2081,6 +2242,26 @@ const revealObserver=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObserver.unobserve(e.target)}});
 },{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+// ── Demo auto-cycle ──
+(function(){
+  const views=[{el:'.demo-view-dash',nav:0},{el:'.demo-view-cal',nav:1}];
+  const navItems=document.querySelectorAll('.demo-nav-item');
+  let current=0;
+  function switchDemo(){
+    const prev=views[current];
+    current=(current+1)%views.length;
+    const next=views[current];
+    document.querySelector(prev.el).classList.remove('demo-active');
+    document.querySelector(next.el).classList.add('demo-active');
+    navItems.forEach((n,i)=>n.classList.toggle('demo-nav-active',i===next.nav));
+    // Re-trigger slide/pop animations on the incoming view
+    document.querySelector(next.el).querySelectorAll('.demo-anim-slide,.demo-anim-pop').forEach(el=>{
+      el.style.animation='none';void el.offsetWidth;el.style.animation='';
+    });
+  }
+  setInterval(switchDemo,4000);
+})();
 
 // ── Mobile More menu ──
 function toggleMore(){
@@ -2165,7 +2346,7 @@ save=function(){
     clearTimeout(saveTimer);
     saveTimer=setTimeout(()=>{
       firebase.firestore().collection('users').doc(currentUser.uid).set(S)
-        .catch(e=>console.error('Firestore save error:',e));
+        .catch(e=>{console.error('Firestore save error:',e);showToast('Sync failed — changes saved locally')});
     },1000);
   }
 };
@@ -2192,7 +2373,7 @@ firebase.auth().onAuthStateChanged(async(user)=>{
       if(doc.exists){S=doc.data();if(!S.notes)S.notes={}}
       else{const l=localStorage.getItem('ms4cal');if(l){S=JSON.parse(l);if(!S.notes)S.notes={};await firebase.firestore().collection('users').doc(user.uid).set(S)}}
       localStorage.setItem('ms4cal',JSON.stringify(S));firebaseReady=true;
-    }catch(e){console.error(e);const l=localStorage.getItem('ms4cal');if(l)S=JSON.parse(l);firebaseReady=true}
+    }catch(e){console.error(e);const l=localStorage.getItem('ms4cal');if(l)S=JSON.parse(l);firebaseReady=true;showToast('Offline — loaded from local cache')}
     buildMIY();hideAuth();renderAll();
   } else {
     currentUser=null;firebaseReady=false;
