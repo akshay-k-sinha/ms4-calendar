@@ -58,11 +58,13 @@ Most students use a chaotic mix of Google Sheets, sticky notes, GroupMe reminder
 - Firebase Auth handles all the complexity
 - Can add more providers later if needed
 
-### Why not charge for it?
-- The target audience is students drowning in debt
-- Building goodwill in the medical community has more value than revenue
-- The free plan has no artificial limits
-- Monetization can come later (premium features, institutional licenses)
+### Monetization strategy
+- Low price point ($1-5) to minimize friction for debt-burdened students
+- Value justification: replaces 3-4 separate tools (spreadsheet, calendar, notes, tracker)
+- Terms of Service and Privacy Policy in place with consent gate
+- Payment/refund terms already in ToS (ready for Stripe integration)
+- Data export ensures users never feel locked in
+- Future: institutional licenses for medical schools, premium features (rank list builder, analytics)
 
 ---
 

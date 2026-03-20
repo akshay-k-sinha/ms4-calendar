@@ -18,8 +18,8 @@ MatchReady gives them one place for everything, with a visual calendar that make
 
 ## Screenshots
 
-| Dashboard | Month Calendar |
-|-----------|---------------|
+| Dashboard | Month Calendar + Detail Panel |
+|-----------|-------------------------------|
 | ![Dashboard](screenshots/dashboard.png) | ![Month Calendar](screenshots/calendar-month.png) |
 
 | Mobile View | Dark Mode |
@@ -30,15 +30,32 @@ MatchReady gives them one place for everything, with a visual calendar that make
 
 ## Features
 
-- **Dashboard** — Today's rotation, countdown tiles to ERAS/Match Day/Graduation, week-ahead timeline, year progress bar
-- **Calendar (5 views)** — Day, 3-Day, Week, Month, and Year views with color-coded rotation bars, event indicators, and swipe navigation
+### Core
+- **Dashboard** — Today's rotation, countdown tiles to ERAS/Match Day/Graduation, week-ahead timeline, year progress bar, share schedule button
+- **Calendar (5 views)** — Day, 3-Day, Week, Month, and Year views with color-coded rotation bars, rotation legends, today highlighting, and smooth animated transitions
+- **Inline day detail panel** — Click any day on the desktop calendar to see rotation info, events, notes, and quick-add actions without leaving the calendar view
 - **Rotation tracker** — Unlimited blocks with 13 color options, flexible date ranges, type tagging (Core, Elective, Sub-I, Away)
 - **Interview tracker** — Program, specialty, date, location, and status tracking with calendar export
 - **Key dates** — Pre-loaded with ERAS Opens, Rank List Due, Match Day, USMLE Step 2 CK, and Graduation
 - **Letters of rec** — Writer, specialty, status, and progress counter
+
+### Export & Sharing
 - **Calendar export** — Per-event export to Apple Calendar (.ics) or Google Calendar
+- **Schedule share link** — Generate a read-only URL to share your rotation schedule with a partner or advisor
+- **Data export** — Download all your data as JSON from My Account
+
+### Platform
 - **Cloud sync** — Google Sign-In with Firebase, data follows you across devices
 - **Dark mode** — iOS-style toggle
+- **PWA ready** — Installable on home screens via manifest.json
+- **Collapsible sidebar** — Desktop sidebar collapses to icon-only mode for more calendar space
+- **Offline support** — localStorage caching with visible error states when sync fails
+- **No page flash** — Returning users skip the landing page on reload
+
+### Legal & Privacy
+- **Terms of Service and Privacy Policy** — Built-in legal pages with consent gate on sign-in
+- **HIPAA disclaimer** — Explicitly not a medical device or covered entity
+- **Data ownership** — Users own their data, can export or delete at any time
 
 ---
 
@@ -46,7 +63,7 @@ MatchReady gives them one place for everything, with a visual calendar that make
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Single-file HTML/CSS/JS (~2000 lines) |
+| Frontend | Single-file HTML/CSS/JS |
 | Auth | Firebase Authentication (Google Sign-In) |
 | Database | Cloud Firestore (per-user documents) |
 | Hosting | GitHub Pages |
@@ -102,6 +119,7 @@ Push `index.html` to your GitHub repo. Enable GitHub Pages in Settings > Pages >
 ```
 ms4-calendar/
 ├── index.html          # The entire application (HTML + CSS + JS)
+├── manifest.json       # PWA manifest for home screen install
 ├── screenshots/        # App screenshots for README
 ├── README.md           # This file
 ├── PRODUCT.md          # Product decisions and rationale
