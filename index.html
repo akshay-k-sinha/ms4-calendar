@@ -13,7 +13,8 @@
 <meta name="twitter:title" content="MatchReady">
 <meta name="twitter:description" content="Plan your fourth year. Rotations, interviews, ERAS deadlines, and LORs — all in one place.">
 <meta name="twitter:image" content="screenshots/og-preview.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="MatchReady">
 <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)">
@@ -420,8 +421,8 @@ firebase.initializeApp({
     .demo-countdown-num{font-size:18px}
   }
 
-  .legal-page{position:fixed;inset:0;z-index:600;background:var(--bg);overflow-y:auto;opacity:0;transform:translateY(20px);transition:opacity .3s ease,transform .3s ease;pointer-events:none}
-  .legal-page.open{opacity:1;transform:translateY(0);pointer-events:auto}
+  .legal-page{position:fixed;inset:0;z-index:600;background:var(--bg);overflow-y:auto;opacity:0;transform:translateY(20px);transition:opacity .3s ease,transform .3s ease,visibility 0s .3s;pointer-events:none;visibility:hidden}
+  .legal-page.open{opacity:1;transform:translateY(0);pointer-events:auto;visibility:visible;transition:opacity .3s ease,transform .3s ease,visibility 0s 0s}
   .legal-page-inner{max-width:640px;margin:0 auto;padding:48px 24px 80px}
   .legal-page-inner h1{font-size:28px;font-weight:700;margin-bottom:8px;color:var(--text)}
   .legal-page-inner h2{font-size:16px;font-weight:600;margin:28px 0 8px;color:var(--text)}
@@ -1262,6 +1263,7 @@ firebase.initializeApp({
       <button class="btn btn-secondary" onclick="addInterview();document.querySelector('[data-view=interviews]').click()">+ Interview</button>
       <button class="btn btn-secondary" onclick="addKeyDate();document.querySelector('[data-view=keydates]').click()">+ Key Date</button>
       <button class="btn btn-secondary" onclick="addLetter();document.querySelector('[data-view=letters]').click()">+ Letter</button>
+      <button class="btn btn-secondary" onclick="shareSchedule()" data-analytics-id="share-schedule" style="margin-left:auto">Share Schedule</button>
     </div>
     <div class="card-grid card-grid-4" id="dash-stats"></div>
     <div class="feed" id="dash-feed"></div>
@@ -1348,6 +1350,17 @@ firebase.initializeApp({
       </div>
     </div>
 
+    <div class="acct-section-label">Match Year</div>
+    <div class="acct-card">
+      <div class="acct-data-item">
+        <div>
+          <div class="acct-data-title">Academic Year</div>
+          <div class="acct-data-desc">Your MS4 year starting June. Default dates adjust to match.</div>
+        </div>
+        <select id="acct-match-year" onchange="changeMatchYear(this.value)" style="font-family:inherit;font-size:14px;font-weight:600;color:var(--accent);background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:6px 10px;cursor:pointer"></select>
+      </div>
+    </div>
+
     <div class="acct-section-label">Data</div>
     <div class="acct-card">
       <div class="acct-data-item" onclick="exportData()" style="cursor:pointer">
@@ -1400,7 +1413,8 @@ function buildMIY(){
 const STATUS_COLORS={Completed:'ss-green',Complete:'ss-green','In Progress':'ss-yellow',Scheduled:'ss-blue',Invited:'ss-yellow','Not Started':'ss-red','Not Asked':'ss-red',Asked:'ss-yellow',Accepted:'ss-blue',Submitted:'ss-green',Waitlisted:'ss-orange',Declined:'ss-red'};
 
 // ── Default data (relative to current academic year) ──
-const MS4_Y=2026; // MS4 year starts June 2026 — change this for future cohorts
+// Auto-detect: MS4 year starts June. If today is Jun+ use this year, otherwise last year.
+const MS4_Y=(()=>{const stored=localStorage.getItem('ms4cal_year');if(stored)return parseInt(stored);const now=new Date();return now.getMonth()>=5?now.getFullYear():now.getFullYear()-1})();
 const Y1=MS4_Y,Y2=MS4_Y+1;
 function fmt(y,m,d){return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
 // Generate 13 four-week blocks starting June 1
@@ -1429,7 +1443,6 @@ function showToast(msg){
 let undoStack=[];
 function pushUndo(label,restoreData){undoStack=[{label,data:JSON.parse(JSON.stringify(restoreData))}];const bar=document.getElementById('undo-bar');document.getElementById('undo-text').textContent=label;bar.style.display='flex';clearTimeout(bar._timer);bar._timer=setTimeout(()=>bar.style.display='none',6000)}
 function undoAction(){if(!undoStack.length)return;const u=undoStack.pop();S=u.data;save();renderAll();document.getElementById('undo-bar').style.display='none';showToast('Undone')}
-function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ms4_calendar_backup.json';a.click()}
 function importData(e){const f=e.target.files[0];if(!f)return;if(!confirm('This will replace all your data. Continue?'))return;const r=new FileReader();r.onload=()=>{S=JSON.parse(r.result);save();renderAll()};r.readAsText(f)}
 
 // ── Helpers ──
@@ -1597,6 +1610,21 @@ function showAccountView(){
   document.getElementById('view-account').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   document.title='My Account · MatchReady';
+  // Populate match year dropdown
+  const sel=document.getElementById('acct-match-year');
+  if(sel&&!sel.options.length){
+    const now=new Date().getFullYear();
+    for(let y=now-1;y<=now+2;y++){
+      const opt=document.createElement('option');opt.value=y;
+      opt.textContent=y+'–'+(y+1);
+      if(y===MS4_Y)opt.selected=true;
+      sel.appendChild(opt);
+    }
+  }
+}
+function changeMatchYear(val){
+  localStorage.setItem('ms4cal_year',val);
+  showToast('Match year updated — reload to apply');
 }
 
 function toggleDashCard(id){
@@ -2198,19 +2226,39 @@ document.addEventListener('keydown',e=>{
 
 // ── Account: Export & Clear ──
 function exportData(){
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`matchready-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();URL.revokeObjectURL(a.href);
-  showToast('Data exported');
-}
-function exportData(){
   const data=JSON.stringify(S,null,2);
   const blob=new Blob([data],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='matchready-data.json';
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   showToast('Data exported');
+}
+
+// ── Share Schedule ──
+function shareSchedule(){
+  const shareData={r:S.rotations.filter(r=>r.name||r.start).map(r=>({n:r.name,s:r.start,e:r.end,c:r.color,l:r.location,t:r.type})),k:S.keydates.filter(k=>k.date).map(k=>({d:k.date,e:k.event,c:k.category}))};
+  const encoded=btoa(encodeURIComponent(JSON.stringify(shareData)));
+  const url=window.location.origin+window.location.pathname+'#share='+encoded;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>showToast('Share link copied to clipboard')).catch(()=>{fallbackCopy(url);showToast('Share link copied to clipboard')});
+  } else {fallbackCopy(url);showToast('Share link copied to clipboard')}
+}
+function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta)}
+function loadSharedSchedule(){
+  const hash=window.location.hash;
+  if(!hash.startsWith('#share='))return false;
+  try{
+    const data=JSON.parse(decodeURIComponent(atob(hash.slice(7))));
+    document.getElementById('auth-screen').classList.add('hidden');
+    document.body.classList.remove('app-hidden');
+    S={rotations:data.r.map((r,i)=>({block:'Block '+(i+1),name:r.n,start:r.s,end:r.e,color:r.c,location:r.l,type:r.t})),interviews:[],keydates:data.k.map(k=>({date:k.d,event:k.e,category:k.c,status:''})),letters:[],notes:{}};
+    buildMIY();renderAll();
+    const banner=document.getElementById('welcome-banner');
+    if(banner){banner.style.display='flex';banner.querySelector('.welcome-banner-icon').textContent='📋';banner.querySelector('h3').textContent='Shared Schedule';banner.querySelector('p').textContent="You're viewing a read-only schedule shared with you.";const btn=banner.querySelector('button');btn.textContent='Create Your Own →';btn.onclick=()=>{window.location.hash='';window.location.reload()};banner.querySelector('.welcome-dismiss').style.display='none'}
+    document.querySelectorAll('.btn-add,.dash-quick-actions').forEach(el=>el.style.display='none');
+    document.querySelector('.nav-footer').textContent='Viewing a shared schedule';
+    return true;
+  }catch(e){console.error('Invalid share link',e);return false}
 }
 function confirmClearData(){
   document.getElementById('clear-data-backdrop').classList.add('open');
@@ -2356,7 +2404,9 @@ save=function(){
 
 <!-- Firebase auth listener (SDK loaded in head) -->
 <script>
-firebase.auth().onAuthStateChanged(async(user)=>{
+// Check for shared schedule link before auth
+if(loadSharedSchedule()){/* Shared view loaded, skip auth */}
+else firebase.auth().onAuthStateChanged(async(user)=>{
   if(user){
     currentUser=user;
     document.getElementById('nav-user').style.display='flex';
